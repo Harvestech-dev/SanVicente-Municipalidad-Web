@@ -1,0 +1,54 @@
+{
+  "titulo": "Programas Destacados",
+  "subtitulo": "Iniciativas municipales para mejorar la calidad de vida",
+  "programas": [
+    {
+      "id": 1,
+      "nombre": "Villa Emprende",
+      "descripcion": "Apoyo a emprendedores locales con capacitaciones y financiamiento",
+      "url": "/programas/emprende",
+      "sigla": "VE",
+      "colorFondo": "#003366"
+    },
+    {
+      "id": 2,
+      "nombre": "Villa Sustentable",
+      "descripcion": "Programa de reciclaje y cuidado del medio ambiente",
+      "url": "/programas/sustentable",
+      "sigla": "VS",
+      "colorFondo": "#006633"
+    },
+    {
+      "id": 3,
+      "nombre": "Villa Deportes",
+      "descripcion": "Escuelas deportivas gratuitas para niños y jóvenes",
+      "url": "/programas/deportes",
+      "sigla": "VD",
+      "colorFondo": "#e65100"
+    },
+    {
+      "id": 4,
+      "nombre": "Villa Cultura",
+      "descripcion": "Talleres artísticos y eventos culturales en los barrios",
+      "url": "/programas/cultura",
+      "sigla": "VC",
+      "colorFondo": "#003366"
+    },
+    {
+      "id": 5,
+      "nombre": "Villa Mayor",
+      "descripcion": "Atención integral para adultos mayores",
+      "url": "/programas/mayor",
+      "sigla": "VM",
+      "colorFondo": "#006633"
+    },
+    {
+      "id": 6,
+      "nombre": "Villa Salud",
+      "descripcion": "Centros de atención primaria y campañas de prevención",
+      "url": "/programas/salud",
+      "sigla": "VSa",
+      "colorFondo": "#e65100"
+    }
+  ]
+}

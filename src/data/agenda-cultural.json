@@ -1,0 +1,44 @@
+{
+  "title": "Agenda Cultural",
+  "subtitle": "Descubrí los eventos, talleres y actividades en San Vicente.",
+  "viewAllText": "Ver toda la agenda",
+  "viewAllHref": "/agenda",
+  "events": [
+    {
+      "id": 1,
+      "title": "Feria de Artesanos y Emprendedores",
+      "date": "Sábado 15 de Octubre",
+      "time": "16:00 hs",
+      "location": "Plaza Estanislao López",
+      "category": "Feria",
+      "image": "/images/bicis.jpg"
+    },
+    {
+      "id": 2,
+      "title": "Cine bajo las Estrellas",
+      "date": "Domingo 16 de Octubre",
+      "time": "20:30 hs",
+      "location": "Anfiteatro Municipal",
+      "category": "Cine",
+      "image": "/images/bicis.jpg"
+    },
+        {
+      "id": 3,
+      "title": "Todos al agua",
+      "date": "Domingo 30 de Octubre",
+      "time": "21:30 hs",
+      "location": "Anfiteatro Municipal",
+      "category": "Social",
+      "image": "/images/bicis.jpg"
+    },
+        {
+      "id": 4,
+      "title": "Dia del niño",
+      "date": "Domingo 3 de Abril",
+      "time": "15:30 hs",
+      "location": "Plaza central",
+      "category": "Social",
+      "image": "/images/bicis.jpg"
+    }
+  ]
+}

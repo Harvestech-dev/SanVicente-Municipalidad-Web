@@ -1,0 +1,35 @@
+{
+  "nombre": "Municipalidad de San Vicente",
+  "nombreCorto": "San Vicente",
+  "tema": {
+    "primario": "#f08a13",
+    "primarioHover": "#d67a0f",
+    "secundario": "#222222",
+    "secundarioHover": "#000000",
+    "fondoOscuro": "#111111",
+    "fondoClaro": "#f8f9fa",
+    "texto": "#1a1a1a",
+    "textoClaro": "#ffffff",
+    "exito": "#48bb78",
+    "error": "#f56565"
+  },
+  "contacto": {
+    "telefono": "+54 3492 444444",
+    "horario": "Lunes a Viernes, 07:00 a 13:00 hs",
+    "direccion": "Calle Principal 123",
+    "email": "contacto@sanvicente.gob.ar"
+  },
+  "redesSociales": {
+    "facebook": "https://facebook.com/...",
+    "instagram": "https://instagram.com/...",
+    "youtube": "https://youtube.com/...",
+    "whatsapp": "543492123456"
+  },
+  "footer": {
+    "copyright": "Todos los derechos reservados.",
+    "reclamos": {
+      "titulo": "Ir a Vecino Digital",
+      "url": "/reclamos"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "slides": [
+    {
+      "id": 1,
+      "titulo": "Festival de Verano 2025",
+      "descripcion": "Tres días de música, gastronomía y actividades para toda la familia",
+      "imagen": "/images/bicis.jpg",
+      "enlace": "/noticias/festival-verano",
+      "categoria": "Cultura"
+    },
+    {
+      "id": 2,
+      "titulo": "Festival de Invierno 2025",
+      "descripcion": "Tres días de música, gastronomía y actividades para toda la familia",
+      "imagen": "/images/bicis.jpg",
+      "enlace": "/noticias/festival-verano",
+      "categoria": "Cultura"
+    }
+  ]
+}

@@ -1,0 +1,273 @@
+---
+import carruselData from "../data/carrusel.json";
+import datosSitio from "../data/sitio.json";
+
+// Estructura para que TypeScript no marque errores
+interface Slide {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  imagen: string;
+  enlace: string;
+  categoria: string;
+}
+
+const { slides = carruselData.slides as Slide[] } = Astro.props;
+---
+
+<section class="hero-carrousel" aria-label="Galería de novedades">
+  <div class="slides-container">
+    {slides.map((slide: Slide, index: number) => (
+      <div class={`slide ${index === 0 ? 'active' : ''}`} data-index={index}>
+        <img src={slide.imagen} alt={slide.titulo} class="slide-bg" />
+        <div class="slide-overlay"></div>
+        
+        <div class="container slide-content">
+          <div class="text-wrapper">
+            <span class="badge">{slide.categoria}</span>
+            <h2 class="titulo">{slide.titulo}</h2>
+            <p class="descripcion">{slide.descripcion}</p>
+            <a href={slide.enlace} class="btn-primary">
+              Leer más
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="nav-controls">
+    <button class="nav-btn prev" aria-label="Anterior">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <button class="nav-btn next" aria-label="Siguiente">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6 6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="dots-container">
+    {slides.map((_: Slide, index: number) => (
+      <button 
+        class={`dot ${index === 0 ? 'active' : ''}`} 
+        data-goto={index} 
+        aria-label={`Ir a slide ${index + 1}`}
+      ></button>
+    ))}
+  </div>
+</section>
+
+<style>
+  .hero-carrousel {
+    position: relative;
+    height: 600px; /* Un poco más alto para lucir las imágenes */
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .slides-container { height: 100%; width: 100%; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center; /* Centrado vertical para mejor impacto */
+    padding-top: 70px; /* Espacio para el header sticky */
+  }
+
+  .slide.active { opacity: 1; z-index: 1; }
+
+  .slide.active .text-wrapper { animation: fadeInUp 0.8s ease forwards; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Overlay más oscuro abajo para que el texto resalte siempre */
+  .slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right, 
+      rgba(0,0,0,0.8) 25%, 
+      rgba(0,0,0,0.4) 75%, 
+      transparent 100%
+    );
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+  }
+
+  .text-wrapper { 
+    max-width: 650px; 
+    color: var(--color-texto-claro); 
+  }
+
+  .badge {
+    background: var(--color-acento); /* Color verde/naranja de acento */
+    color: white;
+    padding: 6px 16px;
+    border-radius: 4px; /* Estilo más institucional que el circular */
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+  }
+
+  .titulo {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    margin: 0 0 1.5rem 0;
+    line-height: 1;
+    text-wrap: balance;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .descripcion {
+    font-size: 1.25rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+    opacity: 0.95;
+    text-wrap: pretty;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-primario);
+    color: white;
+    text-decoration: none;
+    padding: 16px 32px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .btn-primary:hover { 
+    background: transparent;
+    border-color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  }
+
+  /* Controles */
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+
+  .nav-btn:hover { background: var(--color-primario); border-color: var(--color-primario); }
+  .prev { left: 40px; }
+  .next { right: 40px; }
+
+  /* Indicadores */
+  .dots-container {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    z-index: 10;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0;
+  }
+
+  .dot.active { 
+    background: var(--color-acento); 
+    transform: scale(1.3);
+    border-color: white;
+  }
+
+  @media (max-width: 768px) {
+    .hero-carrousel { height: 550px; }
+    .nav-btn { display: none; }
+    .slide { align-items: flex-end; padding-bottom: 80px; }
+    .titulo { font-size: 2.2rem; }
+    .descripcion { font-size: 1.1rem; }
+  }
+</style>
+
+<script>
+  // Mantenemos tu lógica de JS que es sólida
+  function setupCarousel() {
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const nextBtn = document.querySelector('.next');
+    const prevBtn = document.querySelector('.prev');
+    
+    if (slides.length === 0) return;
+
+    let current = 0;
+    let timer: ReturnType<typeof setInterval>;
+
+    function showSlide(index: number) {
+      slides.forEach(s => s.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+      current = (index + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+      resetTimer();
+    }
+
+    function resetTimer() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => showSlide(current + 1), 7000);
+    }
+
+    nextBtn?.addEventListener('click', () => showSlide(current + 1));
+    prevBtn?.addEventListener('click', () => showSlide(current - 1));
+    dots.forEach((dot, idx) => {
+      dot.addEventListener('click', () => showSlide(idx));
+    });
+
+    resetTimer();
+  }
+
+  setupCarousel();
+  document.addEventListener('astro:after-swap', setupCarousel);
+</script>

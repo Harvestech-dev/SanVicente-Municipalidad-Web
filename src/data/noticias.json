@@ -1,0 +1,44 @@
+{
+  "titulo": "Noticias",
+  "subtitulo": "Enterate de las últimas novedades de nuestra ciudad",
+  "textoVerTodo": "Ver todas las noticias",
+  "urlVerTodo": "/noticias",
+  "noticias": [
+    {
+      "id": 1,
+      "titulo": "Gran Festival de Folklore en la Plaza Principal",
+      "resumen": "Este fin de semana disfrutaremos de artistas locales y nacionales en un encuentro para toda la familia con entrada libre y gratuita.",
+      "fecha": "15 de Octubre, 2024",
+      "categoria": "Cultura",
+      "imagen": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1000",
+      "destacada": true
+    },
+    {
+      "id": 2,
+      "titulo": "Inauguración del nuevo Polideportivo Norte",
+      "resumen": "Nuevas instalaciones para básquet y natación.",
+      "fecha": "12 de Octubre, 2024",
+      "categoria": "Deportes",
+      "imagen": "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=500",
+      "destacada": false
+    },
+    {
+      "id": 3,
+      "titulo": "Campaña de Vacunación Antirrábica",
+      "resumen": "Cronograma de visitas a los barrios esta semana.",
+      "fecha": "10 de Octubre, 2024",
+      "categoria": "Salud",
+      "imagen": "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=500",
+      "destacada": false
+    },
+    {
+      "id": 4,
+      "titulo": "Taller de Robótica para Adolescentes",
+      "resumen": "Inscripciones abiertas para el ciclo lectivo.",
+      "fecha": "08 de Octubre, 2024",
+      "categoria": "Educación",
+      "imagen": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=500",
+      "destacada": false
+    }
+  ]
+}

@@ -1,0 +1,334 @@
+---
+import agendaData from "../data/agenda-cultural.json";
+import sitioData from "../data/sitio.json";
+
+// Definimos la estructura para evitar errores de tipo 'any'
+interface Evento {
+  id: number;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  image: string;
+}
+
+const {
+  events = agendaData.events as Evento[],
+  title = agendaData.title,
+  subtitle = agendaData.subtitle,
+  viewAllText = agendaData.viewAllText,
+  viewAllHref = agendaData.viewAllHref,
+} = Astro.props;
+
+const { tema } = sitioData;
+---
+
+<section id="agenda" class="agenda-section">
+  <div class="container">
+    <div class="header-flex">
+      <div class="title-group">
+        <h2>{title}</h2>
+        <p>{subtitle}</p>
+      </div>
+      <a href={viewAllHref} class="btn-outline desktop-only">
+        {viewAllText}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg
+        >
+      </a>
+    </div>
+
+    <div class="events-grid">
+      {
+        events.map((event: Evento) => (
+          <article class="event-card">
+            <div class="image-container">
+              <img src={event.image} alt={event.title} loading="lazy" />
+              <span class="category-badge">{event.category}</span>
+            </div>
+
+            <div class="content">
+              <h3>{event.title}</h3>
+
+              <div class="info-list">
+                <div class="info-item">
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <span>{event.date}</span>
+                </div>
+
+                <div class="info-item">
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  <span>{event.time}</span>
+                </div>
+
+                <div class="info-item">
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <span>{event.location}</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="mobile-only mt-8">
+      <a href={viewAllHref} class="btn-outline full-width">
+        {viewAllText}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg
+        >
+      </a>
+    </div>
+  </div>
+</section>
+
+<style
+  define:vars={{
+    primary: tema.primario,
+    primaryHover: tema.primarioHover,
+    secondary: tema.secundario,
+    text: tema.texto,
+    bgClaro: tema.fondoClaro,
+  }}
+>
+  .agenda-section {
+    padding: 5rem 1rem;
+    background-color: var(--bgClaro);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+
+  .title-group h2 {
+    font-size: 2.25rem;
+    color: var(--secondary);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+  }
+
+  .title-group p {
+    color: #64748b;
+    font-size: 1.1rem;
+  }
+
+  /* Grid */
+  .events-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .events-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .events-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* Cards */
+  .event-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .event-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary);
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .image-container {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .event-card:hover .image-container img {
+    transform: scale(1.1);
+  }
+
+  .category-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--secondary);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    z-index: 1;
+  }
+
+  .content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    color: var(--secondary);
+    line-height: 1.4;
+    transition: color 0.3s;
+  }
+
+  .event-card:hover h3 {
+    color: var(--primary);
+  }
+
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: auto;
+  }
+
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #475569;
+    font-size: 0.9rem;
+  }
+
+  .icon {
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+
+  /* Botones */
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    text-decoration: none;
+    border-radius: 14px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline:hover {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(240, 138, 19, 0.3);
+  }
+
+  .desktop-only {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .desktop-only {
+      display: inline-flex;
+    }
+  }
+
+  .mobile-only {
+    display: block;
+  }
+  @media (min-width: 768px) {
+    .mobile-only {
+      display: none;
+    }
+  }
+
+  .full-width {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .mt-8 {
+    margin-top: 2rem;
+  }
+</style>

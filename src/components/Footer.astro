@@ -1,0 +1,315 @@
+---
+import sitioData from "../data/sitio.json";
+
+const {
+  nombre = sitioData.nombre,
+  nombreCorto = sitioData.nombreCorto,
+  contacto = sitioData.contacto,
+  redesSociales = sitioData.redesSociales,
+  footer = sitioData.footer,
+} = Astro.props;
+
+const { tema } = sitioData;
+const añoActual = new Date().getFullYear();
+
+// Diccionario de iconos sociales (SVG)
+const iconosRedes = {
+  facebook: `<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>`,
+  instagram: `<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>`,
+  whatsapp: `<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>`,
+  youtube: `<path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.46-5.58z"></path><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon>`,
+};
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="col-brand">
+        <h2 class="footer-logo">{nombre}</h2>
+        <p class="footer-desc">
+          Trabajando cada día para construir la ciudad que soñamos. Gestión
+          transparente, innovación y compromiso con cada vecino de San Vicente.
+        </p>
+        <div class="social-grid">
+          {
+            Object.entries(redesSociales).map(
+              ([red, url]) =>
+                url &&
+                typeof url === "string" && (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class={`social-icon`}
+                    aria-label={red}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      set:html={iconosRedes[red as keyof typeof iconosRedes]}
+                    />
+                  </a>
+                ),
+            )
+          }
+        </div>
+      </div>
+
+      <div class="col-links">
+        <h3 class="footer-title">Contacto Oficial</h3>
+        <ul class="contact-list">
+          <li>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              ><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+              ></path><circle cx="12" cy="10" r="3"></circle></svg
+            >
+            <span>{contacto.direccion}</span>
+          </li>
+          <li>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              ><path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              ></path></svg
+            >
+            <span>{contacto.telefono}</span>
+          </li>
+          <li>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              ><path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              ></path><polyline points="22,6 12,13 2,6"></polyline></svg
+            >
+            <span>{contacto.email}</span>
+          </li>
+          <li>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              ><circle cx="12" cy="12" r="10"></circle><polyline
+                points="12 6 12 12 16 14"></polyline></svg
+            >
+            <span>{contacto.horario}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-action">
+        <h3 class="footer-title">Atención al Vecino</h3>
+        <p class="action-desc">
+          ¿Tenés alguna consulta o reclamo? Utilizá nuestro sistema online.
+        </p>
+        <a href={footer.reclamos.url} class="btn-reclamos-fancy">
+          <span>{footer.reclamos.titulo}</span>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"></path></svg
+          >
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="bottom-content">
+        <p>
+          &copy; {añoActual}
+          <strong>{nombreCorto}</strong>. {footer.copyright}
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style
+  define:vars={{
+    primario: tema.primario,
+    primarioHover: tema.primarioHover,
+    secundario: tema.secundario,
+    fondoFooter: "#0f172a",
+  }}
+>
+  .footer {
+    background-color: var(--fondoFooter);
+    color: #f1f5f9;
+    padding: 5rem 0 2rem;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 4rem;
+    padding-bottom: 4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer-logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+    /* Usamos el naranja del JSON para el logo del footer */
+    background: linear-gradient(to right, var(--primario), #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .footer-desc {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .social-grid {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .social-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .social-icon:hover {
+    background: var(--primario);
+    color: white;
+    transform: translateY(-3px);
+    border-color: transparent;
+  }
+
+  .footer-title {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.75rem;
+    position: relative;
+  }
+
+  .footer-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 35px;
+    height: 3px;
+    background: var(--primario); /* Línea naranja bajo el título */
+  }
+
+  .contact-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .contact-list li {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    align-items: flex-start;
+  }
+
+  .contact-list svg {
+    color: var(--primario); /* Iconos de contacto en naranja */
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .action-desc {
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .btn-reclamos-fancy {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--primario);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+
+  .btn-reclamos-fancy:hover {
+    background: white;
+    color: var(--secundario); /* Texto negro al pasar el mouse */
+    transform: scale(1.02);
+  }
+
+  .footer-bottom {
+    padding-top: 2rem;
+  }
+
+  .bottom-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: #64748b;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .bottom-content {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+
+  .bottom-content strong {
+    color: var(--primario);
+  }
+</style>

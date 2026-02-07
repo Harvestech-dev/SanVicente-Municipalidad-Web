@@ -1,23 +1,55 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import sitioData from "../data/sitio.json";
+const { tema } = sitioData;
+---
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <title>{sitioData.nombre}</title>
+
+    <style
+      is:global
+      define:vars={{
+        p: tema.primario,
+        ph: tema.primarioHover,
+        s: tema.secundario,
+        sh: tema.secundarioHover,
+        fo: tema.fondoOscuro,
+        fc: tema.fondoClaro,
+        txt: tema.texto,
+        txtc: tema.textoClaro,
+        err: tema.error,
+        ok: tema.exito,
+      }}
+    >
+      :root {
+        --color-primario: var(--p);
+        --color-primario-hover: var(--ph);
+        --color-secundario: var(--s);
+        --color-secundario-hover: var(--sh);
+        --color-fondo-oscuro: var(--fo);
+        --color-fondo-claro: var(--fc);
+        --color-texto: var(--txt);
+        --color-texto-claro: var(--txtc);
+        --color-error: var(--err);
+        --color-exito: var(--ok);
+      }
+
+      body {
+        margin: 0;
+        background-color: var(--color-fondo-claro);
+        color: var(--color-texto);
+        font-family: system-ui, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

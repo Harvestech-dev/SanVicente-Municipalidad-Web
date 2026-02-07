@@ -1,0 +1,53 @@
+{
+  "titulo": "Accesos Rápidos",
+  "enlaces": [
+    {
+      "id": 1,
+      "titulo": "Boletas y Pagos",
+      "descripcion": "Pagá tus tasas online",
+      "url": "/pagos",
+      "icono": "credit-card",
+      "color": "#003366"
+    },
+    {
+      "id": 2,
+      "titulo": "Licencia de Conducir",
+      "descripcion": "Turnos y requisitos",
+      "url": "/licencia",
+      "icono": "car",
+      "color": "#006633"
+    },
+    {
+      "id": 3,
+      "titulo": "Reclamos",
+      "descripcion": "Vecino Digital",
+      "url": "/reclamos",
+      "icono": "message-square",
+      "color": "#e65100"
+    },
+    {
+      "id": 4,
+      "titulo": "Licitaciones",
+      "descripcion": "Concursos vigentes",
+      "url": "/licitaciones",
+      "icono": "file-text",
+      "color": "#004a99"
+    },
+    {
+      "id": 5,
+      "titulo": "Ordenanzas",
+      "descripcion": "Normativa municipal",
+      "url": "/ordenanzas",
+      "icono": "scale",
+      "color": "#006633"
+    },
+    {
+      "id": 6,
+      "titulo": "Agenda Cultural",
+      "descripcion": "Eventos y actividades",
+      "url": "/agenda",
+      "icono": "calendar",
+      "color": "#e65100"
+    }
+  ]
+}

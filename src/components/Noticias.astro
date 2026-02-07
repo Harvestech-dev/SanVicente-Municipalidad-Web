@@ -1,0 +1,357 @@
+---
+import data from "../data/noticias.json";
+import datosSitio from "../data/sitio.json";
+
+interface Noticia {
+  id: number;
+  titulo: string;
+  resumen: string;
+  fecha: string;
+  categoria: string;
+  imagen: string;
+  destacada: boolean;
+}
+
+const {
+  noticias = data.noticias as Noticia[],
+  titulo = data.titulo,
+  subtitulo = data.subtitulo,
+  textoVerTodo = data.textoVerTodo,
+  urlVerTodo = data.urlVerTodo,
+} = Astro.props;
+
+const noticiaDestacada = noticias.find((n: Noticia) => n.destacada);
+const otrasNoticias = noticias.filter((n: Noticia) => !n.destacada).slice(0, 3);
+---
+
+<section class="news-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-text">
+        <h2 class="title">{titulo}</h2>
+        <p class="subtitle">{subtitulo}</p>
+      </div>
+      <a href={urlVerTodo} class="btn-outline desktop-only">
+        {textoVerTodo}
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path d="m9 18 6-6-6-6"></path>
+        </svg>
+      </a>
+    </div>
+
+    <div class="news-grid">
+      {
+        noticiaDestacada && (
+          <a href={`/noticias/${noticiaDestacada.id}`} class="featured-card">
+            <div class="image-wrapper">
+              <img
+                src={noticiaDestacada.imagen}
+                alt={noticiaDestacada.titulo}
+                loading="lazy"
+              />
+              <span class="badge">{noticiaDestacada.categoria}</span>
+            </div>
+            <div class="content">
+              <div class="meta">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                <span>{noticiaDestacada.fecha}</span>
+              </div>
+              <h3 class="news-title-large">{noticiaDestacada.titulo}</h3>
+              <p class="news-excerpt">{noticiaDestacada.resumen}</p>
+            </div>
+          </a>
+        )
+      }
+
+      <div class="news-list">
+        {
+          otrasNoticias.map((item: Noticia) => (
+            <a href={`/noticias/${item.id}`} class="small-card">
+              <div class="small-image">
+                <img src={item.imagen} alt={item.titulo} loading="lazy" />
+              </div>
+              <div class="small-content">
+                <span class="small-category">{item.categoria}</span>
+                <h4 class="small-title">{item.titulo}</h4>
+                <div class="meta small">
+                  <span>{item.fecha}</span>
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mobile-only mt-8">
+      <a href={urlVerTodo} class="btn-outline full-width">
+        {textoVerTodo}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* FONDO CLARITO SOLICITADO */
+  .news-section {
+    padding: 5rem 1.5rem;
+    background-color: #f1f5f9;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+
+  .title {
+    font-size: clamp(1.8rem, 5vw, 2.25rem);
+    font-weight: 800;
+    color: var(--color-primario);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    max-width: 500px;
+  }
+
+  .news-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    .news-grid {
+      grid-template-columns: 1.6fr 1fr;
+      align-items: start;
+    }
+  }
+
+  /* TARJETA DESTACADA (BLANCA) */
+  .featured-card {
+    text-decoration: none;
+    color: inherit;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+  }
+
+  .featured-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-primario);
+  }
+
+  .image-wrapper {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    .image-wrapper {
+      aspect-ratio: 21 / 10;
+    }
+  }
+
+  .image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .badge {
+    position: absolute;
+    top: 1.25rem;
+    left: 1.25rem;
+    background: var(--color-primario);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .featured-card .content {
+    padding: 2rem;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .news-title-large {
+    font-size: clamp(1.4rem, 4vw, 1.85rem);
+    font-weight: 800;
+    color: var(--color-texto);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .news-excerpt {
+    color: #475569;
+    line-height: 1.6;
+    font-size: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* LISTA LATERAL (TARJETAS BLANCAS) */
+  .news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .small-card {
+    display: flex;
+    gap: 1.25rem;
+    text-decoration: none;
+    color: inherit;
+    padding: 1rem;
+    background: white;
+    border-radius: 18px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  }
+
+  .small-card:hover {
+    transform: translateX(8px);
+    border-color: var(--color-primario);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  }
+
+  .small-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .small-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .small-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .small-category {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--color-primario);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .small-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-texto);
+    margin-bottom: 6px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* BOTONES */
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: 2px solid var(--color-primario);
+    border-radius: 12px;
+    color: var(--color-primario);
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline:hover {
+    background: var(--color-primario);
+    color: white;
+  }
+
+  .featured-card:hover .image-wrapper img {
+    transform: scale(1.05);
+  }
+
+  /* RESPONSIVE UTILS */
+  .desktop-only {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .desktop-only {
+      display: inline-flex;
+    }
+  }
+
+  .mobile-only {
+    display: block;
+  }
+  @media (min-width: 768px) {
+    .mobile-only {
+      display: none;
+    }
+  }
+
+  .mt-8 {
+    margin-top: 2rem;
+  }
+  .full-width {
+    width: 100%;
+  }
+</style>

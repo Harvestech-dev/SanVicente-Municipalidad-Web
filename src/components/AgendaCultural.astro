@@ -2,7 +2,6 @@
 import agendaData from "../data/agenda-cultural.json";
 import sitioData from "../data/sitio.json";
 
-// Definimos la estructura para evitar errores de tipo 'any'
 interface Evento {
   id: number;
   title: string;
@@ -142,8 +141,13 @@ const { tema } = sitioData;
     bgClaro: tema.fondoClaro,
   }}
 >
+  /* Reset local para evitar desbordes */
+  .agenda-section * {
+    box-sizing: border-box;
+  }
+
   .agenda-section {
-    padding: 5rem 1rem;
+    padding: 5rem 1.5rem;
     background-color: var(--bgClaro);
   }
 
@@ -160,7 +164,7 @@ const { tema } = sitioData;
   }
 
   .title-group h2 {
-    font-size: 2.25rem;
+    font-size: clamp(1.8rem, 5vw, 2.25rem);
     color: var(--secondary);
     font-weight: 800;
     margin-bottom: 0.5rem;
@@ -170,13 +174,14 @@ const { tema } = sitioData;
   .title-group p {
     color: #64748b;
     font-size: 1.1rem;
+    max-width: 500px;
   }
 
   /* Grid */
   .events-grid {
     display: grid;
     gap: 2rem;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: 1fr;
   }
 
   @media (min-width: 640px) {
@@ -206,9 +211,7 @@ const { tema } = sitioData;
   .event-card:hover {
     transform: translateY(-8px);
     border-color: var(--primary);
-    box-shadow:
-      0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   }
 
   .image-container {
@@ -239,7 +242,6 @@ const { tema } = sitioData;
     font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
     z-index: 1;
   }
 
@@ -256,11 +258,6 @@ const { tema } = sitioData;
     margin-bottom: 1.25rem;
     color: var(--secondary);
     line-height: 1.4;
-    transition: color 0.3s;
-  }
-
-  .event-card:hover h3 {
-    color: var(--primary);
   }
 
   .info-list {
@@ -289,6 +286,7 @@ const { tema } = sitioData;
   .btn-outline {
     display: inline-flex;
     align-items: center;
+    justify-content: center; /* Centra el contenido internamente */
     gap: 0.5rem;
     padding: 0.8rem 1.75rem;
     border: 2px solid var(--primary);
@@ -297,37 +295,43 @@ const { tema } = sitioData;
     border-radius: 14px;
     font-weight: 700;
     transition: all 0.3s ease;
+    background: transparent;
   }
 
   .btn-outline:hover {
     background: var(--primary);
     color: white;
-    box-shadow: 0 4px 12px rgba(240, 138, 19, 0.3);
+  }
+
+  .full-width {
+    width: 100%;
+    max-width: 100%;
   }
 
   .desktop-only {
     display: none;
   }
+
   @media (min-width: 768px) {
     .desktop-only {
       display: inline-flex;
     }
-  }
-
-  .mobile-only {
-    display: block;
-  }
-  @media (min-width: 768px) {
     .mobile-only {
       display: none;
     }
   }
 
-  .full-width {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+  /* Ajustes para móviles pequeños */
+  @media (max-width: 480px) {
+    .agenda-section {
+      padding: 3rem 1rem;
+    }
+    .btn-outline {
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+    }
   }
+
   .mt-8 {
     margin-top: 2rem;
   }

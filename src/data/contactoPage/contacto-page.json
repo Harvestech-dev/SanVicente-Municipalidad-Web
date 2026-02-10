@@ -1,0 +1,32 @@
+{
+  "hero": {
+    "titulo": "Contacto",
+    "descripcion": "Estamos para ayudarte. Contactanos por cualquiera de nuestros canales de atención."
+  },
+  "bannerDigital": {
+    "titulo": "¿Tenés un reclamo o sugerencia?",
+    "subtitulo": "Usá Vecino Digital para seguimiento de tu solicitud",
+    "textoBoton": "Ir a Vecino Digital",
+    "url": "https://vecinodigital.sanvicente.gob"
+  },
+  "oficinas": [
+    {
+      "nombre": "Edificio Municipal Central",
+      "direccion": "Av. Principal 1234",
+      "telefono": "(03492) 456-7800",
+      "email": "contacto@sanvicente.gob",
+      "horario": "Lunes a Viernes 8:00 - 14:00"
+    },
+    {
+      "nombre": "Edificio Municipal lateral",
+      "direccion": "Av. alternativa 1234",
+      "telefono": "(03492) 456-7800",
+      "email": "contacto@sanvicente.gob",
+      "horario": "Lunes a Viernes 8:00 - 14:00"
+    }
+  ],
+  "telefonosUtiles": [
+    { "servicio": "Línea gratuita municipal", "numero": "444-444" },
+    { "servicio": "Oficina Municipal de Monitoreo", "numero": "555-555" }
+  ]
+}

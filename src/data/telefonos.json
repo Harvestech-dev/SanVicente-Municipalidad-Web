@@ -2,7 +2,7 @@
   "titulo": "Teléfonos Útiles",
   "subtitulo": "Atención de emergencias y servicios las 24 horas",
   "textoVerTodo": "Ver todos",
-  "urlVerTodo": "/contacto/telefonos",
+  "urlVerTodo": "telefonosPage",
   "maxHomeDisplay": 4,
   "telefonos": [
     {

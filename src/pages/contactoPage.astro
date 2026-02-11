@@ -145,8 +145,10 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
     <section class="section-form">
       <div class="container grid-two-cols">
         <div class="useful-phones">
-          <h2 class="section-subtitle">Teléfonos Útiles</h2>
-          <p class="section-desc">Líneas de atención directa y emergencias.</p>
+          <h2 class="section-subtitle">Nuestros teléfonos</h2>
+          <p class="section-desc">
+            Líneas de atención directa en nuestras oficinas.
+          </p>
           <div class="phones-list">
             {
               telefonosUtiles.map((tel) => (
@@ -451,7 +453,6 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
     text-decoration: none;
     transition: all 0.3s ease;
     border: 2px solid rgba(0, 0, 0, 0.1);
-
   }
   .phone-item:hover {
     border-color: var(--color-primario);
@@ -495,7 +496,6 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
     border-radius: 2.5rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
     border: 2px solid rgba(0, 0, 0, 0.1);
-
   }
   .form-intro {
     color: #64748b;

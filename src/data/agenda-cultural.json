@@ -2,7 +2,7 @@
   "title": "Agenda Cultural",
   "subtitle": "Descubrí los eventos, talleres y actividades en San Vicente.",
   "viewAllText": "Ver toda la agenda",
-  "viewAllHref": "/agenda",
+  "viewAllHref": "/agendaPage",
   "events": [
     {
       "id": 1,
@@ -22,7 +22,7 @@
       "category": "Cine",
       "image": "/images/bicis.jpg"
     },
-        {
+    {
       "id": 3,
       "title": "Todos al agua",
       "date": "Domingo 30 de Octubre",
@@ -31,7 +31,7 @@
       "category": "Social",
       "image": "/images/bicis.jpg"
     },
-        {
+    {
       "id": 4,
       "title": "Dia del niño",
       "date": "Domingo 3 de Abril",

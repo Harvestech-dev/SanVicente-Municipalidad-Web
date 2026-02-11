@@ -8,21 +8,27 @@ interface Enlace {
   descripcion: string;
   url: string;
   icono: string;
-  color: string;
   externo?: boolean;
 }
 
-const { enlaces = data.enlaces as Enlace[], titulo = data.titulo } = Astro.props;
+const { enlaces = data.enlaces as Enlace[], titulo = data.titulo } =
+  Astro.props;
+const { tema } = datosSitio;
 
-// Mapeo de iconos SVG
+// Mapeo de iconos SVG (He mantenido tu mapa original)
 const iconMap: Record<string, string> = {
-  "credit-card": '<path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 5H5V6h14v3Z"/><path d="M12 14h.01"/><path d="M8 14h.01"/>',
-  "car": '<path d="M19 17h1a2 2 0 0 0 2-2v-3c0-1.1-.9-2-2-2h-3V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h1"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
-  "message-square": '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
-  "file-text": '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>',
-  "scale": '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h18"/>',
-  "calendar": '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>',
-  "info": '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>'
+  "credit-card":
+    '<path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 5H5V6h14v3Z"/><path d="M12 14h.01"/><path d="M8 14h.01"/>',
+  car: '<path d="M19 17h1a2 2 0 0 0 2-2v-3c0-1.1-.9-2-2-2h-3V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h1"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
+  "message-square":
+    '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  "file-text":
+    '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>',
+  scale:
+    '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h18"/>',
+  calendar:
+    '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/>',
+  info: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
 };
 ---
 
@@ -32,40 +38,42 @@ const iconMap: Record<string, string> = {
       <h2 class="section-title">{titulo}</h2>
       <div class="title-underline"></div>
     </div>
-    
+
     <div class="grid">
-      {enlaces.map((link: Enlace) => (
-        <a 
-          href={link.url} 
-          class="card" 
-          target={link.externo ? "_blank" : "_self"}
-          rel={link.externo ? "noopener noreferrer" : ""}
-        >
-          <div class="icon-wrapper" style={`background-color: ${link.color || 'var(--color-primario)'};`}>
-            <svg 
-              viewBox="0 0 24 24" 
-              width="28" 
-              height="28" 
-              stroke="currentColor" 
-              fill="none" 
-              stroke-width="2" 
-              stroke-linecap="round" 
-              stroke-linejoin="round"
-              set:html={iconMap[link.icono] || iconMap["info"]}
-            />
-          </div>
-          <h3 class="card-title">{link.titulo}</h3>
-          <p class="card-desc">{link.descripcion}</p>
-        </a>
-      ))}
+      {
+        enlaces.map((link: Enlace) => (
+          <a
+            href={link.url}
+            class="card"
+            target={link.externo ? "_blank" : "_self"}
+            rel={link.externo ? "noopener noreferrer" : ""}
+          >
+            <div class="icon-wrapper">
+              <svg
+                viewBox="0 0 24 24"
+                width="28"
+                height="28"
+                stroke="currentColor"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                set:html={iconMap[link.icono] || iconMap["info"]}
+              />
+            </div>
+            <h3 class="card-title">{link.titulo}</h3>
+            <p class="card-desc">{link.descripcion}</p>
+          </a>
+        ))
+      }
     </div>
   </div>
 </section>
 
-<style>
+<style define:vars={{ primario: tema.primario, acento: tema.primario }}>
   .quick-access {
-    padding: 5rem 1rem;
-    background-color: var(--color-fondo-claro);
+    padding: 6rem 1rem;
+    background-color: #ffffff;
   }
 
   .container {
@@ -79,89 +87,98 @@ const iconMap: Record<string, string> = {
   }
 
   .section-title {
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: var(--color-primario);
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
     letter-spacing: -0.025em;
   }
 
   .title-underline {
-    width: 60px;
+    width: 50px;
     height: 4px;
-    background-color: var(--color-acento);
+    background-color: var(--primario);
     margin: 0 auto;
-    border-radius: 2px;
+    border-radius: 10px;
   }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1.5rem;
   }
 
-  @media (min-width: 640px) {
-    .grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  
-  @media (min-width: 1024px) {
-    .grid { grid-template-columns: repeat(6, 1fr); }
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .card {
     background: white;
-    border: 1px solid rgba(0,0,0,0.05);
-    border-radius: 16px;
-    padding: 2rem 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 20px;
+    padding: 2rem 1.25rem;
     text-align: center;
     text-decoration: none;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   }
 
   .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    border-color: var(--color-primario);
+    transform: translateY(-5px);
+    border-color: var(--primario);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.04);
   }
 
   .icon-wrapper {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    /* Usamos el color primario con opacidad suave para el fondo del icono */
+    background-color: rgba(var(--primario-rgb, 37, 99, 235), 0.08);
+    color: var(--primario);
     margin-bottom: 1.25rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .icon-wrapper {
+    background-color: #eff6ff;
+    color: var(--primario);
   }
 
   .card:hover .icon-wrapper {
-    transform: rotate(5deg) scale(1.1);
+    background-color: var(--primario);
+    color: white;
+    transform: scale(1.05);
   }
 
   .card-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--color-texto);
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1e293b;
     margin-bottom: 0.5rem;
     line-height: 1.2;
+    transition: color 0.3s ease;
+  }
+
+  .card:hover .card-title {
+    color: var(--primario);
   }
 
   .card-desc {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: #64748b;
     margin: 0;
     line-height: 1.4;
   }
 
-  /* Efecto sutil para pantallas táctiles */
   .card:active {
-    transform: scale(0.95);
+    transform: scale(0.97);
   }
 </style>

@@ -28,7 +28,7 @@ const iconosRedes = {
         <h2 class="footer-logo">{nombre}</h2>
         <p class="footer-desc">
           Trabajando cada día para construir la ciudad que soñamos. Gestión
-          transparente, innovación y compromiso con cada vecino de San Vicente.
+          transparente, innovación y compromiso con cada vecino.
         </p>
         <div class="social-grid">
           {
@@ -75,7 +75,12 @@ const iconosRedes = {
               ><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
               ></path><circle cx="12" cy="10" r="3"></circle></svg
             >
-            <span>{contacto.direccion}</span>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contacto.direccion)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-link">{contacto.direccion}</a
+            >
           </li>
           <li>
             <svg
@@ -89,7 +94,10 @@ const iconosRedes = {
                 d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
               ></path></svg
             >
-            <span>{contacto.telefono}</span>
+            <a
+              href={`tel:${contacto.telefono.replace(/\s+/g, "")}`}
+              class="contact-link">{contacto.telefono}</a
+            >
           </li>
           <li>
             <svg
@@ -103,7 +111,9 @@ const iconosRedes = {
                 d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
               ></path><polyline points="22,6 12,13 2,6"></polyline></svg
             >
-            <span>{contacto.email}</span>
+            <a href={`mailto:${contacto.email}`} class="contact-link"
+              >{contacto.email}</a
+            >
           </li>
           <li>
             <svg
@@ -146,6 +156,13 @@ const iconosRedes = {
           &copy; {añoActual}
           <strong>{nombreCorto}</strong>. {footer.copyright}
         </p>
+        <p class="dev-credit">
+          Desarrollado por <a
+            href="https://harvestech.dev"
+            target="_blank"
+            rel="noopener noreferrer">Harvestech</a
+          >
+        </p>
       </div>
     </div>
   </div>
@@ -186,7 +203,6 @@ const iconosRedes = {
     color: #fff;
     margin-bottom: 1.5rem;
     letter-spacing: -0.02em;
-    /* Usamos el naranja del JSON para el logo del footer */
     background: linear-gradient(to right, var(--primario), #fff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -239,7 +255,7 @@ const iconosRedes = {
     bottom: -8px;
     width: 35px;
     height: 3px;
-    background: var(--primario); /* Línea naranja bajo el título */
+    background: var(--primario);
   }
 
   .contact-list {
@@ -257,9 +273,20 @@ const iconosRedes = {
   }
 
   .contact-list svg {
-    color: var(--primario); /* Iconos de contacto en naranja */
+    color: var(--primario);
     flex-shrink: 0;
     margin-top: 3px;
+  }
+
+  /* Estilos para los nuevos links de contacto */
+  .contact-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .contact-link:hover {
+    color: var(--primario);
   }
 
   .action-desc {
@@ -283,7 +310,7 @@ const iconosRedes = {
 
   .btn-reclamos-fancy:hover {
     background: white;
-    color: var(--secundario); /* Texto negro al pasar el mouse */
+    color: var(--secundario);
     transform: scale(1.02);
   }
 
@@ -310,6 +337,18 @@ const iconosRedes = {
   }
 
   .bottom-content strong {
+    color: var(--primario);
+  }
+
+  /* Estilo Harvestech */
+  .dev-credit a {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .dev-credit a:hover {
     color: var(--primario);
   }
 </style>

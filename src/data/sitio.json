@@ -14,16 +14,16 @@
     "error": "#f56565"
   },
   "contacto": {
-    "telefono": "+54 3492 444444",
+    "telefono": "03492-470622/322",
     "horario": "Lunes a Viernes, 07:00 a 13:00 hs",
-    "direccion": "Calle Principal 123",
-    "email": "contacto@sanvicente.gob.ar"
+    "direccion": "Bv. Sarmiento 160",
+    "email": "sanvicente@sanvicente.com.ar"
   },
   "redesSociales": {
-    "facebook": "https://facebook.com/...",
-    "instagram": "https://instagram.com/...",
-    "youtube": "https://youtube.com/...",
-    "whatsapp": "543492123456"
+    "facebook": "https://www.facebook.com/sanvicenteok",
+    "instagram": "https://www.instagram.com/sanvicenteok",
+    "youtube": "https://www.youtube.com/@sanvicenteok",
+    "whatsapp": "https://api.whatsapp.com/send?phone=5493492304058"
   },
   "footer": {
     "copyright": "Todos los derechos reservados.",

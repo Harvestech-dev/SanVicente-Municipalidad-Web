@@ -45,7 +45,7 @@
       "id": 6,
       "titulo": "Agenda Cultural",
       "descripcion": "Eventos y actividades",
-      "url": "/agenda",
+      "url": "/agendaPage",
       "icono": "calendar",
       "color": "#e65100"
     }

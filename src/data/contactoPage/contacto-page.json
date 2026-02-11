@@ -11,22 +11,36 @@
   },
   "oficinas": [
     {
-      "nombre": "Edificio Municipal Central",
-      "direccion": "Av. Principal 1234",
+      "nombre": "Edificio Municipal principal",
+      "direccion": "Bv. Sarmiento 1234",
       "telefono": "(03492) 456-7800",
       "email": "contacto@sanvicente.gob",
       "horario": "Lunes a Viernes 8:00 - 14:00"
     },
     {
-      "nombre": "Edificio Municipal lateral",
-      "direccion": "Av. alternativa 1234",
+      "nombre": "Edificio Municipal secundario",
+      "direccion": "Buenos Aires 1234",
       "telefono": "(03492) 456-7800",
       "email": "contacto@sanvicente.gob",
       "horario": "Lunes a Viernes 8:00 - 14:00"
     }
   ],
   "telefonosUtiles": [
-    { "servicio": "Línea gratuita municipal", "numero": "444-444" },
-    { "servicio": "Oficina Municipal de Monitoreo", "numero": "555-555" }
+    {
+      "servicio": "Línea municipal - Edificio principal",
+      "numero": "444-444"
+    },
+    {
+      "servicio": "Oficina Municipal de Monitoreo",
+      "numero": "555-555"
+    },
+    {
+      "servicio": "Oficina de tránsito",
+      "numero": "555-555"
+    },
+    {
+      "servicio": "Área social",
+      "numero": "555-555"
+    }
   ]
 }

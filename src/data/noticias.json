@@ -2,7 +2,7 @@
   "titulo": "Noticias",
   "subtitulo": "Enterate de las últimas novedades de nuestra ciudad",
   "textoVerTodo": "Ver todas las noticias",
-  "urlVerTodo": "/noticias",
+  "urlVerTodo": "noticiasPage",
   "noticias": [
     {
       "id": 1,

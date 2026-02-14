@@ -5,7 +5,7 @@
       "id": 1,
       "titulo": "Boletas y Pagos",
       "descripcion": "Pagá tus tasas online",
-      "url": "/pagos",
+      "url": "https://sanvicente.miportal.ar/",
       "icono": "credit-card",
       "color": "#003366"
     },

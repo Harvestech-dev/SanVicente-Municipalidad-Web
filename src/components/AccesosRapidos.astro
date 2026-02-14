@@ -15,7 +15,7 @@ const { enlaces = data.enlaces as Enlace[], titulo = data.titulo } =
   Astro.props;
 const { tema } = datosSitio;
 
-// Mapeo de iconos SVG (He mantenido tu mapa original)
+// Mapeo de iconos SVG
 const iconMap: Record<string, string> = {
   "credit-card":
     '<path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 5H5V6h14v3Z"/><path d="M12 14h.01"/><path d="M8 14h.01"/>',
@@ -140,7 +140,7 @@ const iconMap: Record<string, string> = {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Usamos el color primario con opacidad suave para el fondo del icono */
+    /* Color primario con opacidad suave para el fondo del icono */
     background-color: rgba(var(--primario-rgb, 37, 99, 235), 0.08);
     color: var(--primario);
     margin-bottom: 1.25rem;

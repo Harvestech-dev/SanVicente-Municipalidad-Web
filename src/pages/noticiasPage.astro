@@ -1,8 +1,364 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import EnConstruccion from "../components/EnConstruccion.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import dataNoticias from "../data/noticias.json";
+import sitio from "../data/sitio.json";
+
+const { noticias, categorias, titulo, subtitulo } = dataNoticias;
+const { tema } = sitio;
+
+// Lógica de separación
+const noticiaDestacada = noticias.find((n) => n.destacada);
+const otrasNoticias = noticias.filter((n) => !n.destacada);
 ---
 
-<Layout>
-  <EnConstruccion />
+<Layout title={`Noticias | ${sitio.nombreCorto}`}>
+  <Header />
+
+  <main class="main-content">
+    <section class="hero-noticias">
+      <div class="container">
+        <h1>{titulo}</h1>
+        <p>{subtitulo}</p>
+      </div>
+    </section>
+
+    <section class="filters-bar">
+      <div class="container filters-flex">
+        <div class="search-wrapper">
+          <input
+            type="text"
+            placeholder="Buscar noticias..."
+            class="search-input"
+          />
+        </div>
+        <div class="categories-wrapper">
+          {
+            categorias.map((cat) => (
+              <button class={`btn-cat ${cat === "Todas" ? "active" : ""}`}>
+                {cat}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {
+      noticiaDestacada && (
+        <section class="featured-news">
+          <div class="container">
+            <a href={`/noticias/${noticiaDestacada.id}`} class="featured-card">
+              <div class="featured-image">
+                <img
+                  src={noticiaDestacada.imagen}
+                  alt={noticiaDestacada.titulo}
+                />
+                <span class="badge-destacada">Destacada</span>
+              </div>
+              <div class="featured-info">
+                <span class="category-tag">{noticiaDestacada.categoria}</span>
+                <h2>{noticiaDestacada.titulo}</h2>
+                <p>{noticiaDestacada.extracto}</p>
+                <div class="featured-footer">
+                  <span class="date">{noticiaDestacada.fecha}</span>
+                  <span class="read-more">Leer más &rarr;</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="news-list">
+      <div class="container">
+        <div class="news-grid">
+          {
+            otrasNoticias.map((noticia) => (
+              <a href={`/noticias/${noticia.id}`} class="news-card">
+                <div class="card-image">
+                  <img src={noticia.imagen} alt={noticia.titulo} />
+                  <span class="card-category">{noticia.categoria}</span>
+                </div>
+                <div class="card-content">
+                  <h3>{noticia.titulo}</h3>
+                  <p>{noticia.extracto}</p>
+                  <span class="card-date">{noticia.fecha}</span>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+
+        <div class="pagination">
+          <button disabled>Anterior</button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>Siguiente</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
 </Layout>
+
+<style define:vars={{ primary: tema.primario, secondary: tema.secundario }}>
+  /* Estructura Base */
+  .main-content {
+    min-height: 100vh;
+    background-color: #ffffff;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* Hero */
+  .hero-noticias {
+    background-color: var(--primary);
+    color: #ffffff;
+    padding: 4rem 0;
+    text-align: center;
+  }
+  .hero-noticias h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .hero-noticias p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+  }
+
+  /* Filtros */
+  .filters-bar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem 0;
+  }
+  .filters-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .search-input {
+    padding: 0.6rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+  }
+  .categories-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .btn-cat {
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    border: 1px solid #e2e8f0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  .btn-cat.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .btn-cat:hover:not(.active) {
+    background: #f8fafc;
+  }
+
+  /* Card Destacada */
+  .featured-news {
+    padding: 3rem 0;
+    background-color: #f8fafc;
+  }
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease;
+  }
+  .featured-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  }
+  .featured-image {
+    position: relative;
+    min-height: 350px;
+  }
+  .featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .badge-destacada {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--secondary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-weight: bold;
+    font-size: 0.75rem;
+  }
+  .featured-info {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .category-tag {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .featured-info h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  .featured-info p {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  .featured-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .read-more {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  /* Grilla de Noticias */
+  .news-list {
+    padding: 4rem 0;
+  }
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+  .news-card {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+  }
+  .news-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  }
+  .card-image {
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .card-category {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+  .card-content {
+    padding: 1.5rem;
+  }
+  .card-content h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+  .card-content p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-date {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+
+  /* Paginación */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 3rem;
+  }
+  .pagination button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
+  .pagination button.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .featured-card {
+      grid-template-columns: 1fr;
+    }
+    .featured-image {
+      min-height: 250px;
+    }
+    .hero-noticias h1 {
+      font-size: 2.25rem;
+    }
+    .filters-flex {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .search-input {
+      max-width: none;
+    }
+  }
+</style>

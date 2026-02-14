@@ -3,41 +3,51 @@
   "subtitulo": "Enterate de las últimas novedades de nuestra ciudad",
   "textoVerTodo": "Ver todas las noticias",
   "urlVerTodo": "noticiasPage",
+  "categorias": [
+    "Todas",
+    "Obras",
+    "Salud",
+    "Cultura",
+    "Deportes",
+    "Educación",
+    "Gobierno",
+    "Transporte"
+  ],
   "noticias": [
     {
       "id": 1,
-      "titulo": "Gran Festival de Folklore en la Plaza Principal",
-      "resumen": "Este fin de semana disfrutaremos de artistas locales y nacionales en un encuentro para toda la familia con entrada libre y gratuita.",
-      "fecha": "15 de Octubre, 2024",
-      "categoria": "Cultura",
-      "imagen": "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=1000",
+      "titulo": "Se inauguró el nuevo Centro de Salud Barrio Norte",
+      "extracto": "El intendente presidió la apertura del moderno establecimiento que atenderá a más de 15.000 vecinos de la zona. El centro cuenta con consultorios de atención primaria, laboratorio y servicio de emergencias.",
+      "fecha": "10 Feb 2025",
+      "categoria": "Salud",
+      "imagen": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&h=500&fit=crop",
       "destacada": true
     },
     {
       "id": 2,
-      "titulo": "Inauguración del nuevo Polideportivo Norte",
-      "resumen": "Nuevas instalaciones para básquet y natación.",
-      "fecha": "12 de Octubre, 2024",
-      "categoria": "Deportes",
-      "imagen": "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=500",
+      "titulo": "Comienza el operativo de bacheo en el casco céntrico",
+      "extracto": "Durante las próximas semanas se repararán las calles principales del centro comercial. Los trabajos se realizarán en horario nocturno para minimizar el impacto en el tránsito.",
+      "fecha": "9 Feb 2025",
+      "categoria": "Obras",
+      "imagen": "https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=600&h=400&fit=crop",
       "destacada": false
     },
     {
       "id": 3,
-      "titulo": "Campaña de Vacunación Antirrábica",
-      "resumen": "Cronograma de visitas a los barrios esta semana.",
-      "fecha": "10 de Octubre, 2024",
-      "categoria": "Salud",
-      "imagen": "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=500",
+      "titulo": "Inscripciones abiertas para colonias de vacaciones",
+      "extracto": "Ya están disponibles los formularios para las actividades de verano en todos los polideportivos municipales. Las colonias son gratuitas para niños de 6 a 12 años.",
+      "fecha": "8 Feb 2025",
+      "categoria": "Deportes",
+      "imagen": "https://images.unsplash.com/photo-1526676037777-05a232554f77?w=600&h=400&fit=crop",
       "destacada": false
     },
     {
       "id": 4,
-      "titulo": "Taller de Robótica para Adolescentes",
-      "resumen": "Inscripciones abiertas para el ciclo lectivo.",
-      "fecha": "08 de Octubre, 2024",
-      "categoria": "Educación",
-      "imagen": "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=500",
+      "titulo": "Nueva línea de colectivos conectará los barrios del sur",
+      "extracto": "A partir del 1 de marzo, el recorrido 45 unirá Villa del Sol con los complejos habitacionales del sector sur, mejorando la conectividad de más de 20.000 vecinos.",
+      "fecha": "7 Feb 2025",
+      "categoria": "Transporte",
+      "imagen": "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=600&h=400&fit=crop",
       "destacada": false
     }
   ]

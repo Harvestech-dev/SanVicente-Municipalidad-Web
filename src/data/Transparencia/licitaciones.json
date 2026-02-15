@@ -1,0 +1,18 @@
+{
+  "titulo": "Licitaciones y Concursos",
+  "descripcion": "Consulta todos los procesos de contratación pública vigentes y participa de manera transparente.",
+  "licitaciones": [
+    {
+      "id": "LP-001-2025",
+      "titulo": "Pavimentación de calles Barrio Norte",
+      "tipo": "Licitación Pública",
+      "fechaApertura": "25 Feb 2025",
+      "fechaCierre": "10 Mar 2025",
+      "presupuesto": "$45.000.000",
+      "area": "Obras Públicas",
+      "descripcion": "Trabajos de pavimentación asfáltica de 15 cuadras en el sector norte de la ciudad.",
+      "pliegoUrl": "/docs/pliego-lp001.pdf",
+      "imagenUrl": "/images/licitaciones/barrio-norte.jpg"
+    }
+  ]
+}

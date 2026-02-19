@@ -15,7 +15,8 @@
       "direccion": "Bv. Sarmiento 1234",
       "telefono": "(03492) 456-7800",
       "email": "contacto@sanvicente.gob",
-      "horario": "Lunes a Viernes 8:00 - 14:00"
+      "horario": "Lunes a Viernes 8:00 - 14:00",
+      "oficina": "principal"
     },
     {
       "nombre": "Edificio Municipal secundario",

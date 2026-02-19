@@ -35,14 +35,6 @@
     },
     {
       "id": 5,
-      "titulo": "Ordenanzas",
-      "descripcion": "Normativa municipal",
-      "url": "/ordenanzasPage",
-      "icono": "scale",
-      "color": "#006633"
-    },
-    {
-      "id": 6,
       "titulo": "Agenda Cultural",
       "descripcion": "Eventos y actividades",
       "url": "/agendaPage",

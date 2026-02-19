@@ -4,7 +4,7 @@
   "intendente": {
     "nombre": "Gonzalo Aira",
     "cargo": "Intendente Municipal",
-    "imagen": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop",
+    "imagen": "",
     "gestion": "2026 – 2030"
   },
   "funcionarios": [
@@ -20,6 +20,11 @@
       "area": "Obras Públicas",
       "imagen": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop"
     },
+    {
+      "nombre": "C.P. Ana Martínez",
+      "cargo": "Secretaria de Hacienda",
+      "area": "Hacienda",
+      "imagen": ""},
     {
       "nombre": "Dra. Laura Fernández",
       "cargo": "Secretaria de Salud",
@@ -40,15 +45,19 @@
     },
     {
       "nombre": "Secretaría de Obras Públicas",
-      "areas": ["Planeamiento Urbano", "Vialidad", "Espacios Verdes"]
+      "areas": ["Planeamiento Urbano", "Vialidad", "Espacios Verdes", "Infraestructura"]
     },
     {
       "nombre": "Secretaría de Salud",
-      "areas": ["Atención Primaria", "Hospitales", "Epidemiología"]
+      "areas": ["Atención Primaria", "Hospitales"]
     },
     {
       "nombre": "Secretaría de Hacienda",
       "areas": ["Rentas", "Contaduría", "Compras"]
+    },
+    {
+      "nombre": "Secretaría de Cultura",
+      "areas": ["Eventos", "Bibliotecas", "Museos"]
     }
   ]
 }

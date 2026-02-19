@@ -13,7 +13,7 @@
       "id": 2,
       "titulo": "Licencia de Conducir",
       "descripcion": "Turnos y requisitos",
-      "url": "/licencia",
+      "url": "/Tramites/licenciaPage",
       "icono": "car",
       "color": "#006633"
     },
@@ -29,7 +29,7 @@
       "id": 4,
       "titulo": "Licitaciones",
       "descripcion": "Concursos vigentes",
-      "url": "/licitaciones",
+      "url": "/Transparencia/licitacionesPage",
       "icono": "file-text",
       "color": "#004a99"
     },
@@ -37,7 +37,7 @@
       "id": 5,
       "titulo": "Ordenanzas",
       "descripcion": "Normativa municipal",
-      "url": "/ordenanzas",
+      "url": "/ordenanzasPage",
       "icono": "scale",
       "color": "#006633"
     },

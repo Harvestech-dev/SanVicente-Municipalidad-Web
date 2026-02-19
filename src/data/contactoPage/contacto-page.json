@@ -25,22 +25,55 @@
       "horario": "Lunes a Viernes 8:00 - 14:00"
     }
   ],
-  "telefonosUtiles": [
-    {
-      "servicio": "Línea municipal - Edificio principal",
-      "numero": "444-444"
-    },
-    {
-      "servicio": "Oficina Municipal de Monitoreo",
-      "numero": "555-555"
-    },
-    {
-      "servicio": "Oficina de tránsito",
-      "numero": "555-555"
-    },
-    {
-      "servicio": "Área social",
-      "numero": "555-555"
-    }
-  ]
+  "telefonosUtiles": {
+    "titulo": "Teléfonos útiles",
+    "subtitulo": "Contactos importantes para situaciones urgentes",
+    "maxHomeDisplay": 4,
+    "textoVerTodo": "Ver todos los teléfonos",
+    "urlVerTodo": "/contactoPage",
+    "telefonos": [
+      {
+        "id": 1,
+        "nombre": "Policía",
+        "numero": "101",
+        "color": "#2563eb",
+        "favorito": true
+      },
+      {
+        "id": 2,
+        "nombre": "Bomberos",
+        "numero": "100",
+        "color": "#dc2626",
+        "favorito": true
+      },
+      {
+        "id": 3,
+        "nombre": "Ambulancia",
+        "numero": "107",
+        "color": "#16a34a",
+        "favorito": true
+      },
+      {
+        "id": 4,
+        "nombre": "Defensa Civil",
+        "numero": "103",
+        "color": "#ca8a04",
+        "favorito": true
+      },
+      {
+        "id": 5,
+        "nombre": "Emergencias Sanitarias",
+        "numero": "107",
+        "color": "#db2777",
+        "favorito": false
+      },
+      {
+        "id": 6,
+        "nombre": "Cruz Roja",
+        "numero": "(03492) 456-7890",
+        "color": "#ef4444",
+        "favorito": false
+      }
+    ]
+  }
 }

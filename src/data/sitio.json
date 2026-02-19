@@ -4,6 +4,7 @@
   "tema": {
     "primario": "#f08a13",
     "primarioHover": "#d67a0f",
+    "primarioSuave": "#fff1df",
     "secundario": "#222222",
     "secundarioHover": "#000000",
     "fondoOscuro": "#111111",

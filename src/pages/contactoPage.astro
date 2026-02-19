@@ -3,8 +3,8 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import data from "./../data/contactoPage/contacto-page.json";
-
 const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
+
 ---
 
 <Layout title={`${hero.titulo} | Municipalidad de San Vicente (Santa Fe)`}>
@@ -144,19 +144,19 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
     <section class="section-form">
       <div class="container grid-two-cols">
         <div class="useful-phones">
-          <h2 class="section-subtitle">Nuestros teléfonos</h2>
+          <h2 class="section-subtitle">Teléfonos útiles</h2>
           <p class="section-desc">
-            Líneas de atención directa en nuestras oficinas.
+            Líneas de atención directa.
           </p>
           <div class="phones-list">
             {
-              telefonosUtiles.map((tel) => (
+              telefonosUtiles.telefonos.map((tel) => (
                 <a
                   href={`tel:${tel.numero.replace(/[^0-9+]/g, "")}`}
                   class="phone-item"
                 >
                   <div class="phone-info">
-                    <span class="service-name">{tel.servicio}</span>
+                    <span class="service-name">{tel.nombre}</span>
                     <span class="service-number">{tel.numero}</span>
                   </div>
                   <div class="phone-circle">

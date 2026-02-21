@@ -3,10 +3,9 @@ import dataNoticias from "../data/noticias.json";
 
 const { noticias, titulo, subtitulo, textoVerTodo, urlVerTodo } = dataNoticias;
 
-// Lógica de datos
 const noticiaDestacada = noticias.find((n) => n.destacada) || noticias[0];
 const otrasNoticias = noticias
-  .filter((n) => n.id !== noticiaDestacada.id)
+  .filter((n) => n.slug !== noticiaDestacada.slug) 
   .slice(0, 3);
 ---
 
@@ -20,7 +19,8 @@ const otrasNoticias = noticias
     {
       noticiaDestacada && (
         <article class="destacada-card">
-          <a href={`/noticias/${noticiaDestacada.id}`} class="destacada-link">
+          {/* CAMBIO: id por slug */}
+          <a href={`/Noticias/${noticiaDestacada.slug}`} class="destacada-link">
             <div class="destacada-img">
               <img
                 src={noticiaDestacada.imagen}
@@ -46,7 +46,8 @@ const otrasNoticias = noticias
       {
         otrasNoticias.map((noticia) => (
           <article class="noticia-card">
-            <a href={`/noticias/${noticia.id}`}>
+            {/* CAMBIO: id por slug */}
+            <a href={`/Noticias/${noticia.slug}`}>
               <div class="card-img">
                 <img src={noticia.imagen} alt={noticia.titulo} />
                 <span class="tag-categoria">{noticia.categoria}</span>
@@ -71,7 +72,6 @@ const otrasNoticias = noticias
 </section>
 
 <style>
-  /* Contenedor General */
   .noticias-section {
     padding: 4rem 1rem;
     background-color: var(--color-fondo-claro);
@@ -80,8 +80,6 @@ const otrasNoticias = noticias
     max-width: 1100px;
     margin: 0 auto;
   }
-
-  /* Header */
   .header-noticias {
     text-align: center;
     margin-bottom: 3rem;
@@ -95,8 +93,6 @@ const otrasNoticias = noticias
     color: var(--color-texto);
     opacity: 0.8;
   }
-
-  /* Card Destacada */
   .destacada-card {
     background: white;
     border-radius: 12px;
@@ -164,8 +160,6 @@ const otrasNoticias = noticias
     color: var(--color-primario);
     font-weight: bold;
   }
-
-  /* Grilla Secundaria */
   .noticias-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -226,8 +220,6 @@ const otrasNoticias = noticias
     font-size: 0.8rem;
     color: #999;
   }
-
-  /* Botón Ver Todo */
   .ver-todo-container {
     text-align: center;
     margin-top: 3.5rem;
@@ -245,8 +237,6 @@ const otrasNoticias = noticias
   .btn-ver-todo:hover {
     background-color: var(--color-primario-hover);
   }
-
-  /* Responsive */
   @media (max-width: 768px) {
     .destacada-link {
       grid-template-columns: 1fr;

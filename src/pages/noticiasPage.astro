@@ -8,9 +8,10 @@ import sitio from "../data/sitio.json";
 const { noticias, categorias, titulo, subtitulo } = dataNoticias;
 const { tema } = sitio;
 
-// Lógica de separación
+// Identifica la destacada para el diseño especial superior
 const noticiaDestacada = noticias.find((n) => n.destacada);
-const otrasNoticias = noticias.filter((n) => !n.destacada);
+// Para la grilla manda TODAS, así el filtro puede encontrarlas
+const todasLasNoticias = noticias;
 ---
 
 <Layout title={`Noticias | ${sitio.nombreCorto}`}>
@@ -29,14 +30,18 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
         <div class="search-wrapper">
           <input
             type="text"
+            id="searchInput"
             placeholder="Buscar noticias..."
             class="search-input"
           />
         </div>
-        <div class="categories-wrapper">
+        <div class="categories-wrapper" id="categoriesWrapper">
           {
             categorias.map((cat) => (
-              <button class={`btn-cat ${cat === "Todas" ? "active" : ""}`}>
+              <button
+                class={`btn-cat ${cat === "Todas" ? "active" : ""}`}
+                data-category={cat}
+              >
                 {cat}
               </button>
             ))
@@ -47,9 +52,12 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
 
     {
       noticiaDestacada && (
-        <section class="featured-news">
+        <section class="featured-news" id="featuredSection">
           <div class="container">
-            <a href={`/noticias/${noticiaDestacada.id}`} class="featured-card">
+            <a
+              href={`/Noticias/${noticiaDestacada.slug}`}
+              class="featured-card"
+            >
               <div class="featured-image">
                 <img
                   src={noticiaDestacada.imagen}
@@ -74,10 +82,16 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
 
     <section class="news-list">
       <div class="container">
-        <div class="news-grid">
+        <div class="news-grid" id="newsGrid">
           {
-            otrasNoticias.map((noticia) => (
-              <a href={`/noticias/${noticia.id}`} class="news-card">
+            todasLasNoticias.map((noticia) => (
+              <a
+                href={`/Noticias/${noticia.slug}`}
+                class="news-card"
+                data-category={noticia.categoria}
+                data-title={noticia.titulo.toLowerCase()}
+                data-destacada={noticia.destacada ? "true" : "false"}
+              >
                 <div class="card-image">
                   <img src={noticia.imagen} alt={noticia.titulo} />
                   <span class="card-category">{noticia.categoria}</span>
@@ -92,13 +106,7 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
           }
         </div>
 
-        <div class="pagination">
-          <button disabled>Anterior</button>
-          <button class="active">1</button>
-          <button>2</button>
-          <button>3</button>
-          <button>Siguiente</button>
-        </div>
+        <div class="pagination" id="pagination"></div>
       </div>
     </section>
   </main>
@@ -106,8 +114,105 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
   <Footer />
 </Layout>
 
+<script>
+  // --- Lógica de Filtros, Búsqueda y Paginación ---
+
+  // Configuración de paginación
+  const ITEMS_PER_PAGE = 6;
+  let currentPage = 1;
+  let currentCategory: string = "Todas";
+  let searchQuery: string = "";
+
+  const newsGrid = document.getElementById('newsGrid') as HTMLDivElement;
+  const featuredSection = document.getElementById('featuredSection') as HTMLElement | null;
+  const cards = Array.from(newsGrid?.querySelectorAll('.news-card') || []) as HTMLAnchorElement[];
+  const categoryButtons = document.querySelectorAll('.btn-cat') as NodeListOf<HTMLButtonElement>;
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const paginationContainer = document.getElementById('pagination') as HTMLDivElement;
+
+  function updateDisplay(): void {
+    if (!newsGrid) return;
+
+    const isFiltering = currentCategory !== "Todas" || searchQuery !== "";
+
+    if (featuredSection) {
+      featuredSection.style.display = isFiltering ? "none" : "block";
+    }
+
+    const filteredCards = cards.filter(card => {
+      const category = card.getAttribute('data-category') || "";
+      const title = card.getAttribute('data-title') || "";
+      const isDestacada = card.getAttribute('data-destacada') === "true";
+      
+      const matchesCategory = currentCategory === "Todas" || category === currentCategory;
+      const matchesSearch = title.includes(searchQuery.toLowerCase());
+      
+      if (!isFiltering && isDestacada) return false;
+      return matchesCategory && matchesSearch;
+    });
+
+    const totalPages = Math.ceil(filteredCards.length / ITEMS_PER_PAGE);
+    
+    // Ocultar todas
+    cards.forEach(card => {
+      card.style.display = 'none';
+    });
+
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    
+    filteredCards.slice(start, end).forEach(card => {
+      card.style.display = 'block';
+    });
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages: number): void {
+    if (!paginationContainer) return;
+    
+    paginationContainer.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+      btn.innerText = i.toString(); // Convertimos número a string
+      if (i === currentPage) btn.classList.add('active');
+      
+      btn.onclick = () => {
+        currentPage = i;
+        updateDisplay();
+        window.scrollTo({ top: newsGrid.offsetTop - 150, behavior: 'smooth' });
+      };
+      paginationContainer.appendChild(btn);
+    }
+  }
+
+  categoryButtons.forEach(btn => {
+    btn.onclick = () => {
+      categoryButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = btn.getAttribute('data-category') || "Todas";
+      currentPage = 1;
+      updateDisplay();
+    };
+  });
+
+  if (searchInput) {
+    searchInput.oninput = (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      searchQuery = target ? target.value : "";
+      currentPage = 1;
+      updateDisplay();
+    };
+  }
+
+  // Ejecución inicial
+  updateDisplay();
+</script>
+
 <style define:vars={{ primary: tema.primario, secondary: tema.secundario }}>
-  /* Estructura Base */
+  /* --- Estructura y Hero --- */
   .main-content {
     min-height: 100vh;
     background-color: #ffffff;
@@ -117,8 +222,6 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
     margin: 0 auto;
     padding: 0 1.5rem;
   }
-
-  /* Hero */
   .hero-noticias {
     background-color: var(--primary);
     color: #ffffff;
@@ -135,11 +238,14 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
     opacity: 0.9;
   }
 
-  /* Filtros */
+  /* --- Barra de Filtros --- */
   .filters-bar {
     background: #ffffff;
     border-bottom: 1px solid #e2e8f0;
     padding: 1.5rem 0;
+    sticky: top;
+    top: 0;
+    z-index: 10;
   }
   .filters-flex {
     display: flex;
@@ -174,11 +280,8 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
     color: white;
     border-color: var(--primary);
   }
-  .btn-cat:hover:not(.active) {
-    background: #f8fafc;
-  }
 
-  /* Card Destacada */
+  /* --- Card Destacada (Especial) --- */
   .featured-news {
     padding: 3rem 0;
     background-color: #f8fafc;
@@ -252,7 +355,7 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
     color: var(--primary);
   }
 
-  /* Grilla de Noticias */
+  /* --- Grilla de Noticias --- */
   .news-list {
     padding: 4rem 0;
   }
@@ -318,31 +421,28 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
     color: #94a3b8;
   }
 
-  /* Paginación */
+  /* --- Paginación --- */
   .pagination {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
     margin-top: 3rem;
   }
-  .pagination button {
+  .pagination :global(button) {
     padding: 0.5rem 1rem;
     border: 1px solid #e2e8f0;
     background: white;
     border-radius: 0.5rem;
     cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
   }
-  .pagination button.active {
+  .pagination :global(button.active) {
     background: var(--primary);
     color: white;
     border-color: var(--primary);
   }
-  .pagination button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 
-  /* Responsive */
   @media (max-width: 768px) {
     .featured-card {
       grid-template-columns: 1fr;
@@ -356,9 +456,6 @@ const otrasNoticias = noticias.filter((n) => !n.destacada);
     .filters-flex {
       flex-direction: column;
       align-items: stretch;
-    }
-    .search-input {
-      max-width: none;
     }
   }
 </style>

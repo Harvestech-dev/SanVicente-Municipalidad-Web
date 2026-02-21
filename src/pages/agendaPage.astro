@@ -1,8 +1,390 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import EnConstruccion from "../components/EnConstruccion.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import agendaData from "../data/agenda-cultural.json";
+import sitioData from "../data/sitio.json";
+
+/**
+ * ============================================================
+ * INSTRUCCIONES PARA LA CARGA DE FECHAS EN EL JSON
+ * ============================================================
+ * Para que los eventos aparezcan ordenados automáticamente del
+ * más cercano al más lejano, el archivo "agenda-cultural.json"
+ * debe seguir estas reglas:
+ * * 1. "date": Es el texto libre. Ejemplo: "Sábado 15 de Marzo".
+ * Este es el que el vecino leerá en la web.
+ * * 2. "fechaISO": ES LA CLAVE PARA EL ORDEN.
+ * Debe seguir el formato ESTRICTO: AAAA-MM-DD
+ * - AAAA: Año con 4 dígitos (ej: 2026)
+ * - MM: Mes con 2 dígitos (ej: 03 para Marzo, 11 para Noviembre)
+ * - DD: Día con 2 dígitos (ej: 05, 15, 28)
+ * * EJEMPLO CORRECTO: "fechaISO": "2026-03-05"
+ * ============================================================
+ */
+
+interface Evento {
+  id: number;
+  title: string;
+  date: string;
+  fechaISO: string;
+  time: string;
+  location: string;
+  category: string;
+  image: string;
+}
+
+const { tema } = sitioData;
+
+// Lógica de ordenamiento: Compara los milisegundos de cada fechaISO
+const eventosOrdenados = (agendaData.events as Evento[]).sort((a, b) => {
+  return new Date(a.fechaISO).getTime() - new Date(b.fechaISO).getTime();
+});
 ---
 
-<Layout>
-  <EnConstruccion />
+<Layout title={`Agenda Cultural | ${sitioData.nombreCorto}`}>
+  <Header />
+
+  <main class="main-content">
+    <section class="hero-agenda">
+      <div class="container">
+        <h1>{agendaData.title}</h1>
+        <p>{agendaData.subtitle}</p>
+      </div>
+    </section>
+
+    <section class="agenda-grid-section">
+      <div class="container">
+        <div class="events-grid">
+          {
+            eventosOrdenados.map((event) => (
+              <article class="event-card">
+                <div class="image-container">
+                  <img src={event.image} alt={event.title} loading="lazy" />
+                  <span class="category-badge">{event.category}</span>
+                </div>
+
+                <div class="content">
+                  <div class="text-group">
+                    <h3>{event.title}</h3>
+                    <div class="info-list">
+                      <div class="info-item">
+                        <svg
+                          class="icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <>
+                            <rect
+                              width="18"
+                              height="18"
+                              x="3"
+                              y="4"
+                              rx="2"
+                              ry="2"
+                            />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                          </>
+                        </svg>
+                        <span>{event.date}</span>
+                      </div>
+                      <div class="info-item">
+                        <svg
+                          class="icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <>
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                          </>
+                        </svg>
+                        <span>{event.time}</span>
+                      </div>
+                      <div class="info-item">
+                        <svg
+                          class="icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <>
+                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                            <circle cx="12" cy="10" r="3" />
+                          </>
+                        </svg>
+                        <span>{event.location}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="actions">
+                    <button
+                      class="btn-ver-imagen open-modal"
+                      data-image={event.image}
+                      data-title={event.title}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <>
+                          <path d="M15 3h6v6" />
+                          <path d="M10 14 21 3" />
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        </>
+                      </svg>
+                      Ver imagen
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="imageModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-container">
+      <button class="modal-close" aria-label="Cerrar">&times;</button>
+      <img id="modalImg" src="" alt="Vista previa" />
+      <div id="modalTitle" class="modal-caption"></div>
+    </div>
+  </div>
+
+  <Footer />
 </Layout>
+
+<script>
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImg") as HTMLImageElement;
+  const modalTitle = document.getElementById("modalTitle");
+  const closeBtn = document.querySelector(".modal-close");
+  const overlay = document.querySelector(".modal-overlay");
+  const openButtons = document.querySelectorAll(".open-modal");
+
+  openButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const imgSrc = btn.getAttribute("data-image");
+      const title = btn.getAttribute("data-title");
+      if (imgSrc && modal && modalImg) {
+        modalImg.src = imgSrc;
+        if (modalTitle) modalTitle.textContent = title;
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+    });
+  });
+
+  const closeModal = () => {
+    modal?.classList.remove("active");
+    document.body.style.overflow = "auto";
+  };
+
+  closeBtn?.addEventListener("click", closeModal);
+  overlay?.addEventListener("click", closeModal);
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+</script>
+
+<style
+  define:vars={{
+    primary: tema.primario,
+    secondary: tema.secundario,
+    text: tema.texto,
+  }}
+>
+  .main-content {
+    background-color: #f8fafc;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .hero-agenda {
+    background-color: var(--secondary);
+    color: white;
+    padding: 5rem 0;
+    text-align: center;
+  }
+  .hero-agenda h1 {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .agenda-grid-section {
+    padding: 4rem 0;
+  }
+  .events-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+
+  .event-card {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: all 0.3s ease;
+  }
+  .event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  .image-container {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .category-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--primary);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  .text-group h3 {
+    font-size: 1.25rem;
+    color: var(--secondary);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #475569;
+    font-size: 0.95rem;
+  }
+  .icon {
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+  }
+
+  .actions {
+    margin-top: auto;
+    padding-top: 1.5rem;
+  }
+  .btn-ver-imagen {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #4b5563;
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-ver-imagen:hover {
+    background-color: #1f2937;
+  }
+
+  /* MODAL STYLES */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  .modal.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .modal-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+  }
+  .modal-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 85vh;
+    z-index: 2001;
+  }
+  .modal-container img {
+    max-width: 100%;
+    max-height: 75vh;
+    border-radius: 12px;
+    border: 4px solid white;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+  .modal-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+  }
+  .modal-caption {
+    color: white;
+    margin-top: 1rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+</style>

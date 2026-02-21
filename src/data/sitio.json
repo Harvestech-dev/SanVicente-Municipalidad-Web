@@ -1,18 +1,20 @@
 {
   "nombre": "Municipalidad de San Vicente",
   "nombreCorto": "San Vicente",
+  "descripcion": "Portal oficial de la Municipalidad de San Vicente, Santa Fe. Información sobre trámites, agenda cultural y servicios al vecino.",
+  "url": "https://www.sanvicente.gob.ar",
   "tema": {
-    "primario": "#f08a13",
-    "primarioHover": "#d67a0f",
-    "primarioSuave": "#fff1df",
-    "secundario": "#222222",
-    "secundarioHover": "#000000",
-    "fondoOscuro": "#111111",
-    "fondoClaro": "#f8f9fa",
-    "texto": "#1a1a1a",
-    "textoClaro": "#ffffff",
-    "exito": "#48bb78",
-    "error": "#f56565"
+    "primario": "#C26D0E", 
+    "primarioHover": "#A05A0B",
+    "primarioSuave": "#FDF2E9",
+    "secundario": "#1E293B",
+    "secundarioHover": "#0F172A",
+    "fondoOscuro": "#0F172A",
+    "fondoClaro": "#F8FAFC",
+    "texto": "#1E293B",
+    "textoClaro": "#FFFFFF",
+    "exito": "#16A34A",
+    "error": "#DC2626"
   },
   "contacto": {
     "telefono": "03492-470622",

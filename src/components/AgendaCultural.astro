@@ -6,6 +6,7 @@ interface Evento {
   id: number;
   title: string;
   date: string;
+  fechaISO: string;
   time: string;
   location: string;
   category: string;
@@ -13,12 +14,22 @@ interface Evento {
 }
 
 const {
-  events = agendaData.events as Evento[],
   title = agendaData.title,
   subtitle = agendaData.subtitle,
   viewAllText = agendaData.viewAllText,
   viewAllHref = agendaData.viewAllHref,
 } = Astro.props;
+
+/**
+ * LÓGICA DE FILTRADO Y ORDEN
+ * 1. Ordenamos por fechaISO (AAAA-MM-DD)
+ * 2. .slice(0, 4) toma solo los primeros 4 eventos resultantes
+ */
+const proximosEventos = (agendaData.events as Evento[])
+  .sort(
+    (a, b) => new Date(a.fechaISO).getTime() - new Date(b.fechaISO).getTime(),
+  )
+  .slice(0, 4);
 
 const { tema } = sitioData;
 ---
@@ -48,7 +59,7 @@ const { tema } = sitioData;
 
     <div class="events-grid">
       {
-        events.map((event: Evento) => (
+        proximosEventos.map((event: Evento) => (
           <article class="event-card">
             <div class="image-container">
               <img src={event.image} alt={event.title} loading="lazy" />
@@ -141,28 +152,23 @@ const { tema } = sitioData;
     bgClaro: tema.fondoClaro,
   }}
 >
-  /* Reset local para evitar desbordes */
   .agenda-section * {
     box-sizing: border-box;
   }
-
   .agenda-section {
     padding: 5rem 1.5rem;
     background-color: var(--bgClaro);
   }
-
   .container {
     max-width: 1200px;
     margin: 0 auto;
   }
-
   .header-flex {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 3rem;
   }
-
   .title-group h2 {
     font-size: clamp(1.8rem, 5vw, 2.25rem);
     color: var(--secondary);
@@ -170,33 +176,28 @@ const { tema } = sitioData;
     margin-bottom: 0.5rem;
     letter-spacing: -0.025em;
   }
-
   .title-group p {
     color: #64748b;
     font-size: 1.1rem;
     max-width: 500px;
   }
 
-  /* Grid */
   .events-grid {
     display: grid;
     gap: 2rem;
     grid-template-columns: 1fr;
   }
-
   @media (min-width: 640px) {
     .events-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
-
   @media (min-width: 1024px) {
     .events-grid {
       grid-template-columns: repeat(4, 1fr);
     }
   }
 
-  /* Cards */
   .event-card {
     background: white;
     border-radius: 20px;
@@ -207,7 +208,6 @@ const { tema } = sitioData;
     display: flex;
     flex-direction: column;
   }
-
   .event-card:hover {
     transform: translateY(-8px);
     border-color: var(--primary);
@@ -219,14 +219,12 @@ const { tema } = sitioData;
     aspect-ratio: 16 / 10;
     overflow: hidden;
   }
-
   .image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
   }
-
   .event-card:hover .image-container img {
     transform: scale(1.1);
   }
@@ -251,7 +249,6 @@ const { tema } = sitioData;
     display: flex;
     flex-direction: column;
   }
-
   .content h3 {
     font-size: 1.15rem;
     font-weight: 700;
@@ -259,14 +256,12 @@ const { tema } = sitioData;
     color: var(--secondary);
     line-height: 1.4;
   }
-
   .info-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     margin-top: auto;
   }
-
   .info-item {
     display: flex;
     align-items: center;
@@ -274,7 +269,6 @@ const { tema } = sitioData;
     color: #475569;
     font-size: 0.9rem;
   }
-
   .icon {
     width: 18px;
     height: 18px;
@@ -282,11 +276,10 @@ const { tema } = sitioData;
     flex-shrink: 0;
   }
 
-  /* Botones */
   .btn-outline {
     display: inline-flex;
     align-items: center;
-    justify-content: center; /* Centra el contenido internamente */
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.8rem 1.75rem;
     border: 2px solid var(--primary);
@@ -297,7 +290,6 @@ const { tema } = sitioData;
     transition: all 0.3s ease;
     background: transparent;
   }
-
   .btn-outline:hover {
     background: var(--primary);
     color: white;
@@ -305,13 +297,10 @@ const { tema } = sitioData;
 
   .full-width {
     width: 100%;
-    max-width: 100%;
   }
-
   .desktop-only {
     display: none;
   }
-
   @media (min-width: 768px) {
     .desktop-only {
       display: inline-flex;
@@ -320,18 +309,6 @@ const { tema } = sitioData;
       display: none;
     }
   }
-
-  /* Ajustes para móviles pequeños */
-  @media (max-width: 480px) {
-    .agenda-section {
-      padding: 3rem 1rem;
-    }
-    .btn-outline {
-      padding: 0.8rem 1rem;
-      font-size: 0.9rem;
-    }
-  }
-
   .mt-8 {
     margin-top: 2rem;
   }

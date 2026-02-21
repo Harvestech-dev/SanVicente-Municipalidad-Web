@@ -1,54 +1,70 @@
 {
-  "titulo": "Programas Destacados",
-  "subtitulo": "Iniciativas municipales para mejorar la calidad de vida",
+  "titulo": "Programas Municipales",
+  "subtitulo": "Descubrí las iniciativas diseñadas para el desarrollo de nuestra ciudad",
   "programas": [
     {
       "id": 1,
-      "nombre": "Villa Emprende",
-      "descripcion": "Apoyo a emprendedores locales con capacitaciones y financiamiento",
-      "url": "/programas/emprende",
+      "nombre": "San Vicente Emprende",
+      "descripcion": "Apoyo estratégico a emprendedores locales mediante capacitaciones, mentorías y acceso a financiamiento para proyectos innovadores.",
+      "url": "/programas/sanvicente-emprende",
       "sigla": "VE",
-      "colorFondo": "#003366"
+      "imagenFondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 2,
-      "nombre": "Villa Sustentable",
-      "descripcion": "Programa de reciclaje y cuidado del medio ambiente",
-      "url": "/programas/sustentable",
+      "nombre": "San Vicente Sustentable",
+      "descripcion": "Promovemos el cuidado del medio ambiente a través de la gestión de residuos, reforestación urbana y talleres de huerta orgánica.",
+      "url": "/programas/sanvicente-sustentable",
       "sigla": "VS",
-      "colorFondo": "#006633"
+      "imagenFondo": "https://images.unsplash.com/photo-1542601906-933b2dffa9a2?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 3,
-      "nombre": "Villa Deportes",
-      "descripcion": "Escuelas deportivas gratuitas para niños y jóvenes",
-      "url": "/programas/deportes",
+      "nombre": "San Vicente Deportes",
+      "descripcion": "Escuelas deportivas municipales y ligas recreativas para todas las edades, fomentando la vida sana en cada barrio.",
+      "url": "/programas/sanvicente-deportes",
       "sigla": "VD",
-      "colorFondo": "#e65100"
+      "imagenFondo": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 4,
-      "nombre": "Villa Cultura",
-      "descripcion": "Talleres artísticos y eventos culturales en los barrios",
-      "url": "/programas/cultura",
+      "nombre": "San Vicente Cultura",
+      "descripcion": "Ciclos de cine, talleres de artes visuales, música y danza en centros culturales para potenciar el talento artístico local.",
+      "url": "/programas/sanvicente-cultura",
       "sigla": "VC",
-      "colorFondo": "#003366"
+      "imagenFondo": "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 5,
-      "nombre": "Villa Mayor",
-      "descripcion": "Atención integral para adultos mayores",
-      "url": "/programas/mayor",
+      "nombre": "San Vicente Mayor",
+      "descripcion": "Atención integral, actividades recreativas y acompañamiento profesional para mejorar la calidad de vida de nuestros adultos mayores.",
+      "url": "/programas/sanvicente-mayor",
       "sigla": "VM",
-      "colorFondo": "#006633"
+      "imagenFondo": "https://images.unsplash.com/photo-1576014131795-d440191a8e8b?auto=format&fit=crop&q=80&w=800"
     },
     {
       "id": 6,
-      "nombre": "Villa Salud",
-      "descripcion": "Centros de atención primaria y campañas de prevención",
-      "url": "/programas/salud",
+      "nombre": "San Vicente Salud",
+      "descripcion": "Operativos de vacunación, atención primaria en barrios y campañas de prevención de enfermedades estacionales.",
+      "url": "/programas/sanvicente-salud",
       "sigla": "VSa",
-      "colorFondo": "#e65100"
+      "imagenFondo": "https://images.unsplash.com/photo-1505751172107-5739a00723a5?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+      "id": 7,
+      "nombre": "San Vicente Digital",
+      "descripcion": "Cursos de alfabetización digital, programación y acceso gratuito a internet en puntos estratégicos para cerrar la brecha tecnológica.",
+      "url": "/programas/sanvicente-digital",
+      "sigla": "VDg",
+      "imagenFondo": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+      "id": 8,
+      "nombre": "San Vicente Joven",
+      "descripcion": "Espacios de orientación vocacional, primer empleo y becas estudiantiles para los jóvenes que terminan la secundaria.",
+      "url": "/programas/sanvicente-joven",
+      "sigla": "VJ",
+      "imagenFondo": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800"
     }
   ]
 }

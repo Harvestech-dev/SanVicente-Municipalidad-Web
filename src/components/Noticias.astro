@@ -1,107 +1,70 @@
 ---
-import data from "../data/noticias.json";
-import datosSitio from "../data/sitio.json";
+import dataNoticias from "../data/noticias.json";
 
-interface Noticia {
-  id: number;
-  titulo: string;
-  resumen: string;
-  fecha: string;
-  categoria: string;
-  imagen: string;
-  destacada: boolean;
-}
+const { noticias, titulo, subtitulo, textoVerTodo, urlVerTodo } = dataNoticias;
 
-const {
-  noticias = data.noticias as Noticia[],
-  titulo = data.titulo,
-  subtitulo = data.subtitulo,
-  textoVerTodo = data.textoVerTodo,
-  urlVerTodo = data.urlVerTodo,
-} = Astro.props;
-
-const noticiaDestacada = noticias.find((n: Noticia) => n.destacada);
-const otrasNoticias = noticias.filter((n: Noticia) => !n.destacada).slice(0, 3);
+const noticiaDestacada = noticias.find((n) => n.destacada) || noticias[0];
+const otrasNoticias = noticias
+  .filter((n) => n.slug !== noticiaDestacada.slug) 
+  .slice(0, 3);
 ---
 
-<section class="news-section">
+<section class="noticias-section">
   <div class="container">
-    <div class="section-header">
-      <div class="header-text">
-        <h2 class="title">{titulo}</h2>
-        <p class="subtitle">{subtitulo}</p>
-      </div>
-      <a href={urlVerTodo} class="btn-outline desktop-only">
-        {textoVerTodo}
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-        >
-          <path d="m9 18 6-6-6-6"></path>
-        </svg>
-      </a>
+    <div class="header-noticias">
+      <h2>{titulo}</h2>
+      <p>{subtitulo}</p>
     </div>
 
-    <div class="news-grid">
-      {
-        noticiaDestacada && (
-          <a href={`/noticias/${noticiaDestacada.id}`} class="featured-card">
-            <div class="image-wrapper">
+    {
+      noticiaDestacada && (
+        <article class="destacada-card">
+          {/* CAMBIO: id por slug */}
+          <a href={`/Noticias/${noticiaDestacada.slug}`} class="destacada-link">
+            <div class="destacada-img">
               <img
                 src={noticiaDestacada.imagen}
                 alt={noticiaDestacada.titulo}
-                loading="lazy"
               />
-              <span class="badge">{noticiaDestacada.categoria}</span>
+              <span class="tag-destacado">Destacada</span>
             </div>
-            <div class="content">
-              <div class="meta">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                  <path d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-                <span>{noticiaDestacada.fecha}</span>
+            <div class="destacada-content">
+              <span class="categoria">{noticiaDestacada.categoria}</span>
+              <h3>{noticiaDestacada.titulo}</h3>
+              <p>{noticiaDestacada.extracto}</p>
+              <div class="destacada-footer">
+                <span class="fecha">{noticiaDestacada.fecha}</span>
+                <span class="leer-mas">Leer más →</span>
               </div>
-              <h3 class="news-title-large">{noticiaDestacada.titulo}</h3>
-              <p class="news-excerpt">{noticiaDestacada.resumen}</p>
             </div>
           </a>
-        )
-      }
+        </article>
+      )
+    }
 
-      <div class="news-list">
-        {
-          otrasNoticias.map((item: Noticia) => (
-            <a href={`/noticias/${item.id}`} class="small-card">
-              <div class="small-image">
-                <img src={item.imagen} alt={item.titulo} loading="lazy" />
+    <div class="noticias-grid">
+      {
+        otrasNoticias.map((noticia) => (
+          <article class="noticia-card">
+            {/* CAMBIO: id por slug */}
+            <a href={`/Noticias/${noticia.slug}`}>
+              <div class="card-img">
+                <img src={noticia.imagen} alt={noticia.titulo} />
+                <span class="tag-categoria">{noticia.categoria}</span>
               </div>
-              <div class="small-content">
-                <span class="small-category">{item.categoria}</span>
-                <h4 class="small-title">{item.titulo}</h4>
-                <div class="meta small">
-                  <span>{item.fecha}</span>
-                </div>
+              <div class="card-content">
+                <h4>{noticia.titulo}</h4>
+                <p>{noticia.extracto}</p>
+                <span class="fecha">{noticia.fecha}</span>
               </div>
             </a>
-          ))
-        }
-      </div>
+          </article>
+        ))
+      }
     </div>
 
-    <div class="mobile-only mt-8">
-      <a href={urlVerTodo} class="btn-outline full-width">
+    <div class="ver-todo-container">
+      <a href={`/${urlVerTodo}`} class="btn-ver-todo">
         {textoVerTodo}
       </a>
     </div>
@@ -109,249 +72,180 @@ const otrasNoticias = noticias.filter((n: Noticia) => !n.destacada).slice(0, 3);
 </section>
 
 <style>
-  /* FONDO CLARITO SOLICITADO */
-  .news-section {
-    padding: 5rem 1.5rem;
-    background-color: #f1f5f9;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  .noticias-section {
+    padding: 4rem 1rem;
+    background-color: var(--color-fondo-claro);
   }
-
   .container {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
   }
-
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+  .header-noticias {
+    text-align: center;
     margin-bottom: 3rem;
   }
-
-  .title {
-    font-size: clamp(1.8rem, 5vw, 2.25rem);
-    font-weight: 800;
+  .header-noticias h2 {
+    font-size: 2.5rem;
     color: var(--color-primario);
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.02em;
+    margin: 0 0 0.5rem 0;
   }
-
-  .subtitle {
-    color: #64748b;
-    font-size: 1.1rem;
-    max-width: 500px;
-  }
-
-  .news-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  @media (min-width: 1024px) {
-    .news-grid {
-      grid-template-columns: 1.6fr 1fr;
-      align-items: start;
-    }
-  }
-
-  /* TARJETA DESTACADA (BLANCA) */
-  .featured-card {
-    text-decoration: none;
-    color: inherit;
-    border-radius: 20px;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-    background: white;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(0, 0, 0, 0.02);
-  }
-
-  .featured-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    border-color: var(--color-primario);
-  }
-
-  .image-wrapper {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-  }
-
-  @media (min-width: 1024px) {
-    .image-wrapper {
-      aspect-ratio: 21 / 10;
-    }
-  }
-
-  .image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
-  }
-
-  .badge {
-    position: absolute;
-    top: 1.25rem;
-    left: 1.25rem;
-    background: var(--color-primario);
-    color: white;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  }
-
-  .featured-card .content {
-    padding: 2rem;
-  }
-
-  .meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #94a3b8;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
-
-  .news-title-large {
-    font-size: clamp(1.4rem, 4vw, 1.85rem);
-    font-weight: 800;
+  .header-noticias p {
     color: var(--color-texto);
-    margin-bottom: 1rem;
-    line-height: 1.2;
+    opacity: 0.8;
   }
-
-  .news-excerpt {
-    color: #475569;
-    line-height: 1.6;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* LISTA LATERAL (TARJETAS BLANCAS) */
-  .news-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .small-card {
-    display: flex;
-    gap: 1.25rem;
-    text-decoration: none;
-    color: inherit;
-    padding: 1rem;
+  .destacada-card {
     background: white;
-    border-radius: 18px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  }
-
-  .small-card:hover {
-    transform: translateX(8px);
-    border-color: var(--color-primario);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-  }
-
-  .small-image {
-    width: 100px;
-    height: 100px;
     border-radius: 12px;
     overflow: hidden;
-    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 3rem;
+    border: 1px solid #eee;
   }
-
-  .small-image img {
+  .destacada-link {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    text-decoration: none;
+    color: inherit;
+  }
+  .destacada-img {
+    position: relative;
+    height: 350px;
+  }
+  .destacada-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-
-  .small-content {
+  .tag-destacado {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--color-secundario);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+  .destacada-content {
+    padding: 2.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-
-  .small-category {
-    font-size: 0.7rem;
-    font-weight: 800;
+  .categoria {
     color: var(--color-primario);
+    font-weight: bold;
+    font-size: 0.9rem;
     text-transform: uppercase;
-    margin-bottom: 4px;
   }
-
-  .small-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--color-texto);
-    margin-bottom: 6px;
-    line-height: 1.3;
+  .destacada-content h3 {
+    font-size: 1.8rem;
+    margin: 1rem 0;
+    line-height: 1.2;
+  }
+  .destacada-content p {
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+  .destacada-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+  }
+  .leer-mas {
+    color: var(--color-primario);
+    font-weight: bold;
+  }
+  .noticias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  .noticia-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    transition: transform 0.3s ease;
+  }
+  .noticia-card:hover {
+    transform: translateY(-5px);
+  }
+  .noticia-card a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .card-img {
+    position: relative;
+    height: 200px;
+  }
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tag-categoria {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--color-primario);
+  }
+  .card-content {
+    padding: 1.5rem;
+  }
+  .card-content h4 {
+    margin: 0 0 0.8rem 0;
+    font-size: 1.2rem;
+    line-height: 1.4;
+  }
+  .card-content p {
+    font-size: 0.9rem;
+    color: #666;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-bottom: 1rem;
   }
-
-  /* BOTONES */
-  .btn-outline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border: 2px solid var(--color-primario);
-    border-radius: 12px;
-    color: var(--color-primario);
-    text-decoration: none;
-    font-weight: 700;
-    transition: all 0.3s ease;
+  .fecha {
+    font-size: 0.8rem;
+    color: #999;
   }
-
-  .btn-outline:hover {
-    background: var(--color-primario);
+  .ver-todo-container {
+    text-align: center;
+    margin-top: 3.5rem;
+  }
+  .btn-ver-todo {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background-color: var(--color-primario);
     color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background 0.3s;
   }
-
-  .featured-card:hover .image-wrapper img {
-    transform: scale(1.05);
+  .btn-ver-todo:hover {
+    background-color: var(--color-primario-hover);
   }
-
-  /* RESPONSIVE UTILS */
-  .desktop-only {
-    display: none;
-  }
-  @media (min-width: 768px) {
-    .desktop-only {
-      display: inline-flex;
+  @media (max-width: 768px) {
+    .destacada-link {
+      grid-template-columns: 1fr;
     }
-  }
-
-  .mobile-only {
-    display: block;
-  }
-  @media (min-width: 768px) {
-    .mobile-only {
-      display: none;
+    .destacada-img {
+      height: 250px;
     }
-  }
-
-  .mt-8 {
-    margin-top: 2rem;
-  }
-  .full-width {
-    width: 100%;
+    .destacada-content {
+      padding: 1.5rem;
+    }
   }
 </style>

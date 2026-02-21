@@ -1,38 +1,33 @@
 ---
-import data from "../data/telefonos.json";
+import data from "../data/contactoPage/contacto-page.json";
 
 interface Telefono {
   id: number;
   nombre: string;
   numero: string;
-  icon: string;
   color: string;
-  prioridad: number;
+  favorito?: boolean;
 }
 
-const { 
-  telefonos = data.telefonos as Telefono[], 
-  titulo = data.titulo, 
-  subtitulo = data.subtitulo,
-  maxDisplay = data.maxHomeDisplay,
-  textoVerTodo = data.textoVerTodo,
-  urlVerTodo = data.urlVerTodo
+const source = data.telefonosUtiles;
+
+const {
+  telefonos = source.telefonos as Telefono[],
+  titulo = source.titulo,
+  subtitulo = source.subtitulo,
+  textoVerTodo = source.textoVerTodo,
+  urlVerTodo = source.urlVerTodo
 } = Astro.props;
 
-const telefonosOrdenados = [...telefonos]
-  .sort((a, b) => a.prioridad - b.prioridad)
-  .slice(0, maxDisplay);
+const telefonosFavoritos: Telefono[] = telefonos
+  .filter((t: Telefono) => t.favorito)
+  .slice(0, 4);
 
-const tieneMas = telefonos.length > maxDisplay;
-
-const iconos: Record<string, string> = {
-  hospital: `<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M12 11h4"></path><path d="M12 11v4"></path><path d="M12 11H8"></path><path d="M12 11V7"></path>`,
-  shield: `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>`,
-  flame: `<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>`,
-  alert: `<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>`,
-  phone: `<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>`
-};
+const tieneMas: boolean = telefonos.some(
+  (t: Telefono) => !t.favorito
+);
 ---
+
 
 <section class="useful-phones">
   <div class="container">
@@ -42,21 +37,44 @@ const iconos: Record<string, string> = {
     </div>
 
     <div class="phones-grid">
-      {telefonosOrdenados.map((item) => (
-        <a href={`tel:${item.numero.replace(/\D/g, '')}`} class="phone-card">
-          <div class="icon-circle" style={`background-color: ${item.color}15; color: ${item.color}`}>
-            <svg 
-              width="24" 
-              height="24" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              stroke-width="2.5" 
-              stroke-linecap="round" 
+      {telefonosFavoritos.map((item: Telefono) => (
+        <a
+          href={`tel:${item.numero.replace(/\D/g, "")}`}
+          class="phone-card"
+        >
+          <div
+            class="icon-circle"
+            style={`background-color: ${item.color}15; color: ${item.color}`}
+          >
+            <!-- Ícono genérico -->
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
               stroke-linejoin="round"
-              set:html={iconos[item.icon] || iconos.phone}
-            />
+            >
+              <path
+                d="M22 16.92V21a2 2 0 0 1-2.18 2
+                19.79 19.79 0 0 1-8.63-3.07
+                19.5 19.5 0 0 1-6-6
+                19.79 19.79 0 0 1-3.07-8.67
+                A2 2 0 0 1 3 2h4.09
+                a2 2 0 0 1 2 1.72
+                c.12.81.31 1.6.57 2.35
+                a2 2 0 0 1-.45 2.11L8.09 9.91
+                a16 16 0 0 0 6 6
+                l1.73-1.73
+                a2 2 0 0 1 2.11-.45
+                c.75.26 1.54.45 2.35.57
+                a2 2 0 0 1 1.72 2.03z"
+              />
+            </svg>
           </div>
+
           <h3 class="name">{item.nombre}</h3>
           <span class="number">{item.numero}</span>
         </a>
@@ -67,17 +85,27 @@ const iconos: Record<string, string> = {
       <div class="footer-action">
         <a href={urlVerTodo} class="btn-more">
           {textoVerTodo}
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="m9 18 6-6-6-6" />
+          </svg>
         </a>
       </div>
     )}
   </div>
 </section>
 
+
 <style>
   .useful-phones {
     padding: 5rem 1rem;
-    background-color: #f8fafc; /* Un gris azulado muy suave */
+    background-color: #f8fafc; /* gris azulado suave */
   }
 
   .container {

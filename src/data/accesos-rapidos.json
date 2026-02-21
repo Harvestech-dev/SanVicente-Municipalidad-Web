@@ -5,7 +5,7 @@
       "id": 1,
       "titulo": "Boletas y Pagos",
       "descripcion": "Pagá tus tasas online",
-      "url": "/pagos",
+      "url": "https://sanvicente.miportal.ar/",
       "icono": "credit-card",
       "color": "#003366"
     },
@@ -13,7 +13,7 @@
       "id": 2,
       "titulo": "Licencia de Conducir",
       "descripcion": "Turnos y requisitos",
-      "url": "/licencia",
+      "url": "/Tramites/licenciaPage",
       "icono": "car",
       "color": "#006633"
     },
@@ -29,23 +29,15 @@
       "id": 4,
       "titulo": "Licitaciones",
       "descripcion": "Concursos vigentes",
-      "url": "/licitaciones",
+      "url": "/Transparencia/licitacionesPage",
       "icono": "file-text",
       "color": "#004a99"
     },
     {
       "id": 5,
-      "titulo": "Ordenanzas",
-      "descripcion": "Normativa municipal",
-      "url": "/ordenanzas",
-      "icono": "scale",
-      "color": "#006633"
-    },
-    {
-      "id": 6,
       "titulo": "Agenda Cultural",
       "descripcion": "Eventos y actividades",
-      "url": "/agenda",
+      "url": "/agendaPage",
       "icono": "calendar",
       "color": "#e65100"
     }

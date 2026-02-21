@@ -1,0 +1,202 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import data from "../../data/Transparencia/ordenanzas.json";
+import Footer from "../../components/Footer.astro";
+import Header from "../../components/Header.astro";
+
+// Simulamos los datos del JSON (puedes importar el archivo directamente)
+const { documentos, categorias, tipos, años } = data;
+---
+
+<Layout>
+  <Header />
+  <main class="ordenanzas-page">
+    <section class="hero">
+      <div class="container">
+        <div class="icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2z"/><path d="M20 16v4a2 2 0 0 1-2 2h-2"/><path d="M8 8c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2z"/><path d="M4 8V4a2 2 0 0 1 2-2h2"/><path d="M8 16c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2z"/><path d="M4 16v4a2 2 0 0 0 2 2h2"/><path d="M16 8c0-1.1.9-2 2-2a2 2 0 0 1 2 2c0 1.1-.9 2-2 2a2 2 0 0 1-2-2z"/><path d="M20 8V4a2 2 0 0 0-2-2h-2"/></svg>
+        </div>
+        <h1>Ordenanzas y Decretos</h1>
+        <p>Accede a toda la normativa municipal: ordenanzas, decretos y resoluciones</p>
+      </div>
+    </section>
+
+    <section class="filters-section">
+      <div class="container">
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Buscar por número, título o contenido..." />
+        </div>
+        
+        <div class="filters-row">
+          <select id="tipoFiltro">
+            <option value="Todos">Tipo: Todos</option>
+            {tipos.map(t => <option value={t}>{t}</option>)}
+          </select>
+
+          <select id="catFiltro">
+            <option value="Todas">Categoría: Todas</option>
+            {categorias.map(c => <option value={c}>{c}</option>)}
+          </select>
+
+          <select id="anioFiltro">
+            <option value="Todos">Año: Todos</option>
+            {años.map(a => <option value={a}>{a}</option>)}
+          </select>
+
+          <button id="resetBtn" class="btn-ghost">Limpiar filtros</button>
+        </div>
+        <p class="results-count">Mostrando <span id="count">{documentos.length}</span> documentos</p>
+      </div>
+    </section>
+
+    <section class="results-section">
+      <div class="container" id="docsGrid">
+        {documentos.map((doc) => (
+          <article 
+            class="doc-card" 
+            data-titulo={doc.titulo.toLowerCase()} 
+            data-numero={doc.numero.toLowerCase()} 
+            data-resumen={doc.resumen.toLowerCase()}
+            data-tipo={doc.tipo}
+            data-categoria={doc.categoria}
+            data-anio={doc.fecha.split(' ').pop()}
+          >
+            <div class="doc-header">
+              <div class="tags">
+                <span class="numero">{doc.numero}</span>
+                <span class={`badge ${doc.tipo.toLowerCase()}`}>{doc.tipo}</span>
+                <span class="badge-cat">{doc.categoria}</span>
+              </div>
+              <h3>{doc.titulo}</h3>
+              <p>{doc.resumen}</p>
+              <div class="doc-meta">
+                <span>📅 Fecha: {doc.fecha}</span>
+              </div>
+            </div>
+            <div class="doc-actions">
+              <a href="#" class="btn-outline">📥 PDF</a>
+              <a href="#" class="btn-primary">Ver completo</a>
+            </div>
+          </article>
+        ))}
+        
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <h3>No se encontraron resultados</h3>
+          <p>Intenta modificar los filtros de búsqueda</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .ordenanzas-page { min-height: 100vh; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 1rem; }
+
+  /* Hero */
+  .hero { background-color: var(--color-primario); color: white; padding: 4rem 0; text-align: center; }
+  .icon-circle { background: rgba(255,255,255,0.2); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+  .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+  .hero p { opacity: 0.9; font-size: 1.1rem; }
+
+  /* Filtros */
+  .filters-section { background: white; border-bottom: 1px solid #ddd; padding: 2rem 0; position: sticky; top: 0; z-index: 10; }
+  .search-bar input { width: 100%; padding: 0.8rem 1rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box;}
+  .filters-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  select { padding: 0.5rem; border-radius: 6px; border: 1px solid #ddd; background: white; font-size: 0.9rem; }
+  .btn-ghost { background: none; border: none; color: var(--color-primario); cursor: pointer; font-size: 0.9rem; }
+  .results-count { margin-top: 1rem; font-size: 0.85rem; color: #666; }
+
+  /* Cards */
+  .results-section { padding: 3rem 0; background-color: var(--color-fondo-claro); }
+  .doc-card { 
+    background: white; border: 1px solid #eee; border-radius: 12px; padding: 1.5rem; 
+    margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-start;
+    transition: box-shadow 0.2s;
+  }
+  .doc-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+  .tags { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+  .numero { font-family: monospace; font-weight: bold; color: var(--color-primario); }
+  .badge { font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: bold; text-transform: uppercase; }
+  .badge.ordenanza { background: #e3f2fd; color: #1976d2; }
+  .badge.decreto { background: #f3e5f5; color: #7b1fa2; }
+  .badge-cat { font-size: 0.7rem; color: #666; background: #eee; padding: 0.2rem 0.6rem; border-radius: 20px; }
+  .doc-card h3 { margin: 0.5rem 0; font-size: 1.25rem; }
+  .doc-card p { color: #555; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1rem; }
+  .doc-meta { font-size: 0.8rem; color: #888; }
+  
+  .doc-actions { display: flex; flex-direction: column; gap: 0.5rem; min-width: 150px; }
+  .btn-primary { background: var(--color-primario); color: white; text-align: center; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
+  .btn-primary:hover { background: var(--color-primario-hover); }
+  .btn-outline { border: 1px solid #ddd; color: #444; text-align: center; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; }
+
+  .empty-state { text-align: center; padding: 4rem; color: #999; }
+
+  @media (max-width: 768px) {
+    .doc-card { flex-direction: column; }
+    .doc-actions { flex-direction: row; width: 100%; margin-top: 1rem; }
+    .doc-actions a { flex: 1; }
+  }
+</style>
+
+<script>
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const tipoFiltro = document.getElementById('tipoFiltro') as HTMLSelectElement;
+  const catFiltro = document.getElementById('catFiltro') as HTMLSelectElement;
+  const anioFiltro = document.getElementById('anioFiltro') as HTMLSelectElement;
+  const resetBtn = document.getElementById('resetBtn');
+  const cards = document.querySelectorAll('.doc-card') as NodeListOf<HTMLElement>;
+  const countSpan = document.getElementById('count');
+  const emptyState = document.getElementById('emptyState');
+
+  function filtrar() {
+    if (!searchInput || !tipoFiltro || !catFiltro || !anioFiltro || !countSpan || !emptyState) return;
+
+    const text = searchInput.value.toLowerCase();
+    const tipo = tipoFiltro.value;
+    const cat = catFiltro.value;
+    const anio = anioFiltro.value;
+    
+    let visibles = 0;
+
+    cards.forEach(card => {
+      const titulo = card.dataset.titulo || "";
+      const numero = card.dataset.numero || "";
+      const resumen = card.dataset.resumen || "";
+      const cardTipo = card.dataset.tipo || "";
+      const cardCat = card.dataset.categoria || "";
+      const cardAnio = card.dataset.anio || "";
+
+      const matchText = titulo.includes(text) || numero.includes(text) || resumen.includes(text);
+      const matchTipo = tipo === 'Todos' || cardTipo === tipo;
+      const matchCat = cat === 'Todas' || cardCat === cat;
+      const matchAnio = anio === 'Todos' || cardAnio === anio;
+
+      if (matchText && matchTipo && matchCat && matchAnio) {
+        card.style.display = 'flex';
+        visibles++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    countSpan.textContent = visibles.toString();
+    emptyState.style.display = visibles === 0 ? 'block' : 'none';
+  }
+
+  searchInput?.addEventListener('input', filtrar);
+  tipoFiltro?.addEventListener('change', filtrar);
+  catFiltro?.addEventListener('change', filtrar);
+  anioFiltro?.addEventListener('change', filtrar);
+  
+  resetBtn?.addEventListener('click', () => {
+    if (!searchInput || !tipoFiltro || !catFiltro || !anioFiltro) return;
+    
+    searchInput.value = '';
+    tipoFiltro.value = 'Todos';
+    catFiltro.value = 'Todas';
+    anioFiltro.value = 'Todos';
+    filtrar();
+  });
+</script>

@@ -1,0 +1,107 @@
+{
+  "titulo": "Ordenanzas y Decretos",
+  "subtitulo": "Accede a toda la normativa municipal: ordenanzas, decretos y resoluciones",
+  "categorias": [
+    "Hacienda",
+    "Gobierno",
+    "Obras",
+    "Ambiente",
+    "Economía",
+    "Tránsito",
+    "Salud",
+    "Cultura"
+  ],
+  "tipos": [
+    "Ordenanza", 
+    "Decreto", 
+    "Resolución"
+  ],
+  "años": [
+    "2026",
+    "2025",
+    "2024",
+    "2023"
+  ],
+  "documentos": [
+    {
+      "id": 1,
+      "numero": "ORD-2025-001",
+      "tipo": "Ordenanza",
+      "titulo": "Presupuesto Municipal 2025",
+      "fecha": "15 Ene 2025",
+      "categoria": "Hacienda",
+      "resumen": "Aprobación del presupuesto general de gastos y cálculo de recursos para el ejercicio 2025.",
+      "archivoUrl": "/docs/ordenanza-001-2025.pdf"
+    },
+    {
+      "id": 2,
+      "numero": "DEC-2025-045",
+      "tipo": "Decreto",
+      "titulo": "Horario de Verano Administración Pública",
+      "fecha": "10 Ene 2025",
+      "categoria": "Gobierno",
+      "resumen": "Establecimiento del horario de atención al público durante la temporada estival en todas las dependencias.",
+      "archivoUrl": "/docs/decreto-045-2025.pdf"
+    },
+    {
+      "id": 3,
+      "numero": "ORD-2024-089",
+      "tipo": "Ordenanza",
+      "titulo": "Código de Edificación - Modificación",
+      "fecha": "20 Dic 2024",
+      "categoria": "Obras",
+      "resumen": "Modificación de los artículos 45 al 52 del Código de Edificación vigente respecto a retiros de línea municipal.",
+      "archivoUrl": "/docs/ordenanza-089-2024.pdf"
+    },
+    {
+      "id": 4,
+      "numero": "ORD-2024-088",
+      "tipo": "Ordenanza",
+      "titulo": "Tasa de Servicios Urbanos 2025",
+      "fecha": "18 Dic 2024",
+      "categoria": "Hacienda",
+      "resumen": "Actualización de los valores de la tasa de servicios urbanos y contribución por mejoras para el nuevo ejercicio.",
+      "archivoUrl": "/docs/ordenanza-088-2024.pdf"
+    },
+    {
+      "id": 5,
+      "numero": "DEC-2024-312",
+      "tipo": "Decreto",
+      "titulo": "Declaración de Emergencia Hídrica",
+      "fecha": "15 Dic 2024",
+      "categoria": "Ambiente",
+      "resumen": "Declaración de emergencia hídrica por sequía prolongada y medidas de restricción de riego en el municipio.",
+      "archivoUrl": "/docs/decreto-312-2024.pdf"
+    },
+    {
+      "id": 6,
+      "numero": "ORD-2024-085",
+      "tipo": "Ordenanza",
+      "titulo": "Programa de Incentivos PyMEs",
+      "fecha": "10 Dic 2024",
+      "categoria": "Economía",
+      "resumen": "Creación del programa de incentivos fiscales y beneficios impositivos para pequeñas y medianas empresas locales.",
+      "archivoUrl": "/docs/ordenanza-085-2024.pdf"
+    },
+    {
+      "id": 7,
+      "numero": "RES-2024-156",
+      "tipo": "Resolución",
+      "titulo": "Calendario de Feriados Locales 2025",
+      "fecha": "05 Dic 2024",
+      "categoria": "Gobierno",
+      "resumen": "Establecimiento del calendario oficial de feriados, asuetos administrativos y fiestas patronales para el año 2025.",
+      "archivoUrl": "/docs/resolucion-156-2024.pdf"
+    },
+    {
+      "id": 8,
+      "numero": "ORD-2024-082",
+      "tipo": "Ordenanza",
+      "titulo": "Régimen de Estacionamiento Medido",
+      "fecha": "28 Nov 2024",
+      "categoria": "Tránsito",
+      "resumen": "Regulación y ampliación del sistema de estacionamiento medido inteligente en el área céntrica.",
+      "archivoUrl": "/docs/ordenanza-082-2024.pdf"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+---
+/**
+ * GUÍA TÉCNICA PARA DISEÑO DE BANNERS (CMS):
+ * ----------------------------------------------------------------            
+ * DIMENSIONES RECOMENDADAS: 1200px x 300px (Proporción 4:1)
+ * * ZONA SEGURA (SAFE ZONE): 
+ * - Área central visible en todo dispositivo: 530px centrales.
+ * - Evitar info importante en los 335px laterales (izq/der).
+ * * COMPORTAMIENTO:
+ * - Desktop: 1200px x 300px.
+ * - Mobile: Se ajusta a 200px de alto para no ocupar toda la pantalla.
+ */
+
+import bannerData from "../data/banner.json";
+
+const { 
+  imagen = "/images/placeholder-banner.jpg", 
+  alt = "Banner municipal", 
+  enlace = "#", 
+  titulo = "Información importante" 
+} = bannerData;
+---
+
+<section class="banner-wrapper">
+  <div class="banner-container">
+    {enlace ? (
+      <a href={enlace} class="banner-link" title={titulo}>
+        <img src={imagen} alt={alt} class="banner-img" loading="eager" />
+      </a>
+    ) : (
+      <div class="banner-link">
+        <img src={imagen} alt={alt} class="banner-img" />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .banner-wrapper {
+    width: 80%;
+    max-width: 1200px;
+    margin: 2rem auto;
+  }
+
+  .banner-container {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+  }
+
+  .banner-container:hover {
+    transform: translateY(-2px);
+  }
+
+  .banner-img {
+    width: 100%;
+    display: block;
+    
+    /* ALTURA DESKTOP */
+    height: 300px; 
+    
+    object-fit: cover; 
+    object-position: center; 
+  }
+
+  /* TABLETS */
+  @media (max-width: 1024px) {
+    .banner-wrapper {
+      width: 90%;
+    }
+    .banner-img {
+      height: 250px; 
+    }
+  }
+
+  /* MÓVILES */
+  @media (max-width: 640px) {
+    .banner-wrapper {
+      width: 95%;
+      margin: 1.2rem auto;
+    }
+    .banner-img {
+      height: 180px; 
+    }
+  }
+</style>

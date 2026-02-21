@@ -3,35 +3,35 @@ import datosSitio from "../data/sitio.json";
 
 const navItems = [
   { label: "Inicio", href: "/" },
-  { label: "Gobierno", href: "/gobierno" },
+  { label: "Gobierno", href: "/gobiernoPage" },
   {
     label: "Trámites",
     href: "/tramites",
     submenu: [
-      { label: "Licencia de Conducir", href: "/tramites/licencia" },
-      { label: "Boletas y Pagos", href: "/tramites/pagos" },
+      { label: "Licencia de Conducir", href: "/Tramites/licenciaPage" },
+      {
+        label: "Boletas y Pagos",
+        href: "https://sanvicente.miportal.ar/",
+        target: "_blank",
+      },
     ],
   },
   {
-    label: "Transparencia",
-    href: "/transparencia",
-    submenu: [
-      { label: "Licitaciones", href: "/transparencia/licitaciones" },
-      { label: "Ordenanzas y Decretos", href: "/transparencia/ordenanzas" },
-    ],
+    label: "Licitaciones",
+    href: "/Transparencia/licitacionesPage",
   },
-  { label: "Noticias", href: "/noticias" },
-  { label: "Contacto", href: "/contacto" },
+  { label: "Noticias", href: "/noticiasPage" },
+  { label: "Contacto", href: "/contactoPage" },
 ];
 
-const { 
-  nombreCorto = datosSitio.nombreCorto, 
+const {
+  nombreCorto = datosSitio.nombreCorto,
   contacto = datosSitio.contacto,
-  redesSociales = datosSitio.redesSociales 
+  redesSociales = datosSitio.redesSociales,
 } = Astro.props;
 
-const whatsappLink = redesSociales.whatsapp 
-  ? `https://wa.me/${redesSociales.whatsapp.replace(/\D/g, "")}` 
+const whatsappLink = redesSociales.whatsapp
+  ? `https://wa.me/${redesSociales.whatsapp.replace(/\D/g, "")}`
   : null;
 ---
 
@@ -39,41 +39,100 @@ const whatsappLink = redesSociales.whatsapp
   <div class="top-bar">
     <div class="container top-bar-content">
       <div class="contact-info">
-        <a href={`tel:${contacto.telefono.replace(/\D/g, "")}`} class="contact-link">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <a
+          href={`tel:${contacto.telefono.replace(/\D/g, "")}`}
+          class="contact-link"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+            ></path></svg
+          >
           {contacto.telefono}
         </a>
         <span class="schedule">{contacto.horario}</span>
       </div>
-      
+
       <div class="social-links">
-        {redesSociales.facebook && (
-          <a href={redesSociales.facebook} aria-label="Facebook" target="_blank" class="social-icon">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          </a>
-        )}
-        {redesSociales.instagram && (
-          <a href={redesSociales.instagram} aria-label="Instagram" target="_blank" class="social-icon">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-          </a>
-        )}
-        {redesSociales.youtube && (
-          <a href={redesSociales.youtube} aria-label="YouTube" target="_blank" class="social-icon">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </a>
-        )}
-        {whatsappLink && (
-          <a href={whatsappLink} aria-label="WhatsApp" target="_blank" class="social-icon">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.672 1.43 5.661 1.43h.005c6.562 0 11.897-5.335 11.9-11.894a11.774 11.774 0 00-3.486-8.422z"/></svg>
-          </a>
-        )}
+        {
+          Object.entries(redesSociales).map(
+            ([red, url]) =>
+              url &&
+              typeof url === "string" && (
+                <a
+                  href={
+                    red === "whatsapp"
+                      ? `https://wa.me/${url.replace(/\D/g, "")}`
+                      : url
+                  }
+                  aria-label={red}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon"
+                >
+                  {red === "facebook" && (
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                  )}
+
+                  {red === "instagram" && (
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0z" />
+                    </svg>
+                  )}
+
+                  {red === "youtube" && (
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M23.498 6.186a2.977 2.977 0 0 0-2.094-2.104C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.404.582a2.977 2.977 0 0 0-2.094 2.104C0 8.093 0 12 0 12s0 3.907.502 5.814a2.977 2.977 0 0 0 2.094 2.104C4.495 20.5 12 20.5 12 20.5s7.505 0 9.404-.582a2.977 2.977 0 0 0 2.094-2.104C24 15.907 24 12 24 12s0-3.907-.502-5.814zM9.75 15.5v-7l6 3.5-6 3.5z" />
+                    </svg>
+                  )}
+
+                  {red === "whatsapp" && (
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487z" />
+                    </svg>
+                  )}
+                </a>
+              ),
+          )
+        }
       </div>
     </div>
   </div>
 
   <nav class="container nav-main">
     <a href="/" class="logo">
-      <img height="50" src="/images/SV-logo.png" alt="Logo">
+      <img src="/images/SV-logo.png" alt="Logo" />
     </a>
 
     <button class="mobile-menu-toggle" id="menuToggle" aria-label="Menú">
@@ -83,158 +142,304 @@ const whatsappLink = redesSociales.whatsapp
     </button>
 
     <ul class="nav-links" id="navLinks">
-      {navItems.map(item => (
-        <li class={item.submenu ? "dropdown" : ""}>
-          <a href={item.href} class="nav-item-link">
-            {item.label}
-            {item.submenu && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="chevron"><path d="m6 9 6 6 6-6"/></svg>}
-          </a>
-          {item.submenu && (
-            <ul class="dropdown-content">
-              {item.submenu.map(sub => (
-                <li><a href={sub.href}>{sub.label}</a></li>
-              ))}
-            </ul>
-          )}
-        </li>
-      ))}
+      {
+        navItems.map((item) => (
+          <li class={item.submenu ? "dropdown" : ""}>
+            <a
+              href={item.submenu ? undefined : item.href}
+              class="nav-item-link"
+              aria-haspopup={item.submenu ? "true" : undefined}
+            >
+              {item.label}
+              {item.submenu && (
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  class="chevron"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              )}
+            </a>
+            {item.submenu && (
+              <ul class="dropdown-content">
+                {item.submenu.map((sub) => (
+                  <li>
+                    <a
+                      href={sub.href}
+                      target={sub.target}
+                      rel={
+                        sub.target === "_blank"
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                    >
+                      {sub.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
     </ul>
   </nav>
 </header>
 
 <script>
-  const menuToggle = document.getElementById('menuToggle');
-  const navLinks = document.getElementById('navLinks');
-  const mainHeader = document.getElementById('mainHeader');
+  const menuToggle = document.getElementById("menuToggle");
+  const navLinks = document.getElementById("navLinks");
+  const mainHeader = document.getElementById("mainHeader");
 
-  // 1. Toggle Menú Hamburguesa Principal
-  menuToggle?.addEventListener('click', (e) => {
+  menuToggle?.addEventListener("click", (e) => {
     e.stopPropagation();
-    navLinks?.classList.toggle('active');
+    navLinks?.classList.toggle("active");
   });
 
-  // 2. Cerrar al hacer click fuera de la navegación
-  document.addEventListener('click', (e) => {
+  document.addEventListener("click", (e) => {
     if (!mainHeader?.contains(e.target as Node)) {
-      navLinks?.classList.remove('active');
-      // También cerramos los submenús abiertos al cerrar el menú principal
-      document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
+      navLinks?.classList.remove("active");
+      document
+        .querySelectorAll(".dropdown.open")
+        .forEach((d) => d.classList.remove("open"));
     }
   });
 
-  // 3. Manejo de submenús en móvil/tablet (Lógica de acordeón)
-  const dropdowns = document.querySelectorAll('.dropdown');
-  
-  dropdowns.forEach(dropdown => {
-    const link = dropdown.querySelector('.nav-item-link');
-    
-    link?.addEventListener('click', (e) => {
-      // Solo aplicamos esta lógica en pantallas táctiles/pequeñas
+  const dropdowns = document.querySelectorAll(".dropdown");
+  dropdowns.forEach((dropdown) => {
+    const link = dropdown.querySelector(".nav-item-link");
+    link?.addEventListener("click", (e) => {
       if (window.innerWidth < 1024) {
-        e.preventDefault(); // Evitamos que navegue al link principal para poder abrir/cerrar
+        e.preventDefault();
         e.stopPropagation();
-        
-        const isOpen = dropdown.classList.contains('open');
-        
-        // Opcional: Cerrar otros submenús abiertos antes de abrir este (estilo acordeón)
-        document.querySelectorAll('.dropdown.open').forEach(d => {
-          if (d !== dropdown) d.classList.remove('open');
+        const isOpen = dropdown.classList.contains("open");
+        document.querySelectorAll(".dropdown.open").forEach((d) => {
+          if (d !== dropdown) d.classList.remove("open");
         });
-
-        // Toggle de la clase open
-        dropdown.classList.toggle('open');
+        dropdown.classList.toggle("open");
       }
     });
   });
 </script>
 
 <style>
-  /* RESET LISTAS */
-  .nav-links, .dropdown-content, .nav-links li {
+  /* RESET Y ESTRUCTURA BASE */
+  .nav-links,
+  .dropdown-content,
+  .nav-links li {
     list-style: none !important;
     margin: 0;
     padding: 0;
   }
 
-  .main-header { 
-    position: sticky; top: 0; z-index: 1000; 
-    background: var(--color-fondo-claro, #fff); 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-    width: 100%; 
+  .main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--color-fondo-claro, #fff);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    width: 100%;
   }
 
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
-
-  /* TOP BAR */
-  .top-bar { 
-    background: var(--color-primario); 
-    color: var(--color-texto-claro, #fff); 
-    padding: 0.5rem 0; font-size: 0.85rem; 
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
   }
-  .top-bar-content { display: flex; justify-content: space-between; align-items: center; }
-  .contact-info { display: flex; gap: 1.5rem; align-items: center; }
-  .contact-link { color: inherit; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; }
-  .social-links { display: flex; gap: 1rem; }
-  .social-icon { color: var(--color-texto-claro, #fff); display: flex; transition: transform 0.2s; }
-  .social-icon:hover { transform: scale(1.1); }
+
+  /* TOP BAR (DESKTOP) */
+  .top-bar {
+    background: var(--color-primario);
+    color: var(--color-texto-claro, #fff);
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+  }
+
+  .top-bar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .contact-info {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .contact-link {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-icon {
+    color: var(--color-texto-claro, #fff);
+    display: flex;
+    transition: transform 0.2s;
+  }
+
+  .social-icon:hover {
+    transform: scale(1.1);
+  }
 
   /* NAV PRINCIPAL */
-  .nav-main { display: flex; justify-content: space-between; align-items: center; height: 75px; position: relative; }
-  
-  .nav-links { display: flex; gap: 0.5rem; }
-  .nav-links a { 
-    padding: 0.6rem 0.8rem; text-decoration: none; 
-    color: var(--color-texto, #333); font-weight: 600; 
-    border-radius: 4px; display: flex; align-items: center; gap: 5px;
+  .nav-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 75px;
+    position: relative;
   }
-  .nav-links a:hover { color: var(--color-primario); }
+
+  /* LOGO */
+  .logo {
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+
+  .logo img {
+    height: 100%;
+    width: auto;
+    max-width: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .nav-links a {
+    padding: 0.6rem 0.8rem;
+    text-decoration: none;
+    color: var(--color-texto, #333);
+    font-weight: 700;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.95rem;
+  }
+
+  .nav-links a:hover {
+    color: var(--color-primario);
+  }
 
   /* DROPDOWN DESKTOP */
-  .dropdown { position: relative; }
-  .dropdown-content { 
-    position: absolute; top: 100%; left: 0; 
-    background: white; min-width: 220px; 
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1); 
-    border-radius: 4px; padding: 0.5rem 0; display: none; 
+  .dropdown {
+    position: relative;
   }
-  .dropdown-content a { display: block; padding: 0.6rem 1.2rem; font-size: 0.9rem; font-weight: 400; }
-  .dropdown-content a:hover { background: #f8f9fa; color: var(--color-primario); }
-  
+
+  .dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 220px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    display: none;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .dropdown-content a {
+    display: block;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .dropdown-content a:hover {
+    background: #f8fafc;
+    color: var(--color-primario);
+  }
+
   @media (min-width: 1024px) {
-    .dropdown:hover .dropdown-content { display: block; }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
   }
 
-  /* MOBILE & TABLET (Abajo de 1024px) */
-  .mobile-menu-toggle { 
-    display: none; flex-direction: column; gap: 5px; 
-    background: none; border: none; cursor: pointer; padding: 10px;
+  /* BOTÓN MENÚ MOBILE */
+  .mobile-menu-toggle {
+    display: none;
   }
-  .mobile-menu-toggle .bar { width: 25px; height: 2px; background: var(--color-primario); transition: 0.3s; }
 
+  /* MOBILE & TABLET */
   @media (max-width: 1023px) {
-    .mobile-menu-toggle { display: flex; }
-    
-    .nav-links { 
-      display: none; 
+    .top-bar {
+      display: none;
+    }
+
+    .mobile-menu-toggle {
+      display: flex;
       flex-direction: column;
-      position: absolute; 
-      top: 75px; /* Altura de la nav-main */
-      left: 0; width: 100%; 
-      background: white; 
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .mobile-menu-toggle .bar {
+      width: 25px;
+      height: 2px;
+      background: var(--color-primario);
+      transition: 0.3s;
+    }
+
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 75px;
+      left: 0;
+      width: 100%;
+      background: white;
       padding: 1rem 0;
-      box-shadow: 0 10px 10px rgba(0,0,0,0.05);
-      border-top: 1px solid #f0f0f0;
+      box-shadow: 0 10px 10px rgba(0, 0, 0, 0.05);
+      border-top: 1px solid #f1f5f9;
     }
 
-    .nav-links.active { display: flex; }
-
-    .nav-links a { width: 100%; padding: 1rem 1.5rem; border-radius: 0; }
-
-    .dropdown-content { 
-      position: static; display: none; width: 100%; 
-      box-shadow: none; background: #fafafa; border: none;
+    .nav-links.active {
+      display: flex;
     }
-    .dropdown.open .dropdown-content { display: block; }
-    .dropdown.open .chevron { transform: rotate(180deg); }
+
+    .nav-links a {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border-radius: 0;
+    }
+
+    .dropdown-content {
+      position: static;
+      display: none;
+      width: 100%;
+      box-shadow: none;
+      background: #f8fafc;
+      border: none;
+    }
+
+    .dropdown.open .dropdown-content {
+      display: block;
+    }
+
+    .dropdown.open .chevron {
+      transform: rotate(180deg);
+    }
   }
 </style>

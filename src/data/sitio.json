@@ -1,35 +1,38 @@
 {
   "nombre": "Municipalidad de San Vicente",
   "nombreCorto": "San Vicente",
+  "descripcion": "Portal oficial de la Municipalidad de San Vicente, Santa Fe. Información sobre trámites, agenda cultural y servicios al vecino.",
+  "url": "https://www.sanvicente.gob.ar",
   "tema": {
-    "primario": "#f08a13",
-    "primarioHover": "#d67a0f",
-    "secundario": "#222222",
-    "secundarioHover": "#000000",
-    "fondoOscuro": "#111111",
-    "fondoClaro": "#f8f9fa",
-    "texto": "#1a1a1a",
-    "textoClaro": "#ffffff",
-    "exito": "#48bb78",
-    "error": "#f56565"
+    "primario": "#C26D0E", 
+    "primarioHover": "#A05A0B",
+    "primarioSuave": "#FDF2E9",
+    "secundario": "#1E293B",
+    "secundarioHover": "#0F172A",
+    "fondoOscuro": "#0F172A",
+    "fondoClaro": "#F8FAFC",
+    "texto": "#1E293B",
+    "textoClaro": "#FFFFFF",
+    "exito": "#16A34A",
+    "error": "#DC2626"
   },
   "contacto": {
-    "telefono": "+54 3492 444444",
+    "telefono": "03492-470622",
     "horario": "Lunes a Viernes, 07:00 a 13:00 hs",
-    "direccion": "Calle Principal 123",
-    "email": "contacto@sanvicente.gob.ar"
+    "direccion": "Bv. Sarmiento 160",
+    "email": "sanvicente@sanvicente.com.ar"
   },
   "redesSociales": {
-    "facebook": "https://facebook.com/...",
-    "instagram": "https://instagram.com/...",
-    "youtube": "https://youtube.com/...",
-    "whatsapp": "543492123456"
+    "facebook": "https://www.facebook.com/sanvicenteok",
+    "instagram": "https://www.instagram.com/sanvicenteok",
+    "youtube": "https://www.youtube.com/@sanvicenteok",
+    "whatsapp": "https://api.whatsapp.com/send?phone=5493492304058"
   },
   "footer": {
     "copyright": "Todos los derechos reservados.",
     "reclamos": {
       "titulo": "Ir a Vecino Digital",
-      "url": "/reclamos"
+      "url": "vecinodigital"
     }
   }
 }

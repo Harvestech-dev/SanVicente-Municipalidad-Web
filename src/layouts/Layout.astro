@@ -1,6 +1,18 @@
 ---
 import sitioData from "../data/sitio.json";
 const { tema } = sitioData;
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = sitioData.nombre, 
+  description = sitioData.descripcion 
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, sitioData.url);
 ---
 
 <!doctype html>
@@ -10,14 +22,30 @@ const { tema } = sitioData;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="canonical" href={canonicalURL} />
 
-    <title>{sitioData.nombre}</title>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL("/og-image.jpg", Astro.url)} />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL("/og-image.jpg", Astro.url)} />
 
     <style
       is:global
       define:vars={{
         p: tema.primario,
         ph: tema.primarioHover,
+        ps: tema.primarioSuave,
         s: tema.secundario,
         sh: tema.secundarioHover,
         fo: tema.fondoOscuro,
@@ -31,6 +59,7 @@ const { tema } = sitioData;
       :root {
         --color-primario: var(--p);
         --color-primario-hover: var(--ph);
+        --color-primario-suave: var(--ps);
         --color-secundario: var(--s);
         --color-secundario-hover: var(--sh);
         --color-fondo-oscuro: var(--fo);
@@ -39,13 +68,26 @@ const { tema } = sitioData;
         --color-texto-claro: var(--txtc);
         --color-error: var(--err);
         --color-exito: var(--ok);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
 
       body {
         margin: 0;
         background-color: var(--color-fondo-claro);
         color: var(--color-texto);
-        font-family: system-ui, sans-serif;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      html {
+        scroll-behavior: smooth;
       }
     </style>
   </head>

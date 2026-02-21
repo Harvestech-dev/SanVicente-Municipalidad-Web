@@ -1,0 +1,80 @@
+{
+  "hero": {
+    "titulo": "Contacto",
+    "descripcion": "Estamos para ayudarte. Contactanos por cualquiera de nuestros canales de atención."
+  },
+  "bannerDigital": {
+    "titulo": "¿Tenés un reclamo o sugerencia?",
+    "subtitulo": "Usá Vecino Digital para seguimiento de tu solicitud",
+    "textoBoton": "Ir a Vecino Digital",
+    "url": "https://vecinodigital.sanvicente.gob"
+  },
+  "oficinas": [
+    {
+      "nombre": "Edificio Municipal principal",
+      "direccion": "Bv. Sarmiento 1234",
+      "telefono": "(03492) 456-7800",
+      "email": "contacto@sanvicente.gob",
+      "horario": "Lunes a Viernes 8:00 - 14:00",
+      "oficina": "principal"
+    },
+    {
+      "nombre": "Edificio Municipal secundario",
+      "direccion": "Buenos Aires 1234",
+      "telefono": "(03492) 456-7800",
+      "email": "contacto@sanvicente.gob",
+      "horario": "Lunes a Viernes 8:00 - 14:00"
+    }
+  ],
+  "telefonosUtiles": {
+    "titulo": "Teléfonos útiles",
+    "subtitulo": "Contactos importantes para situaciones urgentes",
+    "maxHomeDisplay": 4,
+    "textoVerTodo": "Ver todos los teléfonos",
+    "urlVerTodo": "/contactoPage",
+    "telefonos": [
+      {
+        "id": 1,
+        "nombre": "Policía",
+        "numero": "101",
+        "color": "#2563eb",
+        "favorito": true
+      },
+      {
+        "id": 2,
+        "nombre": "Bomberos",
+        "numero": "100",
+        "color": "#dc2626",
+        "favorito": true
+      },
+      {
+        "id": 3,
+        "nombre": "Ambulancia",
+        "numero": "107",
+        "color": "#16a34a",
+        "favorito": true
+      },
+      {
+        "id": 4,
+        "nombre": "Defensa Civil",
+        "numero": "103",
+        "color": "#ca8a04",
+        "favorito": true
+      },
+      {
+        "id": 5,
+        "nombre": "Emergencias Sanitarias",
+        "numero": "107",
+        "color": "#db2777",
+        "favorito": false
+      },
+      {
+        "id": 6,
+        "nombre": "Cruz Roja",
+        "numero": "(03492) 456-7890",
+        "color": "#ef4444",
+        "favorito": false
+      }
+    ]
+  }
+}

@@ -5,7 +5,7 @@ import Footer from "../../components/Footer.astro";
 import Header from "../../components/Header.astro";
 
 // Simulamos los datos del JSON (puedes importar el archivo directamente)
-const { documentos, categorias, tipos, años } = data;
+const { lista_documentos: documentos, lista_categorias: categorias, lista_tipos: tipos, lista_anios: años } = data;
 ---
 
 <Layout>
@@ -54,23 +54,23 @@ const { documentos, categorias, tipos, años } = data;
         {documentos.map((doc) => (
           <article 
             class="doc-card" 
-            data-titulo={doc.titulo.toLowerCase()} 
-            data-numero={doc.numero.toLowerCase()} 
-            data-resumen={doc.resumen.toLowerCase()}
-            data-tipo={doc.tipo}
-            data-categoria={doc.categoria}
-            data-anio={doc.fecha.split(' ').pop()}
+            data-titulo={doc.txt_titulo.toLowerCase()} 
+            data-numero={doc.txt_numero.toLowerCase()} 
+            data-resumen={doc.txt_resumen.toLowerCase()}
+            data-tipo={doc.txt_tipo}
+            data-categoria={doc.txt_categoria}
+            data-anio={doc.txt_fecha.split(' ').pop()}
           >
             <div class="doc-header">
               <div class="tags">
-                <span class="numero">{doc.numero}</span>
-                <span class={`badge ${doc.tipo.toLowerCase()}`}>{doc.tipo}</span>
-                <span class="badge-cat">{doc.categoria}</span>
+                <span class="numero">{doc.txt_numero}</span>
+                <span class={`badge ${doc.txt_tipo.toLowerCase()}`}>{doc.txt_tipo}</span>
+                <span class="badge-cat">{doc.txt_categoria}</span>
               </div>
-              <h3>{doc.titulo}</h3>
-              <p>{doc.resumen}</p>
+              <h3>{doc.txt_titulo}</h3>
+              <p>{doc.txt_resumen}</p>
               <div class="doc-meta">
-                <span>📅 Fecha: {doc.fecha}</span>
+                <span>📅 Fecha: {doc.txt_fecha}</span>
               </div>
             </div>
             <div class="doc-actions">

@@ -5,13 +5,13 @@ import Footer from "../components/Footer.astro";
 import data from "../data/gobiernoPage/gobierno-page.json";
 import sitio from "../data/sitio.json";
 
-const { intendente, funcionarios, organigrama, titulo, descripcion } = data;
-const { tema } = sitio;
+const { intendente, lista_funcionarios: funcionarios, lista_organigrama: organigrama, txt_titulo: titulo, txt_descripcion: descripcion } = data;
+const tema = sitio._estilo;
 
 const defaultProfile = "/profile.png";
 ---
 
-<Layout title={`Gobierno | ${sitio.nombreCorto}`}>
+<Layout title={`Gobierno | ${sitio.txt_nombreCorto}`}>
   <Header />
 
   <main class="gobierno-container">
@@ -27,17 +27,17 @@ const defaultProfile = "/profile.png";
         <div class="intendente-card">
           <div class="intendente-img">
             <img
-              src={intendente.imagen || defaultProfile}
-              alt={intendente.nombre}
+            src={intendente.img_perfil || defaultProfile}
+            alt={intendente.txt_nombre}
             />
           </div>
           <div class="intendente-info">
             <span class="badge">Intendencia</span>
-            <h2>{intendente.nombre}</h2>
-            <p class="role">{intendente.cargo}</p>
+            <h2>{intendente.txt_nombre}</h2>
+            <p class="role">{intendente.txt_cargo}</p>
             <p class="gestion">
               <strong>Gestión:</strong>
-              {intendente.gestion}
+              {intendente.txt_gestion}
             </p>
           </div>
         </div>
@@ -51,11 +51,11 @@ const defaultProfile = "/profile.png";
           {
             funcionarios.map((func) => (
               <div class="funcionario-card">
-                <img src={func.imagen || defaultProfile} alt={func.nombre} />
+                <img src={func.img_perfil || defaultProfile} alt={func.txt_nombre} />
                 <div class="funcionario-details">
-                  <span class="area-tag">{func.area}</span>
-                  <h3>{func.nombre}</h3>
-                  <p>{func.cargo}</p>
+                  <span class="area-tag">{func.txt_area}</span>
+                  <h3>{func.txt_nombre}</h3>
+                  <p>{func.txt_cargo}</p>
                 </div>
               </div>
             ))
@@ -71,10 +71,10 @@ const defaultProfile = "/profile.png";
           {
             organigrama.map((sec) => (
               <div class="secretaria-card">
-                <h3>{sec.nombre}</h3>
+                <h3>{sec.txt_nombre}</h3>
                 <div class="divider" />
                 <ul>
-                  {sec.areas.map((area) => (
+                  {sec.lista_areas?.map((area: string) => (
                     <li>
                       <span class="bullet" />
                       {area}

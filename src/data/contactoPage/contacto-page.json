@@ -1,79 +1,81 @@
 {
   "hero": {
-    "titulo": "Contacto",
-    "descripcion": "Estamos para ayudarte. Contactanos por cualquiera de nuestros canales de atención."
+    "txt_titulo": "Contacto",
+    "txt_descripcion": "Estamos para ayudarte. Contactanos por cualquiera de nuestros canales de atención."
   },
   "bannerDigital": {
-    "titulo": "¿Tenés un reclamo o sugerencia?",
-    "subtitulo": "Usá Vecino Digital para seguimiento de tu solicitud",
-    "textoBoton": "Ir a Vecino Digital",
-    "url": "https://vecinodigital.sanvicente.gob"
+    "txt_titulo": "¿Tenés un reclamo o sugerencia?",
+    "txt_subtitulo": "Usá Vecino Digital para seguimiento de tu solicitud",
+    "txt_boton": "Ir a Vecino Digital",
+    "link_url": "https://vecinodigital.sanvicente.gob"
   },
-  "oficinas": [
+  "lista_oficinas": [
     {
-      "nombre": "Edificio Municipal principal",
-      "direccion": "Bv. Sarmiento 1234",
-      "telefono": "(03492) 456-7800",
-      "email": "contacto@sanvicente.gob",
-      "horario": "Lunes a Viernes 8:00 - 14:00",
-      "oficina": "principal"
+      "_orden": 1,
+      "txt_nombre": "Edificio Municipal principal",
+      "txt_direccion": "Bv. Sarmiento 1234",
+      "txt_telefono": "(03492) 456-7800",
+      "txt_email": "contacto@sanvicente.gob",
+      "txt_horario": "Lunes a Viernes 8:00 - 14:00",
+      "_tipo": "principal"
     },
     {
-      "nombre": "Edificio Municipal secundario",
-      "direccion": "Buenos Aires 1234",
-      "telefono": "(03492) 456-7800",
-      "email": "contacto@sanvicente.gob",
-      "horario": "Lunes a Viernes 8:00 - 14:00"
+      "_orden": 2,
+      "txt_nombre": "Edificio Municipal secundario",
+      "txt_direccion": "Buenos Aires 1234",
+      "txt_telefono": "(03492) 456-7800",
+      "txt_email": "contacto@sanvicente.gob",
+      "txt_horario": "Lunes a Viernes 8:00 - 14:00"
     }
   ],
   "telefonosUtiles": {
-    "titulo": "Teléfonos útiles",
-    "subtitulo": "Contactos importantes para situaciones urgentes",
-    "maxHomeDisplay": 4,
-    "textoVerTodo": "Ver todos los teléfonos",
-    "urlVerTodo": "/contactoPage",
-    "telefonos": [
+    "txt_titulo": "Teléfonos útiles",
+    "txt_subtitulo": "Contactos importantes para situaciones urgentes",
+    "_maxHomeDisplay": 4,
+    "txt_ver_todo": "Ver todos los teléfonos",
+    "link_ver_todo": "/contactoPage",
+    "lista_telefonos": [
       {
-        "id": 1,
-        "nombre": "Policía",
-        "numero": "101",
-        "color": "#2563eb",
-        "favorito": true
+        "_orden": 1,
+        "txt_nombre": "Policía",
+        "txt_numero": "101",
+        "_color": "#2563eb",
+        "boolean_favorito": true
       },
       {
-        "id": 2,
-        "nombre": "Bomberos",
-        "numero": "100",
-        "color": "#dc2626",
-        "favorito": true
+        "_orden": 2,
+        "txt_nombre": "Bomberos",
+        "txt_numero": "100",
+        "_color": "#dc2626",
+        "boolean_favorito": true
       },
       {
-        "id": 3,
-        "nombre": "Ambulancia",
-        "numero": "107",
-        "color": "#16a34a",
-        "favorito": true
+        "_orden": 3,
+        "txt_nombre": "Ambulancia",
+        "txt_numero": "107",
+        "_color": "#16a34a",
+        "boolean_favorito": true
       },
       {
-        "id": 4,
-        "nombre": "Defensa Civil",
-        "numero": "103",
-        "color": "#ca8a04",
-        "favorito": true
+        "_orden": 4,
+        "txt_nombre": "Defensa Civil",
+        "txt_numero": "103",
+        "_color": "#ca8a04",
+        "boolean_favorito": true
       },
       {
-        "id": 5,
-        "nombre": "Emergencias Sanitarias",
-        "numero": "107",
-        "color": "#db2777",
-        "favorito": false
+        "_orden": 5,
+        "txt_nombre": "Emergencias Sanitarias",
+        "txt_numero": "107",
+        "_color": "#db2777",
+        "boolean_favorito": false
       },
       {
-        "id": 6,
-        "nombre": "Cruz Roja",
-        "numero": "(03492) 456-7890",
-        "color": "#ef4444",
-        "favorito": false
+        "_orden": 6,
+        "txt_nombre": "Cruz Roja",
+        "txt_numero": "(03492) 456-7890",
+        "_color": "#ef4444",
+        "boolean_favorito": false
       }
     ]
   }

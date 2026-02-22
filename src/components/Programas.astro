@@ -3,20 +3,22 @@ import data from "../data/programas.json";
 import sitioData from "../data/sitio.json";
 
 interface Programa {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  url: string;
-  sigla: string;
-  imagenLogo?: string;
-  imagenFondo?: string;
+  _orden?: number;
+  txt_nombre: string;
+  txt_descripcion: string;
+  link_url: string;
+  _sigla?: string;
+  img_logo?: string;
+  img_fondo?: string;
 }
 
-const programasRaw = data.programas.slice(0, 6);
+const { data: cmsData, titulo: propTitulo, subtitulo: propSubtitulo } = Astro.props;
+const source = (cmsData as Record<string, unknown>) ?? data;
+const programasRaw = (source.lista_programas ?? data.lista_programas).slice(0, 6);
 const programas = (programasRaw as unknown) as Programa[];
-
-const { titulo = data.titulo, subtitulo = data.subtitulo } = data.titulo ? data : Astro.props;
-const { tema } = sitioData;
+const titulo = (propTitulo ?? source.txt_titulo ?? data.txt_titulo) as string;
+const subtitulo = (propSubtitulo ?? source.txt_subtitulo ?? data.txt_subtitulo) as string;
+const tema = sitioData._estilo;
 ---
 
 <section class="featured-programs">
@@ -29,18 +31,18 @@ const { tema } = sitioData;
     <div class="programs-grid">
       {
         programas.map((prog: Programa) => (
-          <a href={prog.url} class="program-card">
+          <a href={prog.link_url} class="program-card">
             <div class="logo-box">
-              {prog.imagenLogo ? (
-                <img src={prog.imagenLogo} alt={prog.nombre} />
+              {prog.img_logo ? (
+                <img src={prog.img_logo} alt={prog.txt_nombre} />
               ) : (
-                <span class="sigla">{prog.sigla}</span>
+                <span class="sigla">{prog._sigla}</span>
               )}
             </div>
 
             <div class="content">
-              <h3 class="program-name">{prog.nombre}</h3>
-              <p class="program-desc">{prog.descripcion}</p>
+              <h3 class="program-name">{prog.txt_nombre}</h3>
+              <p class="program-desc">{prog.txt_descripcion}</p>
             </div>
           </a>
         ))

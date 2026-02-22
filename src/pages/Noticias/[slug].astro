@@ -4,46 +4,54 @@ import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import dataNoticias from "../../data/noticias.json";
 import sitio from "../../data/sitio.json";
+import { fetchNoticiasAdaptadas } from "../../lib/api-vecino";
 
-// 1. Definir las rutas dinámicas basadas en los slugs del JSON
+// Rutas dinámicas: noticias desde API Vecino o JSON local
 export async function getStaticPaths() {
-  return dataNoticias.noticias.map((noticia) => ({
-    params: { slug: noticia.slug },
+  let noticias = await fetchNoticiasAdaptadas();
+  if (noticias.length === 0) {
+    noticias = dataNoticias.lista_noticias.map((n) => {
+      const base = n as Record<string, unknown>;
+      return { ...base, link_mas_info: (base.link_mas_info as string | null) ?? null } as (typeof noticias)[number];
+    });
+  }
+  return noticias.map((noticia) => ({
+    params: { slug: (noticia as { _slug?: string })._slug },
     props: { noticia },
   }));
 }
 
 const { noticia } = Astro.props;
-const { tema } = sitio;
+const tema = sitio._estilo;
 ---
 
-<Layout title={`${noticia.titulo} | ${sitio.nombreCorto}`}>
+<Layout title={`${noticia.txt_titulo} | ${sitio.txt_nombreCorto}`}>
   <Header />
 
   <article class="article-page">
     <header class="article-header">
       <div class="container-narrow">
         <div class="breadcrumb">
-            <a href="/noticiasPage">Noticias</a> / <span>{noticia.categoria}</span>
+            <a href="/noticiasPage">Noticias</a> / <span>{noticia.txt_categoria}</span>
         </div>
-        <h1 class="article-title">{noticia.titulo}</h1>
+        <h1 class="article-title">{noticia.txt_titulo}</h1>
         <div class="article-meta">
-          <span class="date">{noticia.fecha}</span>
+          <span class="date">{noticia.txt_fecha}</span>
           <span class="dot">·</span>
-          <span class="category">{noticia.categoria}</span>
+          <span class="category">{noticia.txt_categoria}</span>
         </div>
       </div>
     </header>
 
     <div class="container">
       <figure class="main-figure">
-        <img src={noticia.imagen} alt={noticia.titulo} class="main-image" />
+        <img src={noticia.img_principal} alt={noticia.txt_titulo} class="main-image" />
       </figure>
     </div>
 
     <div class="article-body">
       <div class="container-narrow">
-        <div class="content" set:html={noticia.cuerpo} />
+        <div class="content" set:html={noticia.txt_cuerpo} />
         
         <div class="article-footer">
           <a href="/noticiasPage" class="btn-back">

@@ -3,15 +3,16 @@ import carruselData from "../data/carrusel.json";
 
 // Estructura para que TypeScript no marque errores
 interface Slide {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  imagen: string;
-  enlace: string;
-  categoria: string;
+  _orden?: number;
+  txt_titulo: string;
+  txt_descripcion: string;
+  img_principal: string;
+  link_destino: string;
+  txt_categoria: string;
 }
 
-const { slides = carruselData.slides as Slide[] } = Astro.props;
+const { data: cmsData, slides: propSlides } = Astro.props;
+const slides = (propSlides ?? (cmsData as Record<string, unknown>)?.lista_slides ?? carruselData.lista_slides) as Slide[];
 ---
 
 <section class="hero-carrousel" aria-label="Galería de novedades">
@@ -19,15 +20,15 @@ const { slides = carruselData.slides as Slide[] } = Astro.props;
     {
       slides.map((slide: Slide, index: number) => (
         <div class={`slide ${index === 0 ? "active" : ""}`} data-index={index}>
-          <img src={slide.imagen} alt={slide.titulo} class="slide-bg" />
+          <img src={slide.img_principal} alt={slide.txt_titulo} class="slide-bg" />
           <div class="slide-overlay" />
 
           <div class="container slide-content">
             <div class="text-wrapper">
-              <span class="badge">{slide.categoria}</span>
-              <h2 class="titulo">{slide.titulo}</h2>
-              <p class="descripcion">{slide.descripcion}</p>
-              <a href={slide.enlace} class="btn-primary">
+              <span class="badge">{slide.txt_categoria}</span>
+              <h2 class="titulo">{slide.txt_titulo}</h2>
+              <p class="descripcion">{slide.txt_descripcion}</p>
+              <a href={slide.link_destino} class="btn-primary">
                 Leer más
                 <svg
                   width="18"

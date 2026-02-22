@@ -4,7 +4,7 @@ import dataLicitaciones from "../../data/Transparencia/licitaciones.json";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 
-const { licitaciones, titulo, descripcion } = dataLicitaciones;
+const { lista_licitaciones: licitaciones, txt_titulo: titulo, txt_descripcion: descripcion } = dataLicitaciones;
 ---
 
 <Layout>
@@ -48,24 +48,24 @@ const { licitaciones, titulo, descripcion } = dataLicitaciones;
             <article class="licitacion-card">
               <div class="card-main-info">
                 <div class="meta-row">
-                  <span class="id-tag">{licitacion.id}</span>
-                  <span class="type-badge">{licitacion.tipo}</span>
+                  <span class="id-tag">{licitacion._id}</span>
+                  <span class="type-badge">{licitacion.txt_tipo}</span>
                 </div>
-                <h3>{licitacion.titulo}</h3>
-                <p class="card-desc">{licitacion.descripcion}</p>
+                <h3>{licitacion.txt_titulo}</h3>
+                <p class="card-desc">{licitacion.txt_descripcion}</p>
 
                 <div class="data-grid">
                   <div class="data-item">
                     <span class="label">Apertura:</span>
-                    <span class="value">{licitacion.fechaApertura}</span>
+                    <span class="value">{licitacion.txt_fecha_apertura}</span>
                   </div>
                   <div class="data-item">
                     <span class="label">Cierre:</span>
-                    <span class="value">{licitacion.fechaCierre}</span>
+                    <span class="value">{licitacion.txt_fecha_cierre}</span>
                   </div>
                   <div class="data-item">
                     <span class="label">Área:</span>
-                    <span class="value">{licitacion.area}</span>
+                    <span class="value">{licitacion.txt_area}</span>
                   </div>
                 </div>
               </div>
@@ -73,18 +73,18 @@ const { licitaciones, titulo, descripcion } = dataLicitaciones;
               <div class="card-side-info">
                 <div class="budget-box">
                   <span class="budget-label">Presupuesto estimado</span>
-                  <span class="budget-value">{licitacion.presupuesto}</span>
+                  <span class="budget-value">{licitacion.txt_presupuesto}</span>
                 </div>
                 <div class="button-group">
                   <a
-                    href={licitacion.imagenUrl}
+                    href={licitacion.img_principal}
                     target="_blank"
                     class="btn-outline-sm"
                   >
                     Ver imagen
                   </a>
                   <a
-                    href={licitacion.pliegoUrl}
+                    href={licitacion.link_pliego}
                     download
                     class="btn-primary-sm"
                   >

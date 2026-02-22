@@ -3,11 +3,11 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import data from "./../data/contactoPage/contacto-page.json";
-const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
+const { hero, bannerDigital, lista_oficinas: oficinas, telefonosUtiles } = data;
 
 ---
 
-<Layout title={`${hero.titulo} | Municipalidad de San Vicente (Santa Fe)`}>
+<Layout title={`${hero.txt_titulo} | Municipalidad de San Vicente (Santa Fe)`}>
   <Header />
   <main class="contact-page">
     <section class="hero-contact">
@@ -28,8 +28,8 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
             ></path></svg
           >
         </div>
-        <h1>{hero.titulo}</h1>
-        <p>{hero.descripcion}</p>
+        <h1>{hero.txt_titulo}</h1>
+        <p>{hero.txt_descripcion}</p>
       </div>
     </section>
 
@@ -38,11 +38,11 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
         <div class="digital-card">
           <div class="digital-content">
             <div class="digital-badge">Contactanos</div>
-            <h3>{bannerDigital.titulo}</h3>
-            <p>{bannerDigital.subtitulo}</p>
+            <h3>{bannerDigital.txt_titulo}</h3>
+            <p>{bannerDigital.txt_subtitulo}</p>
           </div>
-          <a href={bannerDigital.url} target="_blank" class="btn-digital-new">
-            <span>{bannerDigital.textoBoton}</span>
+          <a href={bannerDigital.link_url} target="_blank" class="btn-digital-new">
+            <span>{bannerDigital.txt_boton}</span>
             <svg
               width="20"
               height="20"
@@ -85,7 +85,7 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
                       </>
                     </svg>
                   </div>
-                  <h3>{oficina.nombre}</h3>
+                  <h3>{oficina.txt_nombre}</h3>
                 </div>
                 <ul class="office-details">
                   <li>
@@ -102,7 +102,7 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
                         <circle cx="12" cy="10" r="3" />
                       </>
                     </svg>
-                    <span>{oficina.direccion}</span>
+                    <span>{oficina.txt_direccion}</span>
                   </li>
                   <li>
                     <svg
@@ -115,7 +115,7 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
                     >
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                     </svg>
-                    <a href={`tel:${oficina.telefono}`}>{oficina.telefono}</a>
+                    <a href={`tel:${oficina.txt_telefono}`}>{oficina.txt_telefono}</a>
                   </li>
                   <li>
                     <svg
@@ -131,7 +131,7 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
                         <polyline points="22,6 12,13 2,6" />
                       </>
                     </svg>
-                    <a href={`mailto:${oficina.email}`}>{oficina.email}</a>
+                    <a href={`mailto:${oficina.txt_email}`}>{oficina.txt_email}</a>
                   </li>
                 </ul>
               </div>
@@ -150,14 +150,14 @@ const { hero, bannerDigital, oficinas, telefonosUtiles } = data;
           </p>
           <div class="phones-list">
             {
-              telefonosUtiles.telefonos.map((tel) => (
+              telefonosUtiles.lista_telefonos.map((tel) => (
                 <a
-                  href={`tel:${tel.numero.replace(/[^0-9+]/g, "")}`}
+                  href={`tel:${tel.txt_numero.replace(/[^0-9+]/g, "")}`}
                   class="phone-item"
                 >
                   <div class="phone-info">
-                    <span class="service-name">{tel.nombre}</span>
-                    <span class="service-number">{tel.numero}</span>
+                    <span class="service-name">{tel.txt_nombre}</span>
+                    <span class="service-number">{tel.txt_numero}</span>
                   </div>
                   <div class="phone-circle">
                     <svg

@@ -1,63 +1,69 @@
 {
-  "titulo": "Gobierno Municipal",
-  "descripcion": "Conocé a las autoridades y la estructura organizacional de la Municipalidad de San Vicente (Santa Fe)",
+  "txt_titulo": "Gobierno Municipal",
+  "txt_descripcion": "Conocé a las autoridades y la estructura organizacional de la Municipalidad de San Vicente (Santa Fe)",
   "intendente": {
-    "nombre": "Gonzalo Aira",
-    "cargo": "Intendente Municipal",
-    "imagen": "",
-    "gestion": "2026 – 2030"
+    "txt_nombre": "Gonzalo Aira",
+    "txt_cargo": "Intendente Municipal",
+    "img_perfil": "",
+    "txt_gestion": "2026 – 2030"
   },
-  "funcionarios": [
+  "lista_funcionarios": [
     {
-      "nombre": "Lic. María González",
-      "cargo": "Secretaria de Gobierno",
-      "area": "Gobierno",
-      "imagen": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop"
+      "_orden": 1,
+      "txt_nombre": "Lic. María González",
+      "txt_cargo": "Secretaria de Gobierno",
+      "txt_area": "Gobierno",
+      "img_perfil": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop"
     },
     {
-      "nombre": "Ing. Roberto Pérez",
-      "cargo": "Secretario de Obras Públicas",
-      "area": "Obras Públicas",
-      "imagen": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop"
+      "_orden": 2,
+      "txt_nombre": "Ing. Roberto Pérez",
+      "txt_cargo": "Secretario de Obras Públicas",
+      "txt_area": "Obras Públicas",
+      "img_perfil": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop"
     },
     {
-      "nombre": "C.P. Ana Martínez",
-      "cargo": "Secretaria de Hacienda",
-      "area": "Hacienda",
-      "imagen": ""},
-    {
-      "nombre": "Dra. Laura Fernández",
-      "cargo": "Secretaria de Salud",
-      "area": "Salud",
-      "imagen": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop"
+      "_orden": 3,
+      "txt_nombre": "C.P. Ana Martínez",
+      "txt_cargo": "Secretaria de Hacienda",
+      "txt_area": "Hacienda",
+      "img_perfil": ""
     },
     {
-      "nombre": "Darío Lell",
-      "cargo": "Secretario de Cultura",
-      "area": "Cultura",
-      "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
+      "_orden": 4,
+      "txt_nombre": "Dra. Laura Fernández",
+      "txt_cargo": "Secretaria de Salud",
+      "txt_area": "Salud",
+      "img_perfil": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop"
+    },
+    {
+      "_orden": 5,
+      "txt_nombre": "Darío Lell",
+      "txt_cargo": "Secretario de Cultura",
+      "txt_area": "Cultura",
+      "img_perfil": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
     }
   ],
-  "organigrama": [
+  "lista_organigrama": [
     {
-      "nombre": "Secretaría de Gobierno",
-      "areas": ["Legal y Técnica", "Recursos Humanos", "Ceremonial"]
+      "txt_nombre": "Secretaría de Gobierno",
+      "lista_areas": ["Legal y Técnica", "Recursos Humanos", "Ceremonial"]
     },
     {
-      "nombre": "Secretaría de Obras Públicas",
-      "areas": ["Planeamiento Urbano", "Vialidad", "Espacios Verdes", "Infraestructura"]
+      "txt_nombre": "Secretaría de Obras Públicas",
+      "lista_areas": ["Planeamiento Urbano", "Vialidad", "Espacios Verdes", "Infraestructura"]
     },
     {
-      "nombre": "Secretaría de Salud",
-      "areas": ["Atención Primaria", "Hospitales"]
+      "txt_nombre": "Secretaría de Salud",
+      "lista_areas": ["Atención Primaria", "Hospitales"]
     },
     {
-      "nombre": "Secretaría de Hacienda",
-      "areas": ["Rentas", "Contaduría", "Compras"]
+      "txt_nombre": "Secretaría de Hacienda",
+      "lista_areas": ["Rentas", "Contaduría", "Compras"]
     },
     {
-      "nombre": "Secretaría de Cultura",
-      "areas": ["Eventos", "Bibliotecas", "Museos"]
+      "txt_nombre": "Secretaría de Cultura",
+      "lista_areas": ["Eventos", "Bibliotecas", "Museos"]
     }
   ]
 }

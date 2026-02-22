@@ -3,17 +3,20 @@ import data from "../data/accesos-rapidos.json";
 import datosSitio from "../data/sitio.json";
 
 interface Enlace {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  url: string;
-  icono: string;
-  externo?: boolean;
+  _orden?: number;
+  txt_titulo: string;
+  txt_descripcion: string;
+  link_url: string;
+  icon_servicio: string;
+  _color?: string;
+  boolean_externo?: boolean;
 }
 
-const { enlaces = data.enlaces as Enlace[], titulo = data.titulo } =
-  Astro.props;
-const { tema } = datosSitio;
+const { data: cmsData, enlaces: propEnlaces, titulo: propTitulo } = Astro.props;
+const source = (cmsData as Record<string, unknown>) ?? data;
+const enlaces = (propEnlaces ?? source.lista_enlaces ?? data.lista_enlaces) as Enlace[];
+const titulo = (propTitulo ?? source.txt_titulo ?? data.txt_titulo) as string;
+const tema = datosSitio._estilo;
 
 // Mapeo de iconos SVG
 const iconMap: Record<string, string> = {
@@ -43,10 +46,10 @@ const iconMap: Record<string, string> = {
       {
         enlaces.map((link: Enlace) => (
           <a
-            href={link.url}
+            href={link.link_url}
             class="card"
-            target={link.externo ? "_blank" : "_self"}
-            rel={link.externo ? "noopener noreferrer" : ""}
+            target={link.boolean_externo ? "_blank" : "_self"}
+            rel={link.boolean_externo ? "noopener noreferrer" : ""}
           >
             <div class="icon-wrapper">
               <svg
@@ -58,11 +61,11 @@ const iconMap: Record<string, string> = {
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                set:html={iconMap[link.icono] || iconMap["info"]}
+                set:html={iconMap[link.icon_servicio] || iconMap["info"]}
               />
             </div>
-            <h3 class="card-title">{link.titulo}</h3>
-            <p class="card-desc">{link.descripcion}</p>
+            <h3 class="card-title">{link.txt_titulo}</h3>
+            <p class="card-desc">{link.txt_descripcion}</p>
           </a>
         ))
       }

@@ -4,13 +4,13 @@ import data from "../../data/licencia.json";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 
-const { titulo, descripcion, alerta, atencion, requisitos, categorias } = data;
+const { txt_titulo: titulo, txt_descripcion: descripcion, alerta, lista_atencion: atencion, _requisitos: requisitos, lista_categorias: categorias } = data;
 
 // Busca datos específicos para los botones finales
-const contactoObj = atencion.find((item) => item.tipo === "Contacto");
+const contactoObj = atencion.find((item: { _tipo?: string }) => item._tipo === "Contacto");
 const emailFinal =
-  contactoObj?.lineas.find((linea) => linea.includes("@")) || "";
-const telFinal = contactoObj?.lineas[0].replace("Tel: ", "") || "";
+  contactoObj?.lista_lineas?.find((linea: string) => linea.includes("@")) || "";
+const telFinal = contactoObj?.lista_lineas?.[0]?.replace("Tel: ", "") || "";
 ---
 
 <Layout>
@@ -63,8 +63,8 @@ const telFinal = contactoObj?.lineas[0].replace("Tel: ", "") || "";
             >
           </div>
           <div class="alert-content">
-            <strong>{alerta.titulo}</strong>
-            <p>{alerta.mensaje}</p>
+            <strong>{alerta.txt_titulo}</strong>
+            <p>{alerta.txt_mensaje}</p>
           </div>
         </div>
       </div>
@@ -76,7 +76,7 @@ const telFinal = contactoObj?.lineas[0].replace("Tel: ", "") || "";
           atencion.map((item) => (
             <div class="atencion-card">
               <div class="mini-icon">
-                {item.icon === "map" && (
+                {item._icon === "map" && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -92,7 +92,7 @@ const telFinal = contactoObj?.lineas[0].replace("Tel: ", "") || "";
                     <circle cx="12" cy="10" r="3" />
                   </svg>
                 )}
-                {item.icon === "clock" && (
+                {item._icon === "clock" && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -108,7 +108,7 @@ const telFinal = contactoObj?.lineas[0].replace("Tel: ", "") || "";
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
                 )}
-                {item.icon === "phone" && (
+                {item._icon === "phone" && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -125,8 +125,8 @@ const telFinal = contactoObj?.lineas[0].replace("Tel: ", "") || "";
                 )}
               </div>
               <div class="atencion-text">
-                <h3>{item.tipo}</h3>
-                {item.lineas.map((linea) => (
+                <h3>{item._tipo}</h3>
+                {item.lista_lineas?.map((linea: string) => (
                   <p>{linea}</p>
                 ))}
               </div>
@@ -233,10 +233,10 @@ const telFinal = contactoObj?.lineas[0].replace("Tel: ", "") || "";
         <h2 class="section-title">Categorías de Licencia</h2>
         <div class="cat-grid">
           {
-            categorias.map((cat) => (
+            categorias.map((cat: { _cat?: string; txt_desc?: string }) => (
               <div class="cat-card">
-                <span class="cat-tag">{cat.cat}</span>
-                <p>{cat.desc}</p>
+                <span class="cat-tag">{cat._cat}</span>
+                <p>{cat.txt_desc}</p>
               </div>
             ))
           }

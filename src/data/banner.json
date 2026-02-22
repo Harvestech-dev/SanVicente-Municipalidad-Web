@@ -1,6 +1,6 @@
 {
-  "imagen": "/images/Banner-ejemplo.png",
-  "alt": "Banner Vecino Digital",
-  "enlace": "vecinodigital.com/asdasd",
-  "titulo": "Vecino Digital"
+  "img_principal": "/images/Banner-ejemplo.png",
+  "txt_alt": "Banner Vecino Digital",
+  "link_destino": "vecinodigital.com/asdasd",
+  "txt_titulo": "Vecino Digital"
 }

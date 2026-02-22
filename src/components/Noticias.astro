@@ -1,11 +1,17 @@
 ---
 import dataNoticias from "../data/noticias.json";
 
-const { noticias, titulo, subtitulo, textoVerTodo, urlVerTodo } = dataNoticias;
+const { data: cmsData } = Astro.props;
+const source = (cmsData as Record<string, unknown>) ?? dataNoticias;
+const noticias = (source.lista_noticias ?? dataNoticias.lista_noticias) as typeof dataNoticias.lista_noticias;
+const titulo = (source.txt_titulo ?? dataNoticias.txt_titulo) as string;
+const subtitulo = (source.txt_subtitulo ?? dataNoticias.txt_subtitulo) as string;
+const textoVerTodo = (source.txt_ver_todo ?? dataNoticias.txt_ver_todo) as string;
+const urlVerTodo = (source.link_ver_todo ?? dataNoticias.link_ver_todo) as string;
 
-const noticiaDestacada = noticias.find((n) => n.destacada) || noticias[0];
+const noticiaDestacada = noticias.find((n: { boolean_destacada?: boolean }) => n.boolean_destacada) || noticias[0];
 const otrasNoticias = noticias
-  .filter((n) => n.slug !== noticiaDestacada.slug) 
+  .filter((n: { _slug?: string }) => n._slug !== noticiaDestacada._slug) 
   .slice(0, 3);
 ---
 
@@ -20,20 +26,20 @@ const otrasNoticias = noticias
       noticiaDestacada && (
         <article class="destacada-card">
           {/* CAMBIO: id por slug */}
-          <a href={`/Noticias/${noticiaDestacada.slug}`} class="destacada-link">
+          <a href={`/Noticias/${noticiaDestacada._slug}`} class="destacada-link">
             <div class="destacada-img">
               <img
-                src={noticiaDestacada.imagen}
-                alt={noticiaDestacada.titulo}
+                src={noticiaDestacada.img_principal}
+                alt={noticiaDestacada.txt_titulo}
               />
               <span class="tag-destacado">Destacada</span>
             </div>
             <div class="destacada-content">
-              <span class="categoria">{noticiaDestacada.categoria}</span>
-              <h3>{noticiaDestacada.titulo}</h3>
-              <p>{noticiaDestacada.extracto}</p>
+              <span class="categoria">{noticiaDestacada.txt_categoria}</span>
+              <h3>{noticiaDestacada.txt_titulo}</h3>
+              <p>{noticiaDestacada.txt_extracto}</p>
               <div class="destacada-footer">
-                <span class="fecha">{noticiaDestacada.fecha}</span>
+                <span class="fecha">{noticiaDestacada.txt_fecha}</span>
                 <span class="leer-mas">Leer más →</span>
               </div>
             </div>
@@ -47,15 +53,15 @@ const otrasNoticias = noticias
         otrasNoticias.map((noticia) => (
           <article class="noticia-card">
             {/* CAMBIO: id por slug */}
-            <a href={`/Noticias/${noticia.slug}`}>
+            <a href={`/Noticias/${noticia._slug}`}>
               <div class="card-img">
-                <img src={noticia.imagen} alt={noticia.titulo} />
-                <span class="tag-categoria">{noticia.categoria}</span>
+                <img src={noticia.img_principal} alt={noticia.txt_titulo} />
+                <span class="tag-categoria">{noticia.txt_categoria}</span>
               </div>
               <div class="card-content">
-                <h4>{noticia.titulo}</h4>
-                <p>{noticia.extracto}</p>
-                <span class="fecha">{noticia.fecha}</span>
+                <h4>{noticia.txt_titulo}</h4>
+                <p>{noticia.txt_extracto}</p>
+                <span class="fecha">{noticia.txt_fecha}</span>
               </div>
             </a>
           </article>

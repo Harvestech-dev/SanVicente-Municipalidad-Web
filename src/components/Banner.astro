@@ -13,23 +13,23 @@
 
 import bannerData from "../data/banner.json";
 
-const { 
-  imagen = "/images/placeholder-banner.jpg", 
-  alt = "Banner municipal", 
-  enlace = "#", 
-  titulo = "Información importante" 
-} = bannerData;
+const { data: cmsData } = Astro.props;
+const source = (cmsData as Record<string, unknown>) ?? bannerData;
+const img_principal = (source.img_principal ?? "/images/placeholder-banner.jpg") as string;
+const txt_alt = (source.txt_alt ?? "Banner municipal") as string;
+const link_destino = (source.link_destino ?? "#") as string;
+const txt_titulo = (source.txt_titulo ?? "Información importante") as string;
 ---
 
 <section class="banner-wrapper">
   <div class="banner-container">
-    {enlace ? (
-      <a href={enlace} class="banner-link" title={titulo}>
-        <img src={imagen} alt={alt} class="banner-img" loading="eager" />
+    {link_destino ? (
+      <a href={link_destino} class="banner-link" title={txt_titulo}>
+        <img src={img_principal} alt={txt_alt} class="banner-img" loading="eager" />
       </a>
     ) : (
       <div class="banner-link">
-        <img src={imagen} alt={alt} class="banner-img" />
+        <img src={img_principal} alt={txt_alt} class="banner-img" />
       </div>
     )}
   </div>

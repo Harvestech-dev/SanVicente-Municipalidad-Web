@@ -4,17 +4,31 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import dataNoticias from "../data/noticias.json";
 import sitio from "../data/sitio.json";
+import { fetchNoticiasAdaptadas } from "../lib/api-vecino";
 
-const { noticias, categorias, titulo, subtitulo } = dataNoticias;
-const { tema } = sitio;
+// 1. Intentar API Vecino; fallback a JSON local (normalizar para mismo formato)
+let noticias = await fetchNoticiasAdaptadas();
+if (noticias.length === 0) {
+  noticias = dataNoticias.lista_noticias.map((n) => {
+    const base = n as Record<string, unknown>;
+    return { ...base, link_mas_info: (base.link_mas_info as string | null) ?? null } as (typeof noticias)[number];
+  });
+}
 
-// Identifica la destacada para el diseño especial superior
-const noticiaDestacada = noticias.find((n) => n.destacada);
-// Para la grilla manda TODAS, así el filtro puede encontrarlas
+let categorias = ["Todas", ...Array.from(new Set(noticias.map((n) => (n as { txt_categoria?: string }).txt_categoria).filter(Boolean)))];
+if (categorias.length <= 1) {
+  categorias = dataNoticias.lista_categorias;
+}
+
+const titulo = dataNoticias.txt_titulo;
+const subtitulo = dataNoticias.txt_subtitulo;
+const tema = sitio._estilo;
+
+const noticiaDestacada = noticias.find((n: { boolean_destacada?: boolean }) => n.boolean_destacada) || noticias[0];
 const todasLasNoticias = noticias;
 ---
 
-<Layout title={`Noticias | ${sitio.nombreCorto}`}>
+<Layout title={`Noticias | ${sitio.txt_nombreCorto}`}>
   <Header />
 
   <main class="main-content">
@@ -55,22 +69,22 @@ const todasLasNoticias = noticias;
         <section class="featured-news" id="featuredSection">
           <div class="container">
             <a
-              href={`/Noticias/${noticiaDestacada.slug}`}
+              href={`/Noticias/${noticiaDestacada._slug}`}
               class="featured-card"
             >
               <div class="featured-image">
                 <img
-                  src={noticiaDestacada.imagen}
-                  alt={noticiaDestacada.titulo}
+                  src={noticiaDestacada.img_principal}
+                  alt={noticiaDestacada.txt_titulo}
                 />
                 <span class="badge-destacada">Destacada</span>
               </div>
               <div class="featured-info">
-                <span class="category-tag">{noticiaDestacada.categoria}</span>
-                <h2>{noticiaDestacada.titulo}</h2>
-                <p>{noticiaDestacada.extracto}</p>
+                <span class="category-tag">{noticiaDestacada.txt_categoria}</span>
+                <h2>{noticiaDestacada.txt_titulo}</h2>
+                <p>{noticiaDestacada.txt_extracto}</p>
                 <div class="featured-footer">
-                  <span class="date">{noticiaDestacada.fecha}</span>
+                  <span class="date">{noticiaDestacada.txt_fecha}</span>
                   <span class="read-more">Leer más &rarr;</span>
                 </div>
               </div>
@@ -84,22 +98,22 @@ const todasLasNoticias = noticias;
       <div class="container">
         <div class="news-grid" id="newsGrid">
           {
-            todasLasNoticias.map((noticia) => (
+            (todasLasNoticias ?? []).filter((n) => n && n.txt_titulo).map((noticia) => (
               <a
-                href={`/Noticias/${noticia.slug}`}
+                href={`/Noticias/${noticia._slug}`}
                 class="news-card"
-                data-category={noticia.categoria}
-                data-title={noticia.titulo.toLowerCase()}
-                data-destacada={noticia.destacada ? "true" : "false"}
+                data-category={noticia.txt_categoria ?? ""}
+                data-title={String(noticia.txt_titulo ?? "").toLowerCase()}
+                data-destacada={noticia.boolean_destacada ? "true" : "false"}
               >
                 <div class="card-image">
-                  <img src={noticia.imagen} alt={noticia.titulo} />
-                  <span class="card-category">{noticia.categoria}</span>
+                  <img src={noticia.img_principal} alt={noticia.txt_titulo} />
+                  <span class="card-category">{noticia.txt_categoria}</span>
                 </div>
                 <div class="card-content">
-                  <h3>{noticia.titulo}</h3>
-                  <p>{noticia.extracto}</p>
-                  <span class="card-date">{noticia.fecha}</span>
+                  <h3>{noticia.txt_titulo}</h3>
+                  <p>{noticia.txt_extracto}</p>
+                  <span class="card-date">{noticia.txt_fecha}</span>
                 </div>
               </a>
             ))

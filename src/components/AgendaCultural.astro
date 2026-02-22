@@ -3,35 +3,35 @@ import agendaData from "../data/agenda-cultural.json";
 import sitioData from "../data/sitio.json";
 
 interface Evento {
-  id: number;
-  title: string;
-  date: string;
-  fechaISO: string;
-  time: string;
-  location: string;
-  category: string;
-  image: string;
+  _orden?: number;
+  txt_titulo: string;
+  txt_fecha: string;
+  _fechaISO?: string;
+  txt_horario: string;
+  txt_ubicacion: string;
+  txt_categoria: string;
+  img_principal: string;
 }
 
-const {
-  title = agendaData.title,
-  subtitle = agendaData.subtitle,
-  viewAllText = agendaData.viewAllText,
-  viewAllHref = agendaData.viewAllHref,
-} = Astro.props;
+const { data: cmsData } = Astro.props;
+const source = (cmsData as Record<string, unknown>) ?? agendaData;
+const title = (Astro.props.title ?? source.txt_titulo ?? agendaData.txt_titulo) as string;
+const subtitle = (Astro.props.subtitle ?? source.txt_subtitulo ?? agendaData.txt_subtitulo) as string;
+const viewAllText = (Astro.props.viewAllText ?? source.txt_ver_todo ?? agendaData.txt_ver_todo) as string;
+const viewAllHref = (Astro.props.viewAllHref ?? source.link_ver_todo ?? agendaData.link_ver_todo) as string;
 
 /**
  * LÓGICA DE FILTRADO Y ORDEN
- * 1. Ordenamos por fechaISO (AAAA-MM-DD)
+ * 1. Ordenamos por _fechaISO (AAAA-MM-DD)
  * 2. .slice(0, 4) toma solo los primeros 4 eventos resultantes
  */
-const proximosEventos = (agendaData.events as Evento[])
+const proximosEventos = ((source.lista_eventos ?? agendaData.lista_eventos) as Evento[])
   .sort(
-    (a, b) => new Date(a.fechaISO).getTime() - new Date(b.fechaISO).getTime(),
+    (a, b) => new Date(a._fechaISO ?? a.txt_fecha).getTime() - new Date(b._fechaISO ?? b.txt_fecha).getTime(),
   )
   .slice(0, 4);
 
-const { tema } = sitioData;
+const tema = sitioData._estilo;
 ---
 
 <section id="agenda" class="agenda-section">
@@ -62,12 +62,12 @@ const { tema } = sitioData;
         proximosEventos.map((event: Evento) => (
           <article class="event-card">
             <div class="image-container">
-              <img src={event.image} alt={event.title} loading="lazy" />
-              <span class="category-badge">{event.category}</span>
+              <img src={event.img_principal} alt={event.txt_titulo} loading="lazy" />
+              <span class="category-badge">{event.txt_categoria}</span>
             </div>
 
             <div class="content">
-              <h3>{event.title}</h3>
+              <h3>{event.txt_titulo}</h3>
 
               <div class="info-list">
                 <div class="info-item">
@@ -85,7 +85,7 @@ const { tema } = sitioData;
                     <line x1="8" y1="2" x2="8" y2="6" />
                     <line x1="3" y1="10" x2="21" y2="10" />
                   </svg>
-                  <span>{event.date}</span>
+                  <span>{event.txt_fecha}</span>
                 </div>
 
                 <div class="info-item">
@@ -101,7 +101,7 @@ const { tema } = sitioData;
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
-                  <span>{event.time}</span>
+                  <span>{event.txt_horario}</span>
                 </div>
 
                 <div class="info-item">
@@ -117,7 +117,7 @@ const { tema } = sitioData;
                     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  <span>{event.location}</span>
+                  <span>{event.txt_ubicacion}</span>
                 </div>
               </div>
             </div>

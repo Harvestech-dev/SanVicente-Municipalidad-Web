@@ -1,6 +1,6 @@
 ---
 import sitioData from "../data/sitio.json";
-const { tema } = sitioData;
+const tema = sitioData._estilo;
 
 interface Props {
   title?: string;
@@ -8,11 +8,11 @@ interface Props {
 }
 
 const { 
-  title = sitioData.nombre, 
-  description = sitioData.descripcion 
+  title = sitioData.txt_nombre, 
+  description = sitioData.txt_descripcion 
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, sitioData.url);
+const canonicalURL = new URL(Astro.url.pathname, sitioData.link_url);
 ---
 
 <!doctype html>

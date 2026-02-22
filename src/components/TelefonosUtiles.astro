@@ -2,29 +2,27 @@
 import data from "../data/contactoPage/contacto-page.json";
 
 interface Telefono {
-  id: number;
-  nombre: string;
-  numero: string;
-  color: string;
-  favorito?: boolean;
+  _orden?: number;
+  txt_nombre: string;
+  txt_numero: string;
+  _color?: string;
+  boolean_favorito?: boolean;
 }
 
-const source = data.telefonosUtiles;
-
-const {
-  telefonos = source.telefonos as Telefono[],
-  titulo = source.titulo,
-  subtitulo = source.subtitulo,
-  textoVerTodo = source.textoVerTodo,
-  urlVerTodo = source.urlVerTodo
-} = Astro.props;
+const { data: cmsData } = Astro.props;
+const source = (cmsData as Record<string, unknown>) ?? data.telefonosUtiles;
+const telefonos = (source.lista_telefonos ?? data.telefonosUtiles.lista_telefonos) as Telefono[];
+const titulo = (source.txt_titulo ?? data.telefonosUtiles.txt_titulo) as string;
+const subtitulo = (source.txt_subtitulo ?? data.telefonosUtiles.txt_subtitulo) as string;
+const textoVerTodo = (source.txt_ver_todo ?? data.telefonosUtiles.txt_ver_todo) as string;
+const urlVerTodo = (source.link_ver_todo ?? data.telefonosUtiles.link_ver_todo) as string;
 
 const telefonosFavoritos: Telefono[] = telefonos
-  .filter((t: Telefono) => t.favorito)
+  .filter((t: Telefono) => t.boolean_favorito)
   .slice(0, 4);
 
 const tieneMas: boolean = telefonos.some(
-  (t: Telefono) => !t.favorito
+  (t: Telefono) => !t.boolean_favorito
 );
 ---
 
@@ -39,12 +37,12 @@ const tieneMas: boolean = telefonos.some(
     <div class="phones-grid">
       {telefonosFavoritos.map((item: Telefono) => (
         <a
-          href={`tel:${item.numero.replace(/\D/g, "")}`}
+          href={`tel:${item.txt_numero.replace(/\D/g, "")}`}
           class="phone-card"
         >
           <div
             class="icon-circle"
-            style={`background-color: ${item.color}15; color: ${item.color}`}
+            style={`background-color: ${item._color ?? "#6366f1"}15; color: ${item._color ?? "#6366f1"}`}
           >
             <!-- Ícono genérico -->
             <svg
@@ -75,8 +73,8 @@ const tieneMas: boolean = telefonos.some(
             </svg>
           </div>
 
-          <h3 class="name">{item.nombre}</h3>
-          <span class="number">{item.numero}</span>
+          <h3 class="name">{item.txt_nombre}</h3>
+          <span class="number">{item.txt_numero}</span>
         </a>
       ))}
     </div>

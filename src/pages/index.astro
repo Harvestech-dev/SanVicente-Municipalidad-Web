@@ -1,23 +1,53 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import HeroCarousel from '../components/HeroCarousel.astro';
-import Banner from '../components/Banner.astro';
-import AccesosRapidos from '../components/AccesosRapidos.astro';
-import Programas from '../components/Programas.astro';
-import AgendaCultural from '../components/AgendaCultural.astro';
-import Noticias from '../components/Noticias.astro';
-import TelefonosUtiles from '../components/TelefonosUtiles.astro';
-import Footer from '../components/Footer.astro';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import DynamicLayout from "../components/cms/DynamicLayout.astro";
+import { fetchCMSComponents, getComponentsByPage } from "../lib/cms/fetch-cms";
+import { getLocalComponentsAsCMS } from "../lib/cms/fallback-local";
+import { fetchNoticiasAdaptadas, fetchEventosAdaptados } from "../lib/api-vecino";
+import type { CMSComponent } from "../lib/cms/types";
+
+const PAGE_INICIO = "Inicio";
+
+// 1. Intentar cargar desde API CMS (en build, PUBLIC_API_URL vacío = no hay API)
+let components = await fetchCMSComponents();
+let pageComponents = getComponentsByPage(components, PAGE_INICIO);
+
+// 2. Fallback a JSON locales si no hay componentes de la API
+if (pageComponents.length === 0) {
+  const localComponents = getLocalComponentsAsCMS();
+  pageComponents = getComponentsByPage(localComponents, PAGE_INICIO);
+}
+
+// 3. Noticias y eventos desde API Vecino (endpoints separados)
+const [noticiasApi, eventosApi] = await Promise.all([
+  fetchNoticiasAdaptadas(),
+  fetchEventosAdaptados(),
+]);
+
+// 4. Inyectar datos de API Vecino en componentes agenda_cultural y noticias_section
+pageComponents = pageComponents.map((comp: CMSComponent) => {
+  const data = { ...comp.data };
+
+  if (comp.type === "agenda_cultural" && eventosApi.length > 0) {
+    data.lista_eventos = eventosApi.slice(0, 10);
+  }
+
+  if (comp.type === "noticias_section" && noticiasApi.length > 0) {
+    data.lista_noticias = noticiasApi;
+    data.lista_categorias = [
+      "Todas",
+      ...Array.from(new Set(noticiasApi.map((n) => (n as { txt_categoria?: string }).txt_categoria).filter(Boolean))),
+    ];
+  }
+
+  return { ...comp, data };
+});
 ---
 
 <Layout>
-	<Header />
-	<HeroCarousel />
-	<Banner />
-	<Programas />
-	<AgendaCultural />
-	<Noticias />
-	<TelefonosUtiles />
-	<Footer />
+  <Header />
+  <DynamicLayout components={pageComponents} />
+  <Footer />
 </Layout>

@@ -1,20 +1,20 @@
 {
-  "slides": [
+  "lista_slides": [
     {
-      "id": 1,
-      "titulo": "Festival de Verano 2025",
-      "descripcion": "Tres días de música, gastronomía y actividades para toda la familia",
-      "imagen": "/images/bicis.jpg",
-      "enlace": "/noticias/festival-verano",
-      "categoria": "Cultura"
+      "_orden": 1,
+      "txt_titulo": "Festival de Verano 2025",
+      "txt_descripcion": "Tres días de música, gastronomía y actividades para toda la familia",
+      "img_principal": "/images/bicis.jpg",
+      "link_destino": "/noticias/festival-verano",
+      "txt_categoria": "Cultura"
     },
     {
-      "id": 2,
-      "titulo": "Festival de Invierno 2025",
-      "descripcion": "Tres días de música, gastronomía y actividades para toda la familia",
-      "imagen": "/images/bicis.jpg",
-      "enlace": "/noticias/festival-verano",
-      "categoria": "Cultura"
+      "_orden": 2,
+      "txt_titulo": "Festival de Invierno 2025",
+      "txt_descripcion": "Tres días de música, gastronomía y actividades para toda la familia",
+      "img_principal": "/images/bicis.jpg",
+      "link_destino": "/noticias/festival-verano",
+      "txt_categoria": "Cultura"
     }
   ]
 }

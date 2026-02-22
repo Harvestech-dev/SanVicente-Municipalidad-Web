@@ -192,10 +192,25 @@ El tipo de control (texto, imagen, botón, lista, etc.) se deduce por **prefijo*
   ]
   ```
 
-### 5.9 Galería
+### 5.9 Galería (varias imágenes / carrusel)
 
 - **Prefijo**: `gallery_`
-- **Valor**: array (estructura según implementación del selector de galería en el form).
+- **Valor**: array de ítems; cada ítem puede ser:
+  - **Formato A (recomendado):** objeto `{ "url": string, "alt"?: string, "order"?: number }`. Permite alt por imagen y orden explícito para el carrusel.
+  - **Formato B (mínimo):** string (URL de la imagen). El orden es el índice del array.
+- **Uso típico**: carrusel de imágenes en un componente (hero, banner, cards). Preferible a una lista de objetos con `img_` por ítem porque el formulario dinámico puede ofrecer un único control “galería” (añadir/quitar/reordenar imágenes) en lugar de N bloques de lista.
+- **Ejemplo**:
+  ```json
+  "gallery_slider": [
+    { "url": "/media/1.jpg", "alt": "Slide 1", "order": 1 },
+    { "url": "/media/2.jpg", "alt": "Slide 2", "order": 2 }
+  ]
+  ```
+  o solo URLs:
+  ```json
+  "gallery_slider": [ "/media/1.jpg", "/media/2.jpg" ]
+  ```
+- **Estado en el formulario dinámico**: implementado. Los campos `gallery_*` se renderizan con **GalleryManager** (añadir/quitar/reordenar imágenes). El valor se guarda como array de `{ url, alt? }`.
 
 ### 5.10 Objeto sin prefijo tipo “botón”
 
@@ -245,6 +260,20 @@ Si una clave **no** tiene prefijo pero su valor es un objeto con `txt_label` o `
 3. **Opcional**: terminar la clave en `_optional` si no debe ser obligatoria.
 4. **Listas**: cada ítem con las mismas propiedades y prefijos conocidos; evitar claves que empiecen por `_` si quieres que se editen en el form (o usar `_` para ocultarlas en el ítem).
 5. **Contactos**: usar `lista_contacto` y la estructura con `icon_contacto`, `txt_label`, `link_destino`, `txt_valor`.
+6. **Galería (carrusel)**: usar `gallery_*` con array de `{ url, alt?, order? }` o de URLs; ver § 5.9. Hoy el form no tiene control galería (ver § 8.1).
+
+---
+
+## 8.1 Galería en el formulario dinámico: análisis
+
+- **¿Se gestiona correctamente?** No. El formulario dinámico **reconoce** el tipo (prefijo `gallery_` → tipo `gallery`, inicialización como array vacío si no hay valor), pero en `renderField` **no hay `case 'gallery'`**. El tipo `gallery` cae en el `default` y se renderiza como **input de texto**, por lo que el usuario no puede editar una galería de imágenes desde el form.
+- **Forma actual**: el valor se guarda y se carga; si alguien edita el JSON a mano o desde otra pantalla, el dato es correcto. Solo falta la **UI de edición** dentro del dynamic form (selector múltiple de imágenes, reordenar, quitar).
+- **Posibles implementaciones (sin código)**:
+  1. **Reutilizar `ImagePicker` + estado de “campo activo” por índice**: igual que `img_` (un solo campo activo + `setActiveField` + abrir ImagePicker), pero el valor del campo es un array. Al elegir imagen: si se está “añadiendo”, hacer push; si se está “reemplazando” un índice, actualizar ese índice. UI: lista de miniaturas (o placeholders) con botón “Cambiar” por ítem y “Añadir imagen” al final. Requiere extender el estado (p. ej. `activeField` + `activeGalleryIndex`) y un `case 'gallery'` en `renderField`.
+  2. **Reutilizar `GalleryManager`**: si `GalleryManager` acepta `images` (array) y `onChange(images)`, añadir `case 'gallery'` que renderice `<GalleryManager images={value} onChange={fieldProps.onChange} />`. Normalizar a la estructura que espera GalleryManager (p. ej. `{ id, url, name, alt }`) al cargar y al guardar volver a `{ url, alt? }` o solo URL según la especificación del componente.
+  3. **Lista de imágenes mínima**: sin depender de GalleryManager, un bloque que haga `map` del array mostrando miniatura + “Quitar” y un botón “Añadir imagen” que abre el mismo `ImagePicker` ya usado para `img_`, y al seleccionar hace push al array. La estructura en `data` puede ser array de strings (URL) para simplificar; si se quiere alt, array de objetos.
+
+Recomendación: definir en el manual la estructura de galería (ya en § 5.9) y, a la hora de implementar, optar por (2) si GalleryManager encaja con la estructura `gallery_*`, o por (1)/(3) para no acoplar al formato interno de GalleryManager.
 
 ---
 
@@ -261,12 +290,87 @@ Si una clave **no** tiene prefijo pero su valor es un objeto con `txt_label` o `
 
 ---
 
-## 10. Referencias en el código
+## 10. Validador de JSON (mismos parámetros que el backend)
+
+Para validar en el **front** el mismo payload que acepta el creador de componentes globales (API), usar el validador unificado:
+
+**Módulo:** `@/lib/cms-components/component-payload-validator`
+
+### 10.1 Crear componente (POST)
+
+- **Campos requeridos:** `name`, `key`, `page`, `componentPath`, `data` (mismo listado que el backend).
+- **Key:** solo `a-z`, `0-9` y `_` (regex: `^[a-z0-9_]+$`).
+- **data._configuracion:** se valida según el `type` del componente (allowed + validators); si falta, se aplican defaults.
+
+```ts
+import {
+  validateComponentCreatePayload,
+  REQUIRED_FIELDS_CREATE,
+  KEY_REGEX
+} from '@/lib/cms-components/component-payload-validator';
+
+const result = validateComponentCreatePayload(body, {
+  validateKeyFormat: true,  // default true
+  sanitize: true            // devuelve payload con data._configuracion saneada
+});
+
+if (!result.isValid) {
+  console.error(result.errors); // ['Campo requerido faltante: name', ...]
+  return;
+}
+
+// Enviar result.sanitizedPayload ?? body
+await fetch('/api/cms-components', {
+  method: 'POST',
+  body: JSON.stringify(result.sanitizedPayload ?? body)
+});
+```
+
+### 10.2 Actualizar componente (PUT) o solo data
+
+- **Actualización completa:** validar con `validateComponentUpdatePayload(body, componentType, { sanitize: true })`.
+- **Solo edición de data (formulario dinámico):** usar `validateComponentData(data, componentType, { sanitize: true })` o `prepareComponentDataForApi(data, componentType)` para obtener el `data` listo para enviar.
+
+```ts
+import {
+  validateComponentUpdatePayload,
+  validateComponentData,
+  prepareComponentDataForApi
+} from '@/lib/cms-components/component-payload-validator';
+
+// Opción A: validar payload completo de PUT
+const result = validateComponentUpdatePayload(body, existingComponent.type, { sanitize: true });
+
+// Opción B: solo validar/sanitizar el objeto data (ej. antes de guardar desde el form de datos)
+const dataResult = validateComponentData(formData, component.type, { sanitize: true });
+if (!dataResult.isValid) {
+  setErrors(dataResult.errors);
+  return;
+}
+const dataToSend = dataResult.sanitizedData ?? formData;
+
+// Opción C: preparar data con defaults y _configuracion sanitizada (sin validar errores)
+const dataToSend = prepareComponentDataForApi(formData, component.type);
+```
+
+### 10.3 Constantes y re-exportaciones
+
+- **REQUIRED_FIELDS_CREATE**: `['name', 'key', 'page', 'componentPath', 'data']`
+- **KEY_REGEX**: `/^[a-z0-9_]+$/`
+- **validateKey(key)**: `{ valid, error? }`
+- **getDefaultConfiguration(type)**, **ensureConfiguration(data, type)**, **validateComponentConfiguration(config, type)**, **sanitizeConfiguration(config, type)** están re-exportados para usar las mismas reglas que el backend.
+
+Así, al pasar el JSON desde el front se pueden usar los mismos parámetros y mensajes de error que en el creador de componentes globales.
+
+---
+
+## 11. Referencias en el código
 
 - **Formulario dinámico**: `src/components/common/DynamicFormContent.tsx`  
   - Exclusión de campos: `shouldExcludeField` (claves `_`, `id`, `_id`, `style`, `className`).  
   - Tipo de campo: `getFieldType` (prefijos y estructura).  
   - Agrupación: `groupFields` (Contenido general, Botones y enlaces, Listas y elementos).
+- **Validador de payload**: `src/lib/cms-components/component-payload-validator.ts` (crear/actualizar/data; mismos requisitos que la API).
 - **Tipos**: `src/types/form.ts` (`FieldType`, `FormField`), `src/types/components.ts` (`ComponentData`, `isVisible`, `isActive`, etc.).
 - **Configuración por tipo**: `src/lib/cms-components/component-defaults.ts`, `src/lib/cms-components/component-validators.ts`.
 - **Estructura esperada por tipo**: `docs/config_client/CMS_COMPONENTS_STRUCTURE.md`.

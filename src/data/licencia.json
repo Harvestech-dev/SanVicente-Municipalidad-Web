@@ -1,92 +1,40 @@
 {
-    "titulo": "Licencia de Conducir",
-    "descripcion": "Toda la información para obtener, renovar o tramitar tu licencia de conducir",
-    "alerta": {
-        "titulo": "Sistema de Turnos Online - Próximamente",
-        "mensaje": "Estamos trabajando en un nuevo sistema de turnos online para agilizar tu trámite. Mientras tanto, los turnos se otorgan de manera presencial por orden de llegada."
+  "txt_titulo": "Licencia de Conducir",
+  "txt_descripcion": "Toda la información para obtener, renovar o tramitar tu licencia de conducir",
+  "alerta": {
+    "txt_titulo": "Sistema de Turnos Online - Próximamente",
+    "txt_mensaje": "Estamos trabajando en un nuevo sistema de turnos online para agilizar tu trámite. Mientras tanto, los turnos se otorgan de manera presencial por orden de llegada."
+  },
+  "lista_atencion": [
+    {
+      "_tipo": "Dirección",
+      "lista_lineas": ["Centro de Licencias", "Av. San Martín 456", "San Vicente"],
+      "_icon": "map"
     },
-    "atencion": [
-        {
-            "tipo": "Dirección",
-            "lineas": [
-                "Centro de Licencias",
-                "Av. San Martín 456",
-                "San Vicente"
-            ],
-            "icon": "map"
-        },
-        {
-            "tipo": "Horarios",
-            "lineas": [
-                "Lunes a Viernes",
-                "7:30 a 13:00 hs",
-                "Turnos hasta las 12:00"
-            ],
-            "icon": "clock"
-        },
-        {
-            "tipo": "Contacto",
-            "lineas": [
-                "Tel: (03492) 456-7850",
-                "licencias@sanvicente.gob",
-                "Consultas: 8:00 a 12:00"
-            ],
-            "icon": "phone"
-        }
-    ],
-    "requisitos": {
-        "nueva": [
-            "DNI original y fotocopia",
-            "Certificado de domicilio (antigüedad máxima 30 días)",
-            "Certificado de grupo sanguíneo",
-            "Curso de educación vial (se realiza en el lugar)",
-            "Examen psicofísico",
-            "Examen teórico y práctico"
-        ],
-        "renovacion": [
-            "DNI original",
-            "Licencia anterior",
-            "Certificado de libre deuda de multas",
-            "Examen psicofísico"
-        ],
-        "duplicado": [
-            "DNI original",
-            "Denuncia policial por robo/extravío",
-            "Certificado de libre deuda de multas"
-        ]
+    {
+      "_tipo": "Horarios",
+      "lista_lineas": ["Lunes a Viernes", "7:30 a 13:00 hs", "Turnos hasta las 12:00"],
+      "_icon": "clock"
     },
-    "categorias": [
-        {
-            "cat": "A1",
-            "desc": "Ciclomotor hasta 50cc"
-        },
-        {
-            "cat": "A2",
-            "desc": "Motocicleta hasta 150cc"
-        },
-        {
-            "cat": "A3",
-            "desc": "Motocicleta de más de 150cc"
-        },
-        {
-            "cat": "B1",
-            "desc": "Automóvil hasta 3.500kg"
-        },
-        {
-            "cat": "B2",
-            "desc": "Automóvil con acoplado"
-        },
-        {
-            "cat": "C",
-            "desc": "Camiones sin acoplado"
-        },
-        {
-            "cat": "D",
-            "desc": "Transporte de pasajeros"
-        },
-        {
-            "cat": "E",
-            "desc": "Camiones con acoplado"
-        }
-    ]
+    {
+      "_tipo": "Contacto",
+      "lista_lineas": ["Tel: (03492) 456-7850", "licencias@sanvicente.gob", "Consultas: 8:00 a 12:00"],
+      "_icon": "phone"
+    }
+  ],
+  "_requisitos": {
+    "nueva": ["DNI original y fotocopia", "Certificado de domicilio (antigüedad máxima 30 días)", "Certificado de grupo sanguíneo", "Curso de educación vial (se realiza en el lugar)", "Examen psicofísico", "Examen teórico y práctico"],
+    "renovacion": ["DNI original", "Licencia anterior", "Certificado de libre deuda de multas", "Examen psicofísico"],
+    "duplicado": ["DNI original", "Denuncia policial por robo/extravío", "Certificado de libre deuda de multas"]
+  },
+  "lista_categorias": [
+    { "_cat": "A1", "txt_desc": "Ciclomotor hasta 50cc" },
+    { "_cat": "A2", "txt_desc": "Motocicleta hasta 150cc" },
+    { "_cat": "A3", "txt_desc": "Motocicleta de más de 150cc" },
+    { "_cat": "B1", "txt_desc": "Automóvil hasta 3.500kg" },
+    { "_cat": "B2", "txt_desc": "Automóvil con acoplado" },
+    { "_cat": "C", "txt_desc": "Camiones sin acoplado" },
+    { "_cat": "D", "txt_desc": "Transporte de pasajeros" },
+    { "_cat": "E", "txt_desc": "Camiones con acoplado" }
+  ]
 }

@@ -2,7 +2,16 @@
  * Adaptadores: API Vecino → formato interno (manual CMS).
  */
 
+import { API_VECINO_CONFIG } from "./config";
 import type { VecinoNewsItem, VecinoEventItem } from "./types";
+
+function toAbsoluteImageUrl(url: string | null): string {
+  if (!url || url.trim() === "") return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  const base = API_VECINO_CONFIG.BASE_URL;
+  if (!base) return url;
+  return `${base}${url.startsWith("/") ? "" : "/"}${url}`;
+}
 
 function formatDate(iso: string): string {
   try {
@@ -33,7 +42,7 @@ function slugify(text: string, id: number): string {
  */
 export function adaptVecinoNewsToNoticia(item: VecinoNewsItem) {
   const categoria = item.categories?.[0]?.name ?? "General";
-  const imagen = item.images?.[0]?.url ?? null;
+  const imagen = toAbsoluteImageUrl(item.images?.[0]?.url ?? null);
 
   return {
     _orden: item.id,
@@ -43,7 +52,7 @@ export function adaptVecinoNewsToNoticia(item: VecinoNewsItem) {
     txt_cuerpo: item.body ? `<p>${item.body.replace(/\n/g, "</p><p>")}</p>` : "",
     txt_fecha: formatDate(item.published_from),
     txt_categoria: categoria,
-    img_principal: imagen ?? "",
+    img_principal: imagen,
     boolean_destacada: item.is_important ?? false,
     link_mas_info: item.more_info ?? null,
   };
@@ -54,7 +63,7 @@ export function adaptVecinoNewsToNoticia(item: VecinoNewsItem) {
  */
 export function adaptVecinoEventToEvento(item: VecinoEventItem) {
   const categoria = item.categories?.[0]?.name ?? "Evento";
-  const imagen = item.images?.[0]?.url ?? null;
+  const imagen = toAbsoluteImageUrl(item.images?.[0]?.url ?? null);
 
   return {
     _orden: item.id,
@@ -64,7 +73,7 @@ export function adaptVecinoEventToEvento(item: VecinoEventItem) {
     txt_horario: "", // API no provee horario
     txt_ubicacion: item.body || "Consultar",
     txt_categoria: categoria,
-    img_principal: imagen ?? "",
+    img_principal: imagen,
     txt_descripcion: item.body ?? "",
   };
 }

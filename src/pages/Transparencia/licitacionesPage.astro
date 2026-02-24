@@ -81,14 +81,14 @@ const { lista_licitaciones: licitaciones, txt_titulo: titulo, txt_descripcion: d
                     target="_blank"
                     class="btn-outline-sm"
                   >
-                    Ver imagen
+                    Ver imagen <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                   </a>
                   <a
                     href={licitacion.link_pliego}
                     download
                     class="btn-primary-sm"
                   >
-                    Ver pliego
+                    Ver pliego <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                   </a>
                 </div>
               </div>
@@ -180,7 +180,6 @@ const { lista_licitaciones: licitaciones, txt_titulo: titulo, txt_descripcion: d
     transition: transform 0.2s;
   }
   .licitacion-card:hover {
-    transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
 
@@ -269,12 +268,15 @@ const { lista_licitaciones: licitaciones, txt_titulo: titulo, txt_descripcion: d
   }
   .btn-primary-sm,
   .btn-outline-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     padding: 0.6rem;
     border-radius: 8px;
     font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
-    text-align: center;
     transition: 0.2s;
   }
   .btn-primary-sm {

@@ -69,3 +69,23 @@ export interface VecinoEventItem {
   sounds: unknown[];
   videos: unknown[];
 }
+
+export interface VecinoWaste {
+  id: number;
+  type: string;
+  date: string | null;
+  day_of_week: number;
+  time_gap_start: string;
+  time_gap_finish: string;
+  neighborhood_id: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VecinoNeighborhood {
+  id: number;
+  name: string;
+  landmark_id: number;
+  area: unknown;
+  wastes: VecinoWaste[];
+}

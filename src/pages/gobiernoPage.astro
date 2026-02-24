@@ -132,10 +132,7 @@ const defaultProfile = "/profile.png";
   .intendente-card {
     background: var(--color-texto-claro);
     /* Borde lateral con color primario para dar color */
-    border-left: 6px solid var(--color-primario);
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--color-primario);
 
     border-radius: 1rem;
     padding: clamp(1.75rem, 4vw, 2.5rem);
@@ -203,6 +200,9 @@ const defaultProfile = "/profile.png";
   .funcionario-card {
     background: var(--color-texto-claro);
     border: 1px solid color-mix(in srgb, var(--color-texto), transparent 70%);
+    &:hover {
+      border: 1px solid var(--color-primario);
+    }
     border-radius: 0.75rem;
     padding: 1.25rem;
     display: flex;
@@ -211,7 +211,8 @@ const defaultProfile = "/profile.png";
     flex: 0 1 340px;
     transition:
       transform 0.2s ease,
-      box-shadow 0.2s ease;
+      box-shadow 0.2s ease,
+      border 0.2s ease;
   }
 
   .secretaria-card {
@@ -223,7 +224,6 @@ const defaultProfile = "/profile.png";
   }
 
   .funcionario-card:hover {
-    transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   }
   .funcionario-card img {

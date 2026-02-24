@@ -52,6 +52,7 @@ const tema = sitioData._estilo;
     <div class="action-container">
       <a href="/programasPage" class="btn-ver-todos">
         Ver todos los programas
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </a>
     </div>
   </div>
@@ -112,7 +113,6 @@ const tema = sitioData._estilo;
   }
 
   .program-card:hover {
-    transform: translateY(-5px);
     border-color: var(--primario);
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
   }
@@ -177,16 +177,22 @@ const tema = sitioData._estilo;
   }
 
   .btn-ver-todos {
-    background-color: var(--primario);
-    color: white;
-    padding: 0.75rem 2rem;
-    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: var(--primario);
+    padding: 0.85rem 2rem;
+    border: 1px solid var(--primario);
+    border-radius: 14px;
     text-decoration: none;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
+    font-weight: 700;
+    transition: all 0.3s ease;
   }
 
   .btn-ver-todos:hover {
-    background-color: #1f2937;
+    background: var(--primario);
+    border-color: var(--primario);
+    color: white;
   }
 </style>

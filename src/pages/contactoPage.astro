@@ -2,9 +2,84 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { SocialIcon } from "../components/SocialIcon";
 import data from "./../data/contactoPage/contacto-page.json";
-const { hero, bannerDigital, lista_oficinas: oficinas, telefonosUtiles } = data;
+const {
+  hero,
+  bannerDigital,
+  lista_oficinas: edificios,
+  telefonosUtiles,
+} = data;
 
+interface Contacto {
+  icon_contacto?: string;
+  txt_label?: string;
+  link_destino?: string;
+  txt_valor?: string;
+}
+
+interface Dependencia {
+  _id?: string;
+  txt_titulo?: string;
+  _orden?: number;
+  _icon?: string;
+  lista_contactos?: Contacto[];
+  lista_dependencias?: Dependencia[];
+}
+
+interface Edificio {
+  txt_titulo?: string;
+  txt_subtitulo?: string;
+  _id?: string;
+  _orden?: number;
+  _boolean_isDefault?: boolean;
+  _icon?: string;
+  lista_contactos?: Contacto[];
+  lista_dependencias?: Dependencia[];
+}
+
+interface SearchResultItem {
+  titulo: string;
+  label: string;
+  valor: string;
+  link: string;
+  icon: string;
+}
+
+function buildSearchIndex(
+  edificios: Edificio[],
+  telefonosUtiles: { lista_telefonos?: Array<{ txt_nombre?: string; _icon?: string; lista_contactos?: Contacto[] }> }
+): SearchResultItem[] {
+  const items: SearchResultItem[] = [];
+  const addContact = (titulo: string, c: Contacto, icon: string) => {
+    items.push({
+      titulo,
+      label: c.txt_label ?? "",
+      valor: c.txt_valor ?? "",
+      link: c.link_destino ?? "",
+      icon: c.icon_contacto ?? icon,
+    });
+  };
+  (edificios ?? []).forEach((e) => {
+    const baseTitulo = e.txt_titulo ?? "";
+    (e.lista_contactos ?? []).forEach((c) => addContact(baseTitulo, c, e._icon ?? "FaLink"));
+    (e.lista_dependencias ?? []).forEach((sec) => {
+      const tituloSec = baseTitulo ? `${baseTitulo} › ${sec.txt_titulo ?? ""}` : (sec.txt_titulo ?? "");
+      (sec.lista_contactos ?? []).forEach((c) => addContact(tituloSec, c, sec._icon ?? "FaLink"));
+      (sec.lista_dependencias ?? []).forEach((sub) => {
+        const tituloSub = tituloSec ? `${tituloSec} › ${sub.txt_titulo ?? ""}` : (sub.txt_titulo ?? "");
+        (sub.lista_contactos ?? []).forEach((c) => addContact(tituloSub, c, sub._icon ?? "FaLink"));
+      });
+    });
+  });
+  (telefonosUtiles.lista_telefonos ?? []).forEach((tel) => {
+    const titulo = tel.txt_nombre ?? "";
+    (tel.lista_contactos ?? []).forEach((c) => addContact(titulo, c, tel._icon ?? "FaPhone"));
+  });
+  return items;
+}
+
+const searchIndex = buildSearchIndex(edificios as Edificio[], telefonosUtiles);
 ---
 
 <Layout title={`${hero.txt_titulo} | Municipalidad de San Vicente (Santa Fe)`}>
@@ -41,189 +116,312 @@ const { hero, bannerDigital, lista_oficinas: oficinas, telefonosUtiles } = data;
             <h3>{bannerDigital.txt_titulo}</h3>
             <p>{bannerDigital.txt_subtitulo}</p>
           </div>
-          <a href={bannerDigital.link_url} target="_blank" class="btn-digital-new">
+          <a
+            href={bannerDigital.link_url}
+            target="_blank"
+            class="btn-digital-new"
+          >
             <span>{bannerDigital.txt_boton}</span>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              ><line x1="5" y1="12" x2="19" y2="12"></line><polyline
-                points="12 5 19 12 12 19"></polyline></svg
-            >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
           </a>
         </div>
       </div>
     </section>
 
+    <section class="contact-search-section">
+      <div class="container">
+        <div class="search-wrapper" id="search-wrapper">
+          <button type="button" class="search-trigger" id="search-trigger" aria-label="Buscar contacto">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+          </button>
+          <div class="search-input-wrap">
+            <input
+              type="search"
+              id="contact-search"
+              class="search-input"
+              placeholder="Buscar: intendencia, policía, email..."
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div id="search-results" class="search-results" aria-live="polite" hidden></div>
+      </div>
+    </section>
+
     <section class="section-offices">
       <div class="container">
-        <h2 class="section-title">Nuestras Oficinas</h2>
-        <div class="offices-grid">
+        <h2 class="section-title">Organización y Contacto</h2>
+        <p class="section-desc section-desc-centered">
+          Edificios, secretarías y áreas de la Municipalidad.
+        </p>
+        <div class="edificios-list">
           {
-            oficinas.map((oficina) => (
-              <div class="office-card">
-                <div class="office-header">
-                  <div class="office-icon">
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <>
-                        <rect x="2" y="10" width="20" height="12" rx="2" />
-                        <path d="M12 22V10" />
-                        <path d="M12 10V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v5" />
-                        <path d="M22 10V5a2 2 0 0 1 2-2h-6a2 2 0 0 1-2 2v5" />
-                      </>
-                    </svg>
+            (edificios as Edificio[])
+              .sort((a, b) => (a._orden ?? 0) - (b._orden ?? 0))
+              .map((edificio) => (
+                <article
+                  class={`edificio-card ${edificio._boolean_isDefault ? "edificio-default" : ""}`}
+                >
+                  <header class="edificio-header">
+                    <div class="edificio-icon">
+                      <SocialIcon
+                        iconName={edificio._icon ?? "FaBuilding"}
+                        size={24}
+                      />
+                    </div>
+                    <div class="edificio-titles">
+                      <h3 class="edificio-title">{edificio.txt_titulo}</h3>
+                      {edificio.txt_subtitulo && (
+                        <p class="edificio-subtitle">
+                          {edificio.txt_subtitulo}
+                        </p>
+                      )}
+                    </div>
+                  </header>
+                  <div class="edificio-contactos">
+                    {(edificio.lista_contactos ?? []).map((c) => (
+                      <div class="contacto-item">
+                        <span class="contact-icon">
+                          <SocialIcon
+                            iconName={c.icon_contacto ?? "FaLink"}
+                            size={16}
+                          />
+                        </span>
+                        {c.link_destino ? (
+                          <a
+                            href={c.link_destino}
+                            target={
+                              c.link_destino.startsWith("http")
+                                ? "_blank"
+                                : undefined
+                            }
+                            rel={
+                              c.link_destino.startsWith("http")
+                                ? "noopener noreferrer"
+                                : undefined
+                            }
+                            class="contact-link"
+                          >
+                            {c.txt_valor ?? c.link_destino}
+                          </a>
+                        ) : (
+                          <span>{c.txt_valor ?? ""}</span>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                  <h3>{oficina.txt_nombre}</h3>
-                </div>
-                <ul class="office-details">
-                  <li>
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <>
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                        <circle cx="12" cy="10" r="3" />
-                      </>
-                    </svg>
-                    <span>{oficina.txt_direccion}</span>
-                  </li>
-                  <li>
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                    <a href={`tel:${oficina.txt_telefono}`}>{oficina.txt_telefono}</a>
-                  </li>
-                  <li>
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <>
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                      </>
-                    </svg>
-                    <a href={`mailto:${oficina.txt_email}`}>{oficina.txt_email}</a>
-                  </li>
-                </ul>
-              </div>
-            ))
+                  {(edificio.lista_dependencias ?? []).length > 0 && (
+                    <div class="dependencias-wrap">
+                      <details class="nivel-details secretarias-details">
+                        <summary class="nivel-label nivel-label-toggle">
+                          <span class="chevron" aria-hidden="true" />
+                          Áreas
+                        </summary>
+                        <ul class="secretarias-list">
+                          {(edificio.lista_dependencias ?? [])
+                            .sort((a, b) => (a._orden ?? 0) - (b._orden ?? 0))
+                            .map((sec) => (
+                              <li class="secretaria-item">
+                                <div class="secretaria-header">
+                                  <SocialIcon
+                                    iconName={sec._icon ?? "FaBuilding"}
+                                    size={18}
+                                  />
+                                  <h4 class="secretaria-title">
+                                    {sec.txt_titulo}
+                                  </h4>
+                                </div>
+                                <div class="secretaria-content">
+                                  <div class="secretaria-contactos">
+                                    {(sec.lista_contactos ?? []).map((c) => (
+                                      <div class="contacto-item contacto-item-sm">
+                                        <span class="contact-icon">
+                                          <SocialIcon
+                                            iconName={
+                                              c.icon_contacto ?? "FaLink"
+                                            }
+                                            size={14}
+                                          />
+                                        </span>
+                                        {c.link_destino ? (
+                                          <a
+                                            href={c.link_destino}
+                                            target={
+                                              c.link_destino.startsWith("http")
+                                                ? "_blank"
+                                                : undefined
+                                            }
+                                            rel={
+                                              c.link_destino.startsWith("http")
+                                                ? "noopener noreferrer"
+                                                : undefined
+                                            }
+                                            class="contact-link"
+                                          >
+                                            {c.txt_valor ?? c.link_destino}
+                                          </a>
+                                        ) : (
+                                          <span>{c.txt_valor ?? ""}</span>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                  {(sec.lista_dependencias ?? []).length >
+                                    0 && (
+                                    <div class="subsecretarias-wrap">
+                                      <details class="nivel-details subsecretarias-details">
+                                        <summary class="nivel-label nivel-label-sm nivel-label-toggle">
+                                          <span
+                                            class="chevron chevron-sm"
+                                            aria-hidden="true"
+                                          />
+                                          Subsecretarías
+                                        </summary>
+                                        <ul class="subsecretarias-list">
+                                          {(sec.lista_dependencias ?? [])
+                                            .sort(
+                                              (a, b) =>
+                                                (a._orden ?? 0) -
+                                                (b._orden ?? 0),
+                                            )
+                                            .map((sub) => (
+                                              <li class="subsecretaria-item">
+                                                <div class="subsecretaria-header">
+                                                  <SocialIcon
+                                                    iconName={
+                                                      sub._icon ?? "FaLink"
+                                                    }
+                                                    size={16}
+                                                  />
+                                                  <h5 class="subsecretaria-title">
+                                                    {sub.txt_titulo}
+                                                  </h5>
+                                                </div>
+                                                <div class="subsecretaria-contactos">
+                                                  {(
+                                                    sub.lista_contactos ?? []
+                                                  ).map((c) => (
+                                                    <div class="contacto-item contacto-item-xs">
+                                                      <span class="contact-icon">
+                                                        <SocialIcon
+                                                          iconName={
+                                                            c.icon_contacto ??
+                                                            "FaLink"
+                                                          }
+                                                          size={12}
+                                                        />
+                                                      </span>
+                                                      {c.link_destino ? (
+                                                        <a
+                                                          href={c.link_destino}
+                                                          target={
+                                                            c.link_destino.startsWith(
+                                                              "http",
+                                                            )
+                                                              ? "_blank"
+                                                              : undefined
+                                                          }
+                                                          rel={
+                                                            c.link_destino.startsWith(
+                                                              "http",
+                                                            )
+                                                              ? "noopener noreferrer"
+                                                              : undefined
+                                                          }
+                                                          class="contact-link"
+                                                        >
+                                                          {c.txt_valor ??
+                                                            c.link_destino}
+                                                        </a>
+                                                      ) : (
+                                                        <span>
+                                                          {c.txt_valor ?? ""}
+                                                        </span>
+                                                      )}
+                                                    </div>
+                                                  ))}
+                                                </div>
+                                              </li>
+                                            ))}
+                                        </ul>
+                                      </details>
+                                    </div>
+                                  )}
+                                </div>
+                              </li>
+                            ))}
+                        </ul>
+                      </details>
+                    </div>
+                  )}
+                </article>
+              ))
           }
         </div>
       </div>
     </section>
 
-    <section class="section-form">
-      <div class="container grid-two-cols">
-        <div class="useful-phones">
-          <h2 class="section-subtitle">Teléfonos útiles</h2>
-          <p class="section-desc">
-            Líneas de atención directa.
-          </p>
-          <div class="phones-list">
-            {
-              telefonosUtiles.lista_telefonos.map((tel) => (
-                <a
-                  href={`tel:${tel.txt_numero.replace(/[^0-9+]/g, "")}`}
-                  class="phone-item"
-                >
-                  <div class="phone-info">
-                    <span class="service-name">{tel.txt_nombre}</span>
-                    <span class="service-number">{tel.txt_numero}</span>
+    <section class="section-phones">
+      <div class="container">
+        <h2 class="section-subtitle">{telefonosUtiles.txt_titulo ?? "Teléfonos útiles"}</h2>
+        <p class="section-desc">{telefonosUtiles.txt_subtitulo ?? "Líneas de atención directa."}</p>
+        <div class="phones-grid">
+          {(telefonosUtiles.lista_telefonos ?? [])
+            .sort((a, b) => (a._orden ?? 0) - (b._orden ?? 0))
+            .map((tel) => {
+              const contactos = tel.lista_contactos ?? [];
+              return (
+                <article class="phone-card">
+                  <div class="phone-card-icon">
+                    <SocialIcon
+                      iconName={tel._icon ?? "FaPhone"}
+                      size={24}
+                    />
                   </div>
-                  <div class="phone-circle">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="3"
-                    >
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
+                  <div class="phone-card-content">
+                    <h3 class="phone-card-title">{tel.txt_nombre}</h3>
+                    <div class="phone-contacts">
+                      {contactos.map((c) => (
+                        <div class="phone-contact-item">
+                          <div class="phone-contact-content">
+                            <span class="phone-contact-label">{c.txt_label ?? ""}</span>
+                            {c.link_destino ? (
+                              <a
+                                href={c.link_destino}
+                                target={c.link_destino.startsWith("http") ? "_blank" : undefined}
+                                rel={c.link_destino.startsWith("http") ? "noopener noreferrer" : undefined}
+                                class="phone-contact-link"
+                              >
+                                <span class="phone-contact-icon">
+                                  <SocialIcon
+                                    iconName={c.icon_contacto ?? tel._icon ?? "FaPhone"}
+                                    size={12}
+                                  />
+                                </span>
+                                <span>{c.txt_valor ?? ""}</span>
+                              </a>
+                            ) : (
+                              <span class="phone-contact-value">
+                                <span class="phone-contact-icon">
+                                  <SocialIcon
+                                    iconName={c.icon_contacto ?? tel._icon ?? "FaPhone"}
+                                    size={12}
+                                  />
+                                </span>
+                                <span>{c.txt_valor ?? ""}</span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </a>
-              ))
-            }
-          </div>
-        </div>
-
-        <div class="contact-form-container">
-          <h2>Envianos un mensaje</h2>
-          <p class="form-intro">
-            Completá el formulario y nos pondremos en contacto a la brevedad.
-          </p>
-          <form class="contact-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="nombre">Nombre completo</label>
-                <input
-                  type="text"
-                  id="nombre"
-                  placeholder="Juan Pérez"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="juan@email.com"
-                  required
-                />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="telefono">Teléfono</label>
-              <input type="text" id="telefono" placeholder="(0351) 123-4567" />
-            </div>
-            <div class="form-group">
-              <label for="asunto">Asunto</label>
-              <input
-                type="text"
-                id="asunto"
-                placeholder="Motivo de tu consulta"
-              />
-            </div>
-            <div class="form-group">
-              <label for="mensaje">Mensaje</label>
-              <textarea
-                id="mensaje"
-                rows="4"
-                placeholder="Escribí tu mensaje aquí..."></textarea>
-            </div>
-            <button type="submit" class="btn-submit">Enviar mensaje</button>
-          </form>
+                </article>
+              );
+            })}
         </div>
       </div>
     </section>
@@ -231,6 +429,105 @@ const { hero, bannerDigital, lista_oficinas: oficinas, telefonosUtiles } = data;
 
   <Footer />
 </Layout>
+
+<script define:vars={{ searchIndex }}>
+  const input = document.getElementById("contact-search");
+  const resultsEl = document.getElementById("search-results");
+
+  function normalize(str) {
+    return (str || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+  }
+
+  function search(query) {
+    const q = normalize(query);
+    if (!q || q.length < 2) return [];
+    return searchIndex.filter(
+      (item) =>
+        normalize(item.titulo).includes(q) ||
+        normalize(item.label).includes(q) ||
+        normalize(item.valor).includes(q)
+    );
+  }
+
+  const iconSvg = {
+    FaPhone: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    FaEnvelope: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+    FaWhatsapp: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>',
+    FaMapMarkerAlt: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+    FaClock: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    FaLink: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  };
+  function getIconSvg(icon) {
+    return iconSvg[icon] || iconSvg.FaLink;
+  }
+  function renderResult(item) {
+    const link = item.link && item.link.trim() !== "";
+    const href = link ? item.link : "#";
+    const target = link && item.link.startsWith("http") ? "_blank" : "";
+    const rel = link && item.link.startsWith("http") ? "noopener noreferrer" : "";
+    const icon = getIconSvg(item.icon);
+    const content = link
+      ? `<a href="${href}" ${target ? `target="${target}"` : ""} ${rel ? `rel="${rel}"` : ""} class="search-result-link">${escapeHtml(item.valor)}</a>`
+      : `<span class="search-result-value">${escapeHtml(item.valor)}</span>`;
+    return `
+      <div class="search-result-item">
+        <h4 class="search-result-titulo">${escapeHtml(item.titulo)}</h4>
+        <div class="search-result-contact">
+          <span class="search-result-icon">${icon}</span>
+          <div class="search-result-content">
+            ${item.label ? `<span class="search-result-label">${escapeHtml(item.label)}</span>` : ""}
+            ${content}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function escapeHtml(s) {
+    const div = document.createElement("div");
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  const wrapper = document.getElementById("search-wrapper");
+  const trigger = document.getElementById("search-trigger");
+
+  function expandSearch() {
+    wrapper?.classList.add("search-expanded");
+    input?.focus();
+  }
+  function collapseSearch() {
+    if (!input?.value.trim()) {
+      wrapper?.classList.remove("search-expanded");
+    }
+  }
+
+  trigger?.addEventListener("click", expandSearch);
+  input?.addEventListener("focus", expandSearch);
+  input?.addEventListener("blur", () => setTimeout(collapseSearch, 200));
+
+  input?.addEventListener("input", () => {
+    const query = input.value.trim();
+    if (!resultsEl) return;
+    if (query.length < 2) {
+      resultsEl.hidden = true;
+      resultsEl.innerHTML = "";
+      return;
+    }
+    const hits = search(query);
+    if (hits.length === 0) {
+      resultsEl.hidden = false;
+      resultsEl.innerHTML = '<p class="search-no-results">No se encontraron resultados.</p>';
+      return;
+    }
+    resultsEl.hidden = false;
+    resultsEl.innerHTML = hits.map(renderResult).join("");
+  });
+</script>
 
 <style>
   /* --- CONFIGURACIÓN BASE --- */
@@ -326,7 +623,129 @@ const { hero, bannerDigital, lista_oficinas: oficinas, telefonosUtiles } = data;
     filter: brightness(1.1);
   }
 
-  /* --- OFICINAS --- */
+  /* --- BUSCADOR --- */
+  .contact-search-section {
+    padding: 2rem 0;
+  }
+  .search-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 500px;
+  }
+  .search-trigger {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: var(--color-primario);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+  .search-trigger:hover {
+    border-color: var(--color-primario);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+  .search-input-wrap {
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: width 0.3s ease, opacity 0.2s ease;
+  }
+  .search-wrapper.search-expanded .search-input-wrap {
+    width: 100%;
+    max-width: 400px;
+    opacity: 1;
+    margin-left: 0.75rem;
+  }
+  .search-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    font-size: 1rem;
+    background: #fbfcfd;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    background: white;
+  }
+  .search-icon {
+    flex-shrink: 0;
+  }
+
+  .search-results {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .search-results :global(.search-result-item) {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .search-results :global(.search-result-item:hover) {
+    border-color: var(--color-primario);
+  }
+  .search-results :global(.search-result-titulo) {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primario);
+    margin: 0 0 0.5rem 0;
+  }
+  .search-results :global(.search-result-contact) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+  .search-results :global(.search-result-icon) {
+    color: var(--color-primario);
+    flex-shrink: 0;
+  }
+  .search-results :global(.search-result-icon svg) {
+    display: block;
+  }
+  .search-results :global(.search-result-content) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .search-results :global(.search-result-label) {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+  }
+  .search-results :global(.search-result-link),
+  .search-results :global(.search-result-value) {
+    color: inherit;
+    text-decoration: none;
+  }
+  .search-results :global(.search-result-link:hover) {
+    color: var(--color-primario);
+  }
+  .search-results :global(.search-no-results) {
+    color: #64748b;
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  /* --- JERARQUÍA: EDIFICIOS > SECRETARÍAS > SUBSECRETARÍAS --- */
   .section-offices {
     padding: 6rem 0;
   }
@@ -334,98 +753,233 @@ const { hero, bannerDigital, lista_oficinas: oficinas, telefonosUtiles } = data;
     text-align: center;
     font-size: 2.5rem;
     font-weight: 900;
+    margin-bottom: 0.5rem;
+  }
+  .section-desc-centered {
+    text-align: center;
+    color: #64748b;
     margin-bottom: 4rem;
   }
-  .offices-grid {
+
+  .edificios-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 3rem;
+  }
+  @media (min-width: 1024px) {
+    .edificios-list {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
-  .office-card {
-    padding: 2.5rem;
-    border-radius: 1.5rem;
+  .edificio-card {
     background: white;
-    border: 3px solid rgba(0, 0, 0, 0.15);
+    border-radius: 1.25rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
     transition: all 0.3s ease;
   }
-  .office-card:hover {
-    transform: translateY(-5px);
+  .edificio-card:hover {
     border-color: var(--color-primario);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+  .edificio-card.edificio-default {
+    border-color: var(--color-primario);
+    border-width: 1px;
+    background: linear-gradient(135deg, rgba(194, 109, 14, 0.04), white);
   }
 
-  .office-header {
+  .edificio-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 1.25rem;
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
   }
-  .office-icon {
-    background: var(--color-primario-claro, #eff6ff);
-    color: var(--color-primario);
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+  .edificio-icon {
+    background: var(--color-primario);
+    color: white;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .office-header h3 {
+  .edificio-title {
+    font-size: 1.4rem;
     font-weight: 800;
-    font-size: 1.25rem;
     color: var(--color-primario);
     margin: 0;
   }
-
-  .office-details {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
+  .edificio-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0.25rem 0 0;
   }
-  .office-details li {
+
+  .edificio-contactos {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1.5rem 2rem;
+    padding: 1.5rem 2rem;
+  }
+  .contacto-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    color: #475569;
+    gap: 0.6rem;
     font-size: 0.95rem;
+    color: #475569;
   }
-  .office-details li svg {
+  .contacto-item-sm {
+    font-size: 0.9rem;
+  }
+  .contacto-item-xs {
+    font-size: 0.85rem;
+  }
+  .contact-icon {
     color: var(--color-primario);
-    flex-shrink: 0;
+    display: flex;
+    align-items: center;
   }
-
-  /* Enlaces de Oficinas */
-  .office-details a {
+  .contact-link {
     color: inherit;
     text-decoration: none;
-    transition: all 0.2s ease;
-    border-bottom: 1px solid transparent;
+    transition: color 0.2s;
   }
-  .office-details a:hover {
+  .contact-link:hover {
     color: var(--color-primario);
-    border-bottom-color: var(--color-primario);
   }
 
-  /* --- TELÉFONOS Y FORMULARIO --- */
-  .section-form {
+  .dependencias-wrap {
+    padding: 0 2rem 2rem;
+  }
+  .secretarias-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .secretaria-item {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .secretaria-item:last-child {
+    border-bottom: none;
+  }
+  .nivel-details summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .nivel-details summary::-webkit-details-marker,
+  .nivel-details summary::marker {
+    display: none;
+  }
+  .nivel-label-toggle {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primario);
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+  }
+  .nivel-label-sm.nivel-label-toggle {
+    font-size: 0.7rem;
+    margin-bottom: 0.75rem;
+  }
+  .secretarias-details[open] .nivel-label-toggle,
+  .subsecretarias-details[open] .nivel-label-toggle {
+    margin-bottom: 1rem;
+  }
+  .chevron {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 6px solid var(--color-primario);
+    margin-right: 0.5rem;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .chevron-sm {
+    border-left-width: 5px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+  }
+  .secretarias-details[open] .chevron,
+  .subsecretarias-details[open] .chevron {
+    transform: rotate(90deg);
+  }
+  .secretaria-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .secretaria-header .contact-icon {
+    color: var(--color-primario);
+  }
+  .secretaria-title {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: #1e293b;
+    margin: 0;
+  }
+  .secretaria-contactos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    padding-left: 2rem;
+  }
+
+  .subsecretarias-wrap {
+    margin-top: 1rem;
+    padding-left: 2rem;
+  }
+  .subsecretarias-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+  }
+  .subsecretaria-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .subsecretaria-item:last-child {
+    border-bottom: none;
+  }
+  .subsecretaria-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+  .subsecretaria-header .contact-icon {
+    color: #64748b;
+  }
+  .subsecretaria-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0;
+  }
+  .subsecretaria-contactos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    padding-left: 1.75rem;
+  }
+
+  /* --- TELÉFONOS ÚTILES --- */
+  .section-phones {
     padding: 6rem 0;
     background-color: var(--color-primario-claro);
   }
-  .grid-two-cols {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 5rem;
-    align-items: start;
-  }
-  @media (min-width: 1024px) {
-    .grid-two-cols {
-      grid-template-columns: 1fr 1.4fr;
-    }
-  }
-
   .section-subtitle {
     font-size: 2rem;
     font-weight: 800;
@@ -436,128 +990,104 @@ const { hero, bannerDigital, lista_oficinas: oficinas, telefonosUtiles } = data;
     margin-bottom: 2.5rem;
   }
 
-  /* Lista de Teléfonos */
-  .phones-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-  .phone-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    background: white;
-    border-radius: 1.25rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border: 2px solid rgba(0, 0, 0, 0.1);
-  }
-  .phone-item:hover {
-    border-color: var(--color-primario);
-    transform: translateX(5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.03);
-  }
-  .phone-info {
-    display: flex;
-    flex-direction: column;
-  }
-  .service-name {
-    font-size: 0.9rem;
-    color: #64748b;
-    margin-bottom: 0.2rem;
-  }
-  .service-number {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: var(--color-primario);
-  }
-  .phone-circle {
-    background: #f1f5f9;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-primario);
-    transition: 0.3s;
-  }
-  .phone-item:hover .phone-circle {
-    background: var(--color-primario);
-    color: white;
-  }
-
-  /* Formulario de Contacto */
-  .contact-form-container {
-    background: white;
-    padding: 3.5rem;
-    border-radius: 2.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
-    border: 2px solid rgba(0, 0, 0, 0.1);
-  }
-  .form-intro {
-    color: #64748b;
-    margin-bottom: 2.5rem;
-  }
-  .contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-  }
-  .form-row {
+  .phones-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   @media (min-width: 640px) {
-    .form-row {
-      grid-template-columns: 1fr 1fr;
+    .phones-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .phones-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
-  .form-group {
+  .phone-card {
     display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-  .form-group label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #334155;
-  }
-  .form-group input,
-  .form-group textarea {
-    padding: 1rem;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 1rem;
-    font-size: 1rem;
-    background: #fbfcfd;
-    transition: all 0.2s;
-  }
-  .form-group input:focus,
-  .form-group textarea:focus {
+    gap: 1.25rem;
+    padding: 1.5rem;
     background: white;
-    border-color: var(--color-primario);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-    outline: none;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
   }
-
-  .btn-submit {
-    margin-top: 1rem;
+  .phone-card:hover {
+    border-color: var(--color-primario);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.03);
+  }
+  .phone-card-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
     background: var(--color-primario);
     color: white;
-    padding: 1.25rem;
-    border-radius: 1rem;
-    border: none;
-    font-weight: 700;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .btn-submit:hover {
-    filter: brightness(1.1);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  .phone-card-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .phone-card-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-primario);
+    margin: 0 0 0.75rem 0;
+  }
+  .phone-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .phone-contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .phone-contact-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    color: #475569;
+  }
+  .phone-contact-link,
+  .phone-contact-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .phone-contact-icon {
+    flex-shrink: 0;
+    color: var(--color-primario);
+    display: inline-flex;
+    align-items: center;
+  }
+  .phone-contact-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+  }
+  .phone-contact-link {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .phone-contact-link:hover {
+    color: var(--color-primario);
+  }
+  .phone-contact-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #334155;
   }
 </style>

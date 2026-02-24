@@ -42,12 +42,12 @@ A nivel **documento del componente** (no dentro de `data`):
 
 ### 2.1 Campos de visibilidad y estado (fuera de `data`)
 
-| Campo       | Tipo    | Descripción |
-|------------|---------|-------------|
+| Campo         | Tipo    | Descripción                                                                                          |
+| ------------- | ------- | ---------------------------------------------------------------------------------------------------- |
 | **isVisible** | boolean | Si el componente se muestra en el front público. `false` = oculto en sitio, sigue visible en el CMS. |
-| **isActive**  | boolean | Si el componente está “activo” (habitualmente usado para filtros en listados del CMS). |
-| **isDeleted** | boolean | Marca de borrado lógico; los listados suelen excluir `isDeleted: true`. |
-| **status**    | string  | `"draft"` \| `"published"` \| `"hidden"` \| `"out_of_stock"` (según tipo de entidad). |
+| **isActive**  | boolean | Si el componente está “activo” (habitualmente usado para filtros en listados del CMS).               |
+| **isDeleted** | boolean | Marca de borrado lógico; los listados suelen excluir `isDeleted: true`.                              |
+| **status**    | string  | `"draft"` \| `"published"` \| `"hidden"` \| `"out_of_stock"` (según tipo de entidad).                |
 
 Estos **no** se editan desde el formulario dinámico de “Editar datos”; se gestionan en la pantalla de listado/edición del componente (activar/desactivar, publicar, etc.).
 
@@ -152,30 +152,62 @@ El tipo de control (texto, imagen, botón, lista, etc.) se deduce por **prefijo*
 - **Valor**: `true` | `false`
 - **Ejemplos**: `boolean_visible`, `boolean_destacado`.
 
-### 5.7 Lista de contactos (tipo especial)
+### 5.7 Lista de contactos (tipo especial `contact`)
 
-- **Clave exacta**: `lista_contacto`, **o** array cuyo primer elemento tiene `icon_contacto`.
-- **Valor**: array de objetos con:
-  - `icon_contacto`: string (ej. `FaWhatsapp`, `FaEnvelope`)
-  - `txt_label`: string
-  - `link_destino`: string (URL, tel:, mailto:)
-  - `txt_valor`: string (opcional, texto a mostrar)
-- **Ejemplo**:
-  ```json
-  "lista_contacto": [
-    {
-      "icon_contacto": "FaWhatsapp",
-      "txt_label": "WhatsApp",
-      "link_destino": "https://wa.me/5491123456789",
-      "txt_valor": "+54 11 1234-5678"
-    }
-  ]
-  ```
+Control dedicado para listas de canales de contacto (WhatsApp, email, teléfono, redes, etc.) con selector de tipo, icono y autocompletado de URL.
+
+#### Detección en el formulario dinámico
+
+- **Clave exacta**: `lista_contacto` → tipo `contact`.
+- **Alternativa por estructura**: si el valor es un **array** y el primer elemento tiene la propiedad `icon_contacto`, se trata como tipo `contact` (aunque la clave no sea `lista_contacto`).
+
+#### Estructura de cada ítem
+
+| Campo           | Tipo   | Descripción |
+|----------------|--------|-------------|
+| `icon_contacto` | string | Nombre del icono (ej. `FaWhatsapp`, `FaEnvelope`). Define el tipo de contacto. |
+| `txt_label`     | string | Etiqueta visible (ej. "WhatsApp"). En tipos predefinidos se rellena al elegir; en "Otro" es editable. |
+| `link_destino`  | string | URL o destino: `https://wa.me/...`, `mailto:...`, `tel:...`, o cualquier URL. |
+| `txt_valor`     | string | Opcional. Texto que se muestra al usuario (ej. número formateado). |
+
+#### Comportamiento en el formulario
+
+- Se muestra en el grupo **"Listas y Elementos"** (misma agrupación que listas genéricas `lista_*`).
+- **Botón "Agregar contacto"**: añade un ítem con `icon_contacto: ''`, `txt_label: ''`, `link_destino: ''`, `txt_valor: ''` y hace scroll al nuevo bloque.
+- Por cada ítem:
+  - **Select "Tipo de contacto"**: opciones fijas (WhatsApp, Teléfono, Email, Ubicación, Instagram, Facebook, LinkedIn, Twitter, YouTube, TikTok, Telegram, Discord, Reddit, Pinterest, **Otro...**). Al cambiar, se actualiza `icon_contacto` y, salvo en "Otro", se rellenan `txt_label` y el prefijo de `link_destino`.
+  - **Destino**: input para URL/tel/email. Para tipos con prefijo (wa.me, mailto:, tel:, etc.) el formulario añade el prefijo si el usuario no lo escribe.
+  - **Valor a mostrar (opcional)**: input para `txt_valor`.
+  - En tipo **"Otro"**: la etiqueta (`txt_label`) es editable; el destino se escribe sin prefijo automático.
+- **Eliminar**: botón de borrado por ítem.
+
+#### Tipos predefinidos (referencia)
+
+Definidos en `src/lib/contact-options.ts`: WhatsApp, Teléfono, Email, Ubicación (maps), Instagram, Facebook, LinkedIn, Twitter, YouTube, TikTok, Telegram, Discord, Reddit, Pinterest. Opción **"Otro"** (`FaLink`) para enlace o ruta personalizada sin prefijo.
+
+#### Ejemplo en `data`
+
+```json
+"lista_contacto": [
+  {
+    "icon_contacto": "FaWhatsapp",
+    "txt_label": "WhatsApp",
+    "link_destino": "https://wa.me/5491123456789",
+    "txt_valor": "+54 11 1234-5678"
+  },
+  {
+    "icon_contacto": "FaEnvelope",
+    "txt_label": "Email",
+    "link_destino": "mailto:contacto@ejemplo.com",
+    "txt_valor": "contacto@ejemplo.com"
+  }
+]
+```
 
 ### 5.8 Listas genéricas (ítems repetibles)
 
 - **Prefijo**: `lista_` o `item_`
-- **Valor**: array de objetos. Los campos de cada ítem deben usar los mismos prefijos (`txt_`, `img_`, `icon_`, `btn_`, `link_`, `boolean_`) para que el form los reconozca; las claves que empiecen por `_` no se muestran en el ítem.
+- **Valor**: array de objetos. Los campos de cada ítem deben usar los mismos prefijos (`txt_`, `img_`, `icon_`, `btn_`, `link_`, `boolean_`, y opcionalmente `lista_`/`item_` para listas anidadas) para que el form los reconozca; las claves que empiecen por `_` no se muestran en el ítem.
 - **Ejemplo** (lista de servicios):
   ```json
   "lista_servicios": [
@@ -191,6 +223,25 @@ El tipo de control (texto, imagen, botón, lista, etc.) se deduce por **prefijo*
     }
   ]
   ```
+
+#### 5.8.1 Lista dentro de lista (listas anidadas)
+
+- **Comportamiento**: El formulario dinámico admite que un **elemento de una lista** tenga a su vez una propiedad que sea un **array** (otra lista). Se muestra como un bloque colapsable con botón "Agregar" y cada sub-ítem con sus campos (texto, icono, botón, etc.) y, si aplica, nuevas listas anidadas (recursivo).
+- **Requisitos**: La clave de la sublista debe usar prefijo `lista_` o `item_` (p. ej. `lista_subitems`, `item_opciones`). Los ítems de la sublista siguen las mismas reglas de prefijos.
+- **Ejemplo** (lista de categorías, cada una con una lista de ítems):
+  ```json
+  "lista_categorias": [
+    {
+      "id": 1,
+      "txt_titulo": "Categoría A",
+      "lista_items": [
+        { "txt_nombre": "Item 1", "txt_descripcion": "..." },
+        { "txt_nombre": "Item 2", "txt_descripcion": "..." }
+      ]
+    }
+  ]
+  ```
+- **En el formulario**: Cada elemento de `lista_categorias` muestra un bloque "Lista items" (o el label derivado de la clave) con Agregar / Quitar por sub-ítem; dentro de cada sub-ítem se editan `txt_nombre`, `txt_descripcion`, etc.
 
 ### 5.9 Galería (varias imágenes / carrusel)
 
@@ -279,14 +330,14 @@ Recomendación: definir en el manual la estructura de galería (ya en § 5.9) y,
 
 ## 9. Resumen: visibilidad y estado
 
-| Dónde        | Campo       | Efecto |
-|-------------|-------------|--------|
-| **Entidad** | `isVisible` | Mostrar u ocultar en el sitio; no afecta al CMS. |
-| **Entidad** | `isActive`  | Habitualmente para filtrar en listados del CMS. |
-| **Entidad** | `isDeleted` | Borrado lógico; excluir de listados. |
-| **Entidad** | `status`    | draft / published (u otros según entidad). |
-| **data**    | Claves con `_` | Guardadas pero no mostradas en el formulario dinámico. |
-| **data**    | Resto de claves con prefijos de § 5 | Mostradas y editables en el formulario dinámico. |
+| Dónde       | Campo                               | Efecto                                                 |
+| ----------- | ----------------------------------- | ------------------------------------------------------ |
+| **Entidad** | `isVisible`                         | Mostrar u ocultar en el sitio; no afecta al CMS.       |
+| **Entidad** | `isActive`                          | Habitualmente para filtrar en listados del CMS.        |
+| **Entidad** | `isDeleted`                         | Borrado lógico; excluir de listados.                   |
+| **Entidad** | `status`                            | draft / published (u otros según entidad).             |
+| **data**    | Claves con `_`                      | Guardadas pero no mostradas en el formulario dinámico. |
+| **data**    | Resto de claves con prefijos de § 5 | Mostradas y editables en el formulario dinámico.       |
 
 ---
 
@@ -300,18 +351,18 @@ Para validar en el **front** el mismo payload que acepta el creador de component
 
 - **Campos requeridos:** `name`, `key`, `page`, `componentPath`, `data` (mismo listado que el backend).
 - **Key:** solo `a-z`, `0-9` y `_` (regex: `^[a-z0-9_]+$`).
-- **data._configuracion:** se valida según el `type` del componente (allowed + validators); si falta, se aplican defaults.
+- **data.\_configuracion:** se valida según el `type` del componente (allowed + validators); si falta, se aplican defaults.
 
 ```ts
 import {
   validateComponentCreatePayload,
   REQUIRED_FIELDS_CREATE,
-  KEY_REGEX
-} from '@/lib/cms-components/component-payload-validator';
+  KEY_REGEX,
+} from "@/lib/cms-components/component-payload-validator";
 
 const result = validateComponentCreatePayload(body, {
-  validateKeyFormat: true,  // default true
-  sanitize: true            // devuelve payload con data._configuracion saneada
+  validateKeyFormat: true, // default true
+  sanitize: true, // devuelve payload con data._configuracion saneada
 });
 
 if (!result.isValid) {
@@ -320,9 +371,9 @@ if (!result.isValid) {
 }
 
 // Enviar result.sanitizedPayload ?? body
-await fetch('/api/cms-components', {
-  method: 'POST',
-  body: JSON.stringify(result.sanitizedPayload ?? body)
+await fetch("/api/cms-components", {
+  method: "POST",
+  body: JSON.stringify(result.sanitizedPayload ?? body),
 });
 ```
 
@@ -335,14 +386,18 @@ await fetch('/api/cms-components', {
 import {
   validateComponentUpdatePayload,
   validateComponentData,
-  prepareComponentDataForApi
-} from '@/lib/cms-components/component-payload-validator';
+  prepareComponentDataForApi,
+} from "@/lib/cms-components/component-payload-validator";
 
 // Opción A: validar payload completo de PUT
-const result = validateComponentUpdatePayload(body, existingComponent.type, { sanitize: true });
+const result = validateComponentUpdatePayload(body, existingComponent.type, {
+  sanitize: true,
+});
 
 // Opción B: solo validar/sanitizar el objeto data (ej. antes de guardar desde el form de datos)
-const dataResult = validateComponentData(formData, component.type, { sanitize: true });
+const dataResult = validateComponentData(formData, component.type, {
+  sanitize: true,
+});
 if (!dataResult.isValid) {
   setErrors(dataResult.errors);
   return;
@@ -366,9 +421,9 @@ Así, al pasar el JSON desde el front se pueden usar los mismos parámetros y me
 
 ## 11. Referencias en el código
 
-- **Formulario dinámico**: `src/components/common/DynamicFormContent.tsx`  
-  - Exclusión de campos: `shouldExcludeField` (claves `_`, `id`, `_id`, `style`, `className`).  
-  - Tipo de campo: `getFieldType` (prefijos y estructura).  
+- **Formulario dinámico**: `src/components/common/DynamicFormContent.tsx`
+  - Exclusión de campos: `shouldExcludeField` (claves `_`, `id`, `_id`, `style`, `className`).
+  - Tipo de campo: `getFieldType` (prefijos y estructura).
   - Agrupación: `groupFields` (Contenido general, Botones y enlaces, Listas y elementos).
 - **Validador de payload**: `src/lib/cms-components/component-payload-validator.ts` (crear/actualizar/data; mismos requisitos que la API).
 - **Tipos**: `src/types/form.ts` (`FieldType`, `FormField`), `src/types/components.ts` (`ComponentData`, `isVisible`, `isActive`, etc.).

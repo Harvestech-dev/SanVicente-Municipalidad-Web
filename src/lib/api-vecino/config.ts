@@ -20,5 +20,6 @@ export const API_VECINO_CONFIG = {
     NEWS: "/citizen/news",
     EVENTS: "/citizen/events",
     EVENT_DETAIL: (id: number) => `/citizen/events/${id}`,
+    NEIGHBORHOODS: "/citizen/neighborhoods",
   },
 } as const;

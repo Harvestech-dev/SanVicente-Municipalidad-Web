@@ -3,7 +3,7 @@
  * Endpoints: /citizen/news, /citizen/events
  */
 
-export type { VecinoNewsItem, VecinoEventItem, VecinoCategory, VecinoImage } from "./types";
+export type { VecinoNewsItem, VecinoEventItem, VecinoNeighborhood, VecinoWaste, VecinoCategory, VecinoImage } from "./types";
 export { API_VECINO_CONFIG } from "./config";
 export { adaptVecinoNewsToNoticia, adaptVecinoEventToEvento } from "./adapters";
 export {
@@ -11,4 +11,5 @@ export {
   fetchVecinoEvents,
   fetchNoticiasAdaptadas,
   fetchEventosAdaptados,
+  fetchVecinoNeighborhoods,
 } from "./fetch";

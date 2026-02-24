@@ -1,12 +1,38 @@
 ---
 import data from "../data/contactoPage/contacto-page.json";
+import { SocialIcon } from "./SocialIcon";
+
+interface Contacto {
+  icon_contacto?: string;
+  txt_label?: string;
+  link_destino?: string;
+  txt_valor?: string;
+}
 
 interface Telefono {
   _orden?: number;
   txt_nombre: string;
-  txt_numero: string;
+  txt_numero?: string; // formato legacy
+  _icon?: string;
+  lista_contactos?: Contacto[];
   _color?: string;
   boolean_favorito?: boolean;
+}
+
+function getPrimerContacto(t: Telefono): { href: string; valor: string; icon?: string } {
+  const contactos = t.lista_contactos ?? [];
+  const conLink = contactos.find((c) => c.link_destino && c.link_destino.trim() !== "");
+  if (conLink) {
+    return { href: conLink.link_destino!, valor: conLink.txt_valor ?? "", icon: conLink.icon_contacto };
+  }
+  const primer = contactos[0];
+  if (primer?.txt_valor) {
+    const num = (primer.txt_valor ?? "").replace(/\D/g, "");
+    return { href: `tel:${num}`, valor: primer.txt_valor, icon: primer.icon_contacto };
+  }
+  // fallback formato legacy
+  const num = (t.txt_numero ?? "").replace(/\D/g, "");
+  return { href: `tel:${num}`, valor: t.txt_numero ?? "" };
 }
 
 const { data: cmsData } = Astro.props;
@@ -35,64 +61,44 @@ const tieneMas: boolean = telefonos.some(
     </div>
 
     <div class="phones-grid">
-      {telefonosFavoritos.map((item: Telefono) => (
+      {telefonosFavoritos.map((item: Telefono) => {
+        const { href, valor, icon } = getPrimerContacto(item);
+        return (
         <a
-          href={`tel:${item.txt_numero.replace(/\D/g, "")}`}
+          href={href}
           class="phone-card"
+          target={href.startsWith("http") ? "_blank" : undefined}
+          rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
         >
           <div
             class="icon-circle"
             style={`background-color: ${item._color ?? "#6366f1"}15; color: ${item._color ?? "#6366f1"}`}
           >
-            <!-- Ícono genérico -->
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M22 16.92V21a2 2 0 0 1-2.18 2
-                19.79 19.79 0 0 1-8.63-3.07
-                19.5 19.5 0 0 1-6-6
-                19.79 19.79 0 0 1-3.07-8.67
-                A2 2 0 0 1 3 2h4.09
-                a2 2 0 0 1 2 1.72
-                c.12.81.31 1.6.57 2.35
-                a2 2 0 0 1-.45 2.11L8.09 9.91
-                a16 16 0 0 0 6 6
-                l1.73-1.73
-                a2 2 0 0 1 2.11-.45
-                c.75.26 1.54.45 2.35.57
-                a2 2 0 0 1 1.72 2.03z"
-              />
-            </svg>
+            <SocialIcon
+              iconName={item._icon ?? "FaPhone"}
+              size={24}
+            />
           </div>
 
           <h3 class="name">{item.txt_nombre}</h3>
-          <span class="number">{item.txt_numero}</span>
+          <span class="number">
+            <SocialIcon
+              iconName={icon ?? item._icon ?? "FaPhone"}
+              size={18}
+              className="number-icon"
+            />
+            {valor}
+          </span>
         </a>
-      ))}
+        );
+      })}
     </div>
 
     {tieneMas && (
       <div class="footer-action">
         <a href={urlVerTodo} class="btn-more">
           {textoVerTodo}
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-          >
-            <path d="m9 18 6-6-6-6" />
-          </svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </a>
       </div>
     )}
@@ -159,9 +165,8 @@ const tieneMas: boolean = telefonos.some(
   }
 
   .phone-card:hover {
-    transform: translateY(-8px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
-    border-color: #cbd5e1;
+    border: 1px solid var(--color-primario, #c27d0d);
   }
 
   .icon-circle {
@@ -173,10 +178,6 @@ const tieneMas: boolean = telefonos.some(
     justify-content: center;
     margin-bottom: 1.25rem;
     transition: all 0.3s ease;
-  }
-
-  .phone-card:hover .icon-circle {
-    transform: scale(1.1) rotate(-5deg);
   }
 
   .name {
@@ -192,11 +193,17 @@ const tieneMas: boolean = telefonos.some(
   }
 
   .number {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 2rem;
     font-weight: 900;
     color: #0f172a;
     letter-spacing: -0.03em;
     line-height: 1;
+  }
+  .number .number-icon {
+    flex-shrink: 0;
   }
 
   .footer-action {
@@ -210,17 +217,17 @@ const tieneMas: boolean = telefonos.some(
     gap: 10px;
     padding: 0.85rem 2rem;
     background: white;
-    border: 2px solid #e2e8f0;
+    border: 1px solid var(--color-primario, #c27d0d);
     border-radius: 14px;
-    color: #475569;
+    color: var(--color-primario, #c27d0d);
     font-weight: 700;
     text-decoration: none;
     transition: all 0.3s ease;
   }
 
   .btn-more:hover {
-    background: #0f172a;
-    border-color: #0f172a;
+    background: var(--color-primario, #c27d0d);
+    border-color: var(--color-primario, #c27d0d);
     color: white;
   }
 </style>

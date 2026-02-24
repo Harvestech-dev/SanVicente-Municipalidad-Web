@@ -18,7 +18,7 @@ interface Evento {
   txt_descripcion?: string;
 }
 
-// 1. Intentar API Vecino; fallback a JSON local (normalizar para mismo formato)
+// 1. Datos desde API Vecino Digital (/citizen/events). Fallback a JSON local si API no configurada o vacía.
 let eventos = await fetchEventosAdaptados();
 if (eventos.length === 0) {
   const raw = agendaData.lista_eventos as Evento[];
@@ -249,7 +249,6 @@ const tema = sitioData._estilo;
     transition: all 0.3s ease;
   }
   .event-card:hover {
-    transform: translateY(-8px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   }
 

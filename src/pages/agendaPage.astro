@@ -39,6 +39,7 @@ const eventosOrdenados = [...eventos].sort((a, b) => {
   return new Date((a as Evento)._fechaISO ?? (a as Evento).txt_fecha).getTime() - new Date((b as Evento)._fechaISO ?? (b as Evento).txt_fecha).getTime();
 });
 
+const categorias = ["Todas", ...Array.from(new Set(eventosOrdenados.map((e) => (e as Evento).txt_categoria).filter(Boolean)))];
 const tema = sitioData._estilo;
 ---
 
@@ -53,12 +54,47 @@ const tema = sitioData._estilo;
       </div>
     </section>
 
+    <section class="filters-bar">
+      <div class="container filters-flex">
+        <div class="search-wrapper">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            id="agenda-search"
+            placeholder="Buscar eventos..."
+            class="search-input"
+          />
+        </div>
+        <div class="categories-wrapper" id="categoriesWrapper">
+          {
+            categorias.map((cat) => (
+              <button
+                class={`btn-cat ${cat === "Todas" ? "active" : ""}`}
+                data-category={cat}
+              >
+                {cat}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
     <section class="agenda-grid-section">
       <div class="container">
-        <div class="events-grid">
+        <div class="events-grid" id="eventsGrid">
           {
             eventosOrdenados.map((event) => (
-              <article class="event-card">
+              <article
+                class="event-card"
+                data-category={event.txt_categoria ?? ""}
+                data-title={String(event.txt_titulo ?? "").toLowerCase()}
+                data-ubicacion={String(event.txt_ubicacion ?? "").toLowerCase()}
+                data-descripcion={String(event.txt_descripcion ?? "").toLowerCase()}
+              >
                 <div class="image-container">
                   <img src={event.img_principal} alt={event.txt_titulo} loading="lazy" />
                   <span class="category-badge">{event.txt_categoria}</span>
@@ -200,6 +236,48 @@ const tema = sitioData._estilo;
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeModal();
   });
+
+  // --- Filtros y búsqueda ---
+  const eventsGrid = document.getElementById("eventsGrid");
+  const eventCards = Array.from(eventsGrid?.querySelectorAll(".event-card") || []) as HTMLElement[];
+  const categoryButtons = document.querySelectorAll(".btn-cat") as NodeListOf<HTMLButtonElement>;
+  const searchInput = document.getElementById("agenda-search") as HTMLInputElement;
+
+  let currentCategory = "Todas";
+  let searchQuery = "";
+
+  function matchesSearch(card: HTMLElement): boolean {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    const title = card.getAttribute("data-title") || "";
+    const ubicacion = card.getAttribute("data-ubicacion") || "";
+    const descripcion = card.getAttribute("data-descripcion") || "";
+    return title.includes(q) || ubicacion.includes(q) || descripcion.includes(q);
+  }
+
+  function updateDisplay(): void {
+    eventCards.forEach((card) => {
+      const category = card.getAttribute("data-category") || "";
+      const matchesCat = currentCategory === "Todas" || category === currentCategory;
+      const matches = matchesCat && matchesSearch(card);
+      card.style.display = matches ? "" : "none";
+    });
+  }
+
+  categoryButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      categoryButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentCategory = btn.getAttribute("data-category") || "Todas";
+      updateDisplay();
+    });
+  });
+
+  searchInput?.addEventListener("input", (e) => {
+    const target = e.target as HTMLInputElement;
+    searchQuery = target?.value ?? "";
+    updateDisplay();
+  });
 </script>
 
 <style
@@ -219,9 +297,9 @@ const tema = sitioData._estilo;
     padding: 0 1.5rem;
   }
   .hero-agenda {
-    background-color: var(--secondary);
+    background-color: var(--primary);
     color: white;
-    padding: 5rem 0;
+    padding: 4rem 0;
     text-align: center;
   }
   .hero-agenda h1 {
@@ -229,6 +307,69 @@ const tema = sitioData._estilo;
     font-weight: 800;
     margin-bottom: 1rem;
   }
+  .hero-agenda p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+  }
+
+  /* --- Barra de filtros --- */
+  .filters-bar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filters-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .filters-bar .search-wrapper {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .filters-bar .search-wrapper .search-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--primary);
+    pointer-events: none;
+  }
+  .filters-bar .search-input {
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+    min-height: 40px;
+    box-sizing: border-box;
+  }
+  .categories-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .btn-cat {
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    border: 1px solid #e2e8f0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  .btn-cat.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
   .agenda-grid-section {
     padding: 4rem 0;
   }

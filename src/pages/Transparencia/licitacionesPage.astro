@@ -155,10 +155,12 @@ const { lista_licitaciones: licitaciones, txt_titulo: titulo, txt_descripcion: d
     margin: 0 auto 1rem;
   }
   .hero-licitaciones h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 800;
     margin-bottom: 1rem;
   }
   .hero-licitaciones p {
+    font-size: 1.2rem;
     opacity: 0.9;
     max-width: 700px;
     margin: 0 auto;
@@ -352,7 +354,7 @@ const { lista_licitaciones: licitaciones, txt_titulo: titulo, txt_descripcion: d
       flex: 1;
     }
     .hero-licitaciones h1 {
-      font-size: 1.8rem;
+      font-size: 2.25rem;
     }
     .cta-group {
       flex-direction: column;

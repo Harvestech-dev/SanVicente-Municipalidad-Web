@@ -1,0 +1,186 @@
+{
+  "txt_titulo": "Gobierno municipal",
+  "txt_subtitulo": "Conocé a las autoridades y la estructura organizacional de la Municipalidad de San Vicente (Santa Fe)",
+  "intendente": {
+    "txt_nombre": "Gonzalo Aira",
+    "txt_cargo": "Intendente municipal",
+    "img_perfil": "",
+    "txt_gestion": "2026 – 2030"
+  },
+  "lista_funcionarios": [
+    {
+      "_orden": 1,
+      "txt_nombre": "Lic. María González",
+      "txt_cargo": "Secretaria de gobierno",
+      "txt_area": "Gobierno",
+      "img_perfil": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop"
+    },
+    {
+      "_orden": 2,
+      "txt_nombre": "Ing. Roberto Pérez",
+      "txt_cargo": "Secretario de obras públicas",
+      "txt_area": "Obras públicas",
+      "img_perfil": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop"
+    },
+    {
+      "_orden": 3,
+      "txt_nombre": "C.P. Ana Martínez",
+      "txt_cargo": "Secretaria de hacienda",
+      "txt_area": "Hacienda",
+      "img_perfil": ""
+    },
+    {
+      "_orden": 4,
+      "txt_nombre": "Dra. Laura Fernández",
+      "txt_cargo": "Secretaria de salud",
+      "txt_area": "Salud",
+      "img_perfil": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop"
+    },
+    {
+      "_orden": 5,
+      "txt_nombre": "Darío Lell",
+      "txt_cargo": "Secretario de cultura",
+      "txt_area": "Cultura",
+      "img_perfil": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop"
+    }
+  ],
+"txt_titulo": "Organigrama",
+"txt_subtitulo": "Hacé clic en cada bloque para expandir o contraer subsecretarías y departamentos.",
+ "lista_organigrama": [
+    {
+      "txt_nombre": "Secretaria de innovación y desarrollo",
+      "lista_subsecretarias": [
+        {
+          "txt_nombre": "Subsecretaria de cultura",
+          "lista_areas": [
+            {"txt_nombre": "Talleres municipales"},
+            {"txt_nombre": "Museo y archivo histórico"},
+            {"txt_nombre": "Biblioteca popular"}
+          ]
+        },
+        {
+          "txt_nombre": "Subsecretaria de producción",
+          "lista_areas": [
+            {"txt_nombre": "Punto digital"},
+            {"txt_nombre": "Asesoramiento empresarial"}
+          ]
+        }
+      ],
+      "lista_areas": [
+        {"txt_nombre": "Equipo de investigacion"},
+        {"txt_nombre": "Punto digital"},
+        {"txt_nombre": "Área educación"},
+        {"txt_nombre": "Área deportes"}
+      ]
+    },
+    {
+      "txt_nombre": "Secretaria de gestion",
+      "lista_areas": [
+        {"txt_nombre": "Area transito"}
+      ],
+      "lista_subsecretarias": [
+        {
+          "txt_nombre": "Subsecretaria de obras y servicios públicos",
+          "lista_areas": [
+            {"txt_nombre": "Area de atención ciudadana"}
+          ],
+          "lista_depertamentos": [
+            {
+              "txt_nombre": "Departamento de obras civiles",
+              "Lista_areas": [
+                {"txt_nombre": "Área de infraestructura vial e hidraulica"},
+                {"txt_nombre": "Área de infraestructura sanitaria"}
+              ]
+            },
+            {
+              "txt_nombre": "Departamento de servicios públicos",
+              "Lista_areas": [
+                  {"txt_nombre": "Área residuos sólidos urbanos"},
+                  {"txt_nombre": "Área mantenimiento y conservación de espacios y edificios públicos"},
+                  {"txt_nombre": "Área alumbrado público e instalaciones eléctricas"},
+                  {"txt_nombre": "Área talleres"},
+                  {"txt_nombre": "Área automotor y equipos pesados"},
+                  {"txt_nombre": "Área servicios varios"} 
+              ]
+            }
+          ]
+        },
+        {
+          "txt_nombre": "Subsecretaria de habitad y medio hambiente",
+          "lista_areas": [
+            {"txt_nombre": "Area de atención ciudadana"}
+          ],
+          "lista_depertamentos": [
+            {
+              "txt_nombre": "Departamento de planeamiento urbano",
+              "Lista_areas": [
+                {"txt_nombre": "Área edificaciones privadas"},
+                {"txt_nombre": "Área catastro"},
+                {"txt_nombre": "Área ordenamiento territorial"},
+                {"txt_nombre": "Área medio ambiente"},
+                {"txt_nombre": "Área estudios y proyectos"}
+              ]
+            },
+            {
+              "txt_nombre": "Departamento de obras de arquitectura",
+              "Lista_areas": [
+                {"txt_nombre": "Área de infraestructura habitacional"},
+                {"txt_nombre": "Area de arquitectura general"}
+              ]
+            },
+            {
+              "txt_nombre": "Departamento de servicios públicos",
+              "Lista_areas": [
+                {"txt_nombre": "Área residuos sólidos urbanos"},
+                {"txt_nombre": "Área mantenimiento y conservación de espacios y edificios públicos"},
+                {"txt_nombre": "Área alumbrado público e instalaciones eléctricas"},
+                {"txt_nombre": "Área talleres"},
+                {"txt_nombre": "Área automotor y equipos pesados"},
+                {"txt_nombre": "Área servicios varios"}
+              ]
+            },
+            {
+              "txt_nombre": "Departamento de hábitat y medio ambiente",
+              "Lista_areas": [
+                {"txt_nombre": "Área infraestructura vial e hidráulica"},
+                {"txt_nombre": "Área infraestructura sanitaria"}
+              ]
+            }
+          ]
+        },
+        {
+          "txt_nombre": "Subsecretaria de salud, desarrollo social y equidad",
+          "lista_areas": [
+            {"txt_nombre": "Equipo de promoción y protección de derechos de niñez, adolescencia, familia y género"}
+          ]
+        },
+        {
+          "txt_nombre": "Subsecretaria de hacienda",
+          "lista_depertamentos": [
+            {
+              "txt_nombre": "Departamento de administración general",
+              "Lista_areas": [
+                "Área cajas y servicio de cobro",
+                "Área sueldos",
+                "Área técnica y administrativa",
+                "Area coordinación de impuestos y comercios"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "txt_nombre": "Juzgado de faltas",
+      "lista_departamentos": [
+        {
+          "txt_nombre": "Departamento de coordinacion de convivencia comunitaria",
+          "lista_areas": [
+            "Area licencias de conducir",
+            "Area bromatologia"
+          ]
+        }
+      ]
+    }
+  ]
+}

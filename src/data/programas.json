@@ -1,70 +1,125 @@
 {
-  "titulo": "Programas Municipales",
-  "subtitulo": "Descubrí las iniciativas diseñadas para el desarrollo de nuestra ciudad",
-  "programas": [
+  "txt_titulo": "Programas Municipales",
+  "txt_subtitulo": "Descubrí las iniciativas diseñadas para el desarrollo de nuestra ciudad",
+  "lista_programas": [
     {
-      "id": 1,
-      "nombre": "San Vicente Emprende",
-      "descripcion": "Apoyo estratégico a emprendedores locales mediante capacitaciones, mentorías y acceso a financiamiento para proyectos innovadores.",
-      "url": "/programas/sanvicente-emprende",
-      "sigla": "VE",
-      "imagenFondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+      "_orden": 1,
+      "boolean_featured": true,
+      "img_logo": "/images/programas/san-vicente-emprende.png",
+      "txt_titulo": "San Vicente Emprende",
+      "txt_subtitulo": "Apoyo estratégico a emprendedores locales mediante capacitaciones, mentorías y acceso a financiamiento para proyectos innovadores.",
+      "lista_descripcion":[
+        {"txt_descripcion": "San Vicente Capacita es un programa que nace en el año 2021 con la premisa de iniciar un camino en constante crecimiento, pensando en la formación integral de los vecinos de San Vicente y la región."},  
+        {"txt_descripcion": "El diseño de las propuestas de formación y capacitación está pensado en función de las necesidades de cada localidad, generando productos a medida, que se sumergen en un proceso de mejora constante y continua."},
+        {"txt_descripcion": "Considerando las limitaciones que impuso la pandemia, actualmente se está trabajando con propuestas virtuales, cuyo cursado se da de manera asincrónica a través de la plataforma combinado con formatos de encuentros sincrónicos."}
+      ],
+      "attachments_adjuntos": [
+        {
+          "txt_label": "Plan de trabajo",
+          "_type": "file",
+          "txt_url": "/docs/plan-de-trabajo.pdf"},
+        {
+          "txt_label": "Imagen de fondo",
+          "_type": "image",
+          "txt_url": "/images/programas/san-vicente-emprende.png"},
+          {
+          "txt_label": "Ir a la plataforma",
+          "_type": "url",
+          "txt_url": "https://sanvicentecapacita.educativa.org/"
+        }],
+      "gallery_imagenes": [
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 1
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 2
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 3
+        }
+      ]
     },
     {
-      "id": 2,
-      "nombre": "San Vicente Sustentable",
-      "descripcion": "Promovemos el cuidado del medio ambiente a través de la gestión de residuos, reforestación urbana y talleres de huerta orgánica.",
-      "url": "/programas/sanvicente-sustentable",
-      "sigla": "VS",
-      "imagenFondo": "https://images.unsplash.com/photo-1542601906-933b2dffa9a2?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "id": 3,
-      "nombre": "San Vicente Deportes",
-      "descripcion": "Escuelas deportivas municipales y ligas recreativas para todas las edades, fomentando la vida sana en cada barrio.",
-      "url": "/programas/sanvicente-deportes",
-      "sigla": "VD",
-      "imagenFondo": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "id": 4,
-      "nombre": "San Vicente Cultura",
-      "descripcion": "Ciclos de cine, talleres de artes visuales, música y danza en centros culturales para potenciar el talento artístico local.",
-      "url": "/programas/sanvicente-cultura",
-      "sigla": "VC",
-      "imagenFondo": "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "id": 5,
-      "nombre": "San Vicente Mayor",
-      "descripcion": "Atención integral, actividades recreativas y acompañamiento profesional para mejorar la calidad de vida de nuestros adultos mayores.",
-      "url": "/programas/sanvicente-mayor",
-      "sigla": "VM",
-      "imagenFondo": "https://images.unsplash.com/photo-1576014131795-d440191a8e8b?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "id": 6,
-      "nombre": "San Vicente Salud",
-      "descripcion": "Operativos de vacunación, atención primaria en barrios y campañas de prevención de enfermedades estacionales.",
-      "url": "/programas/sanvicente-salud",
-      "sigla": "VSa",
-      "imagenFondo": "https://images.unsplash.com/photo-1505751172107-5739a00723a5?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "id": 7,
-      "nombre": "San Vicente Digital",
-      "descripcion": "Cursos de alfabetización digital, programación y acceso gratuito a internet en puntos estratégicos para cerrar la brecha tecnológica.",
-      "url": "/programas/sanvicente-digital",
-      "sigla": "VDg",
-      "imagenFondo": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "id": 8,
-      "nombre": "San Vicente Joven",
-      "descripcion": "Espacios de orientación vocacional, primer empleo y becas estudiantiles para los jóvenes que terminan la secundaria.",
-      "url": "/programas/sanvicente-joven",
-      "sigla": "VJ",
-      "imagenFondo": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800"
-    }
+      "_orden": 2,
+      "boolean_featured": false,
+      "img_logo": "/images/programas/san-vicente-emprende.png",
+      "txt_titulo": "San Vicente Emprende",
+      "txt_subtitulo": "Programa de desarrollo de emprendedores organizado y sistematizado",
+      "lista_descripcion":[
+        {"txt_descripcion": "Se trata de un programa destinado a los emprendedores locales y a todos aquellos vecinos que desean incursionar en el tema. El trabajo se inicia con un diagnóstico para recolectar la información necesaria, generar un registro y detectar las necesidades en busca de posibles soluciones y respuestas. La premisa es lograr un trabajo articulado entre las diferentes áreas para contribuir a la mejora de la actividad laboral en la localidad."},
+        {"txt_descripcion": "El programa tiene como objetivos generar un programa de desarrollo de emprendedores organizado y sistematizado y crear un registro de emprendedores. Asimismo, se propone brindar capacitación en planes de negocio y ofrecer tutorías, asistencia técnica, apoyo en trámites y gestiones, líneas de créditos y búsqueda de mercado. También contempla tramitar líneas de crédito de la Asociación para el Desarrollo y establecer vínculos con empresarios y supermercadistas."},
+        {"txt_descripcion": "Además, busca fomentar la cultura emprendedora y organizar conversatorios y otras dinámicas para el intercambio de experiencias. Se orienta a potenciar el asociativismo, el cooperativismo, la empleabilidad y la intermediación laboral. Finalmente, promueve la innovación productiva, suministrando herramientas a los distintos sectores productivos para la introducción de nuevos productos y servicios, con mejoras en los procesos de producción, en la organización y en los procesos de comercialización."}
+      ],
+      "attachments_adjuntos": [
+        {
+          "txt_label": "Plan de trabajo",
+          "_type": "file",
+          "txt_url": "/docs/plan-de-trabajo.pdf"},
+          {
+          "txt_label": "Ir a la plataforma",
+          "_type": "url",
+          "txt_url": "https://sanvicentecapacita.educativa.org/"
+        }],
+      "gallery_imagenes": [
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 1
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 2
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 3
+        }
+      ]
+    },{
+      "_orden": 3,
+      "boolean_featured": true,
+      "img_logo": "/images/programas/san-vicente-emprende.png",
+      "txt_titulo":"San Vicente Joven",
+      "txt_subtitulo":"Programa de desarrollo de jóvenes",
+      "lista_descripcion":[
+        {"txt_descripcion": "A través de este programa se busca reconocer, fortalecer e impulsar la capacidad de los jóvenes fomentando su participación en el desarrollo de políticas públicas."},
+        {"txt_descripcion": "Con el primero de los proyectos presentado en 2021 se busca incentivar la participación juvenil de manera colectiva a través del financiamiento y acompañamiento para la puesta en marcha de ideas innovadoras que promuevan el avance de San Vicente Ciudad a partir de sus intereses y de la detección de problemáticas locales."}
+      ],
+      "attachments_adjuntos": [
+        {
+          "txt_label": "Plan de trabajo",
+          "_type": "file",
+          "txt_url": "/docs/plan-de-trabajo.pdf"},
+          {
+          "txt_label": "Ir a la plataforma",
+          "_type": "url",
+          "txt_url": "https://sanvicentecapacita.educativa.org/"
+        }],
+      "gallery_imagenes": [
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 1
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 2
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 3
+        }
+      ]
+    } 
   ]
 }

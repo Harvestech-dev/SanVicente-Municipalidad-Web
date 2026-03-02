@@ -1,59 +1,116 @@
 ---
-import data from "../data/programas.json";
+import dataFallback from "../data/programas.json";
 import sitioData from "../data/sitio.json";
+import { getProgramSlug } from "../lib/programas-utils";
 
 interface Programa {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  url: string;
-  sigla: string;
-  imagenLogo?: string;
-  imagenFondo?: string;
+  _orden?: number;
+  boolean_featured?: boolean;
+  txt_titulo?: string;
+  txt_nombre?: string;
+  txt_subtitulo?: string;
+  txt_descripcion?: string;
+  lista_descripcion?: Array<{ txt_descripcion?: string }>;
+  lista_adjuntos?: Array<{ link_url?: string }>;
+  attachments_adjuntos?: Array<{ txt_url?: string }>;
+  link_url?: string;
+  _sigla?: string;
+  img_logo?: string;
+  img_fondo?: string;
+  gallery_imagenes?: Array<{ img_fondo?: string }>;
 }
 
-const programasRaw = data.programas.slice(0, 6);
-const programas = (programasRaw as unknown) as Programa[];
+const { data: cmsData } = Astro.props;
+const source = (cmsData as Record<string, unknown>) ?? dataFallback;
 
-const { titulo = data.titulo, subtitulo = data.subtitulo } = data.titulo ? data : Astro.props;
-const { tema } = sitioData;
+const programasRaw = (source.lista_programas ?? dataFallback.lista_programas ?? []) as Programa[];
+const programasSorted = [...programasRaw].sort((a, b) => {
+  const aF = a.boolean_featured ? 1 : 0;
+  const bF = b.boolean_featured ? 1 : 0;
+  return bF - aF;
+});
+const programas = programasSorted.slice(0, 6);
+
+const titulo = (source.txt_titulo ?? dataFallback.txt_titulo ?? "Programas") as string;
+const subtitulo = (source.txt_subtitulo ?? dataFallback.txt_subtitulo ?? "") as string;
+
+const btn = source.btn_boton as { txt_label?: string; link_url?: string; _icon?: string } | undefined;
+const textoVerTodo = (btn?.txt_label ?? "Ver todos los programas") as string;
+const urlVerTodoRaw = (btn?.link_url ?? "/programas") as string;
+const urlVerTodo = urlVerTodoRaw.startsWith("/") ? urlVerTodoRaw : `/${urlVerTodoRaw}`;
+
+const ocultarSiNoHay = source.boolean_ocultar_si_no_hay_noticias ?? source.boolean_ocultar_si_no_hay_programas ?? false;
+const listaDisclaimer = (source.lista_disclamer_sin_programas ?? source.lista_disclamer_sin_noticias ?? []) as Array<{ txt_parrafo?: string }>;
+
+const hayProgramas = programas.length > 0;
+const mostrarSeccion = hayProgramas || !ocultarSiNoHay;
+const tema = sitioData._estilo;
+
+function getProgramaNombre(p: Programa): string {
+  return p.txt_titulo ?? p.txt_nombre ?? "";
+}
+function getProgramaDesc(p: Programa): string {
+  if (p.txt_subtitulo) return p.txt_subtitulo;
+  if (p.txt_descripcion) return p.txt_descripcion;
+  const first = p.lista_descripcion?.[0]?.txt_descripcion;
+  return first ?? "";
+}
+/** En la home se usa solo img_logo para las cards. */
+function getProgramaImagen(p: Programa): string {
+  return p.img_logo ?? "";
+}
 ---
 
-<section class="featured-programs">
-  <div class="container">
-    <div class="header">
-      <h2 class="title">{titulo}</h2>
-      <p class="subtitle">{subtitulo}</p>
-    </div>
+{
+  mostrarSeccion && (
+    <section class="featured-programs">
+      <div class="container">
+        <div class="header">
+          {titulo && <h2 class="title">{titulo}</h2>}
+          {subtitulo && <p class="subtitle">{subtitulo}</p>}
+        </div>
 
-    <div class="programs-grid">
-      {
-        programas.map((prog: Programa) => (
-          <a href={prog.url} class="program-card">
-            <div class="logo-box">
-              {prog.imagenLogo ? (
-                <img src={prog.imagenLogo} alt={prog.nombre} />
-              ) : (
-                <span class="sigla">{prog.sigla}</span>
-              )}
+        {hayProgramas ? (
+          <>
+            <div class="programs-grid">
+              {
+                programas.map((prog: Programa, i: number) => (
+                  <a href={`/programas/${getProgramSlug(prog, i)}`} class="program-card">
+                    <div class="logo-box">
+                      {getProgramaImagen(prog) ? (
+                        <img src={getProgramaImagen(prog)} alt={getProgramaNombre(prog)} />
+                      ) : (
+                        <span class="sigla">{prog._sigla ?? getProgramaNombre(prog).slice(0, 2).toUpperCase()}</span>
+                      )}
+                    </div>
+                    <div class="content">
+                      <h3 class="program-name">{getProgramaNombre(prog)}</h3>
+                      <p class="program-desc">{getProgramaDesc(prog)}</p>
+                    </div>
+                  </a>
+                ))
+              }
             </div>
-
-            <div class="content">
-              <h3 class="program-name">{prog.nombre}</h3>
-              <p class="program-desc">{prog.descripcion}</p>
+            {urlVerTodo && textoVerTodo && (
+              <div class="action-container">
+                <a href={urlVerTodo} class="btn-ver-todos">
+                  {textoVerTodo}
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </a>
+              </div>
+            )}
+          </>
+        ) : (
+          listaDisclaimer.length > 0 && (
+            <div class="disclaimer-content">
+              {listaDisclaimer.map((d) => d.txt_parrafo && <p>{d.txt_parrafo}</p>)}
             </div>
-          </a>
-        ))
-      }
-    </div>
-
-    <div class="action-container">
-      <a href="/programasPage" class="btn-ver-todos">
-        Ver todos los programas
-      </a>
-    </div>
-  </div>
-</section>
+          )
+        )}
+      </div>
+    </section>
+  )
+}
 
 <style
   define:vars={{
@@ -110,12 +167,10 @@ const { tema } = sitioData;
   }
 
   .program-card:hover {
-    transform: translateY(-5px);
     border-color: var(--primario);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
   }
 
-  /* logo box */
   .logo-box {
     width: 60px;
     height: 60px;
@@ -167,7 +222,6 @@ const { tema } = sitioData;
     overflow: hidden;
   }
 
-  /*  BOTÓN VER TODOS */
   .action-container {
     margin-top: 3.5rem;
     display: flex;
@@ -175,16 +229,37 @@ const { tema } = sitioData;
   }
 
   .btn-ver-todos {
-    background-color: var(--primario);
-    color: white;
-    padding: 0.75rem 2rem;
-    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: var(--primario);
+    padding: 0.85rem 2rem;
+    border: 1px solid var(--primario);
+    border-radius: 14px;
     text-decoration: none;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
+    font-weight: 700;
+    transition: all 0.3s ease;
   }
 
   .btn-ver-todos:hover {
-    background-color: #1f2937;
+    background: var(--primario);
+    border-color: var(--primario);
+    color: white;
+  }
+
+  .disclaimer-content {
+    text-align: center;
+    color: #64748b;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .disclaimer-content p {
+    margin-bottom: 0.75rem;
+  }
+
+  .disclaimer-content p:last-child {
+    margin-bottom: 0;
   }
 </style>

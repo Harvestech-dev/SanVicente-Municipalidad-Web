@@ -1,44 +1,46 @@
 ---
-import carruselData from "../data/carrusel.json";
-
-// Estructura para que TypeScript no marque errores
 interface Slide {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  imagen: string;
-  enlace: string;
-  categoria: string;
+  _orden?: number;
+  txt_titulo: string;
+  txt_descripcion: string;
+  img_principal: string;
+  txt_categoria: string;
+  btn_boton?: { txt_label?: string; link_destino?: string };
+  link_destino?: string;
 }
 
-const { slides = carruselData.slides as Slide[] } = Astro.props;
+interface SlideResolved extends Slide {
+  link_destino: string;
+  btn_label: string;
+}
+
+const { data: cmsData, slides: propSlides } = Astro.props;
+const listaSlides = (propSlides ?? (cmsData as Record<string, unknown>)?.lista_slides) ?? [];
+const rawSlides = listaSlides as Slide[];
+const slides: SlideResolved[] = rawSlides.map((s) => ({
+  ...s,
+  link_destino: s.btn_boton?.link_destino ?? s.link_destino ?? "#",
+  btn_label: s.btn_boton?.txt_label ?? "Leer más",
+}));
 ---
 
+{slides.length > 0 && (
 <section class="hero-carrousel" aria-label="Galería de novedades">
   <div class="slides-container">
     {
-      slides.map((slide: Slide, index: number) => (
+      slides.map((slide: SlideResolved, index: number) => (
         <div class={`slide ${index === 0 ? "active" : ""}`} data-index={index}>
-          <img src={slide.imagen} alt={slide.titulo} class="slide-bg" />
+          <img src={slide.img_principal} alt={slide.txt_titulo} class="slide-bg" />
           <div class="slide-overlay" />
 
           <div class="container slide-content">
             <div class="text-wrapper">
-              <span class="badge">{slide.categoria}</span>
-              <h2 class="titulo">{slide.titulo}</h2>
-              <p class="descripcion">{slide.descripcion}</p>
-              <a href={slide.enlace} class="btn-primary">
-                Leer más
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
+              <span class="badge">{slide.txt_categoria}</span>
+              <h2 class="titulo">{slide.txt_titulo}</h2>
+              <p class="descripcion">{slide.txt_descripcion}</p>
+              <a href={slide.link_destino} class="btn-primary">
+                {slide.btn_label}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
               </a>
             </div>
           </div>
@@ -74,7 +76,7 @@ const { slides = carruselData.slides as Slide[] } = Astro.props;
 
   <div class="dots-container">
     {
-      slides.map((_: Slide, index: number) => (
+      slides.map((_: SlideResolved, index: number) => (
         <button
           class={`dot ${index === 0 ? "active" : ""}`}
           data-goto={index}
@@ -84,6 +86,7 @@ const { slides = carruselData.slides as Slide[] } = Astro.props;
     }
   </div>
 </section>
+)}
 
 <style>
   .hero-carrousel {
@@ -196,21 +199,20 @@ const { slides = carruselData.slides as Slide[] } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    background: var(--color-primario);
+    background: var(--color-primario, #c27d0d);
     color: white;
     text-decoration: none;
     padding: 16px 32px;
-    border-radius: 6px;
-    font-weight: 600;
+    border-radius: 14px;
+    font-weight: 700;
     transition: all 0.3s ease;
-    border: 2px solid transparent;
+    border: 1px solid var(--color-primario, #c27d0d);
   }
 
   .btn-primary:hover {
-    background: transparent;
-    border-color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    color: #0f172a;
   }
 
   /* Controles */

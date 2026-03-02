@@ -1,0 +1,63 @@
+---
+/**
+ * Componente redes sociales. Usa lista_contacto de la API (redes_sociales).
+ * Sin fallback a JSON.
+ */
+import { SocialIcon } from "./SocialIcon";
+
+interface Props {
+  data: {
+    lista_contacto?: Array<{
+      icon_contacto?: string;
+      link_destino?: string;
+      txt_label?: string;
+      txt_valor?: string;
+    }>;
+    _configuracion?: { variant?: string; layout?: string };
+  };
+}
+
+const { data } = Astro.props;
+const lista = (data?.lista_contacto ?? []).filter((r) => r.link_destino);
+---
+
+{lista.length > 0 && (
+  <div class="redes-sociales">
+    {lista.map((red) => (
+      <a
+        href={red.link_destino}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="redes-social-icon"
+        aria-label={red.txt_label ?? ""}
+      >
+        <SocialIcon iconName={red.icon_contacto ?? "FaLink"} size={20} />
+      </a>
+    ))}
+  </div>
+)}
+
+<style>
+  .redes-sociales {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .redes-social-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .redes-social-icon:hover {
+    background: var(--color-primario);
+    color: white;
+    border-color: transparent;
+  }
+</style>

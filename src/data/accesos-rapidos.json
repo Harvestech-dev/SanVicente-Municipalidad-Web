@@ -1,45 +1,37 @@
 {
-  "titulo": "Accesos Rápidos",
-  "enlaces": [
+  "txt_titulo": "Accesos Rápidos",
+  "lista_enlaces": [
     {
-      "id": 1,
-      "titulo": "Boletas y Pagos",
-      "descripcion": "Pagá tus tasas online",
-      "url": "https://sanvicente.miportal.ar/",
-      "icono": "credit-card",
-      "color": "#003366"
+      "_orden": 1,
+      "txt_titulo": "Boletas y Pagos",
+      "txt_descripcion": "Pagá tus tasas online",
+      "link_url": "https://sanvicente.miportal.ar/",
+      "icon_servicio": "credit-card",
+      "_color": "#003366"
     },
     {
-      "id": 2,
-      "titulo": "Licencia de Conducir",
-      "descripcion": "Turnos y requisitos",
-      "url": "/Tramites/licenciaPage",
-      "icono": "car",
-      "color": "#006633"
+      "_orden": 3,
+      "txt_titulo": "Reclamos",
+      "txt_descripcion": "Vecino Digital",
+      "link_url": "/reclamos",
+      "icon_servicio": "message-square",
+      "_color": "#e65100"
     },
     {
-      "id": 3,
-      "titulo": "Reclamos",
-      "descripcion": "Vecino Digital",
-      "url": "/reclamos",
-      "icono": "message-square",
-      "color": "#e65100"
+      "_orden": 4,
+      "txt_titulo": "Licitaciones",
+      "txt_descripcion": "Concursos vigentes",
+      "link_url": "/Transparencia/licitaciones",
+      "icon_servicio": "file-text",
+      "_color": "#004a99"
     },
     {
-      "id": 4,
-      "titulo": "Licitaciones",
-      "descripcion": "Concursos vigentes",
-      "url": "/Transparencia/licitacionesPage",
-      "icono": "file-text",
-      "color": "#004a99"
-    },
-    {
-      "id": 5,
-      "titulo": "Agenda Cultural",
-      "descripcion": "Eventos y actividades",
-      "url": "/agendaPage",
-      "icono": "calendar",
-      "color": "#e65100"
+      "_orden": 5,
+      "txt_titulo": "Agenda Cultural",
+      "txt_descripcion": "Eventos y actividades",
+      "link_url": "/agenda",
+      "icon_servicio": "calendar",
+      "_color": "#e65100"
     }
   ]
 }

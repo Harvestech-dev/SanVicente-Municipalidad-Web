@@ -1,15 +1,12 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import data from "../../data/Transparencia/ordenanzas.json";
-import Footer from "../../components/Footer.astro";
-import Header from "../../components/Header.astro";
 
 // Simulamos los datos del JSON (puedes importar el archivo directamente)
-const { documentos, categorias, tipos, años } = data;
+const { lista_documentos: documentos, lista_categorias: categorias, lista_tipos: tipos, lista_anios: años } = data;
 ---
 
 <Layout>
-  <Header />
   <main class="ordenanzas-page">
     <section class="hero">
       <div class="container">
@@ -54,28 +51,28 @@ const { documentos, categorias, tipos, años } = data;
         {documentos.map((doc) => (
           <article 
             class="doc-card" 
-            data-titulo={doc.titulo.toLowerCase()} 
-            data-numero={doc.numero.toLowerCase()} 
-            data-resumen={doc.resumen.toLowerCase()}
-            data-tipo={doc.tipo}
-            data-categoria={doc.categoria}
-            data-anio={doc.fecha.split(' ').pop()}
+            data-titulo={doc.txt_titulo.toLowerCase()} 
+            data-numero={doc.txt_numero.toLowerCase()} 
+            data-resumen={doc.txt_resumen.toLowerCase()}
+            data-tipo={doc.txt_tipo}
+            data-categoria={doc.txt_categoria}
+            data-anio={doc.txt_fecha.split(' ').pop()}
           >
             <div class="doc-header">
               <div class="tags">
-                <span class="numero">{doc.numero}</span>
-                <span class={`badge ${doc.tipo.toLowerCase()}`}>{doc.tipo}</span>
-                <span class="badge-cat">{doc.categoria}</span>
+                <span class="numero">{doc.txt_numero}</span>
+                <span class={`badge ${doc.txt_tipo.toLowerCase()}`}>{doc.txt_tipo}</span>
+                <span class="badge-cat">{doc.txt_categoria}</span>
               </div>
-              <h3>{doc.titulo}</h3>
-              <p>{doc.resumen}</p>
+              <h3>{doc.txt_titulo}</h3>
+              <p>{doc.txt_resumen}</p>
               <div class="doc-meta">
-                <span>📅 Fecha: {doc.fecha}</span>
+                <span>📅 Fecha: {doc.txt_fecha}</span>
               </div>
             </div>
             <div class="doc-actions">
-              <a href="#" class="btn-outline">📥 PDF</a>
-              <a href="#" class="btn-primary">Ver completo</a>
+              <a href="#" class="btn-outline">📥 PDF <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
+              <a href="#" class="btn-primary">Ver completo <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a>
             </div>
           </article>
         ))}
@@ -87,7 +84,6 @@ const { documentos, categorias, tipos, años } = data;
       </div>
     </section>
   </main>
-  <Footer />
 </Layout>
 
 <style>
@@ -97,8 +93,8 @@ const { documentos, categorias, tipos, años } = data;
   /* Hero */
   .hero { background-color: var(--color-primario); color: white; padding: 4rem 0; text-align: center; }
   .icon-circle { background: rgba(255,255,255,0.2); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
-  .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-  .hero p { opacity: 0.9; font-size: 1.1rem; }
+  .hero h1 { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 800; margin-bottom: 1rem; }
+  .hero p { font-size: 1.2rem; opacity: 0.9; }
 
   /* Filtros */
   .filters-section { background: white; border-bottom: 1px solid #ddd; padding: 2rem 0; position: sticky; top: 0; z-index: 10; }
@@ -127,9 +123,10 @@ const { documentos, categorias, tipos, años } = data;
   .doc-meta { font-size: 0.8rem; color: #888; }
   
   .doc-actions { display: flex; flex-direction: column; gap: 0.5rem; min-width: 150px; }
-  .btn-primary { background: var(--color-primario); color: white; text-align: center; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
+  .btn-primary, .btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .btn-primary { background: var(--color-primario); color: white; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
   .btn-primary:hover { background: var(--color-primario-hover); }
-  .btn-outline { border: 1px solid #ddd; color: #444; text-align: center; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; }
+  .btn-outline { border: 1px solid #ddd; color: #444; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; }
 
   .empty-state { text-align: center; padding: 4rem; color: #999; }
 

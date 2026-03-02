@@ -1,0 +1,723 @@
+---
+import Layout from "../layouts/Layout.astro";
+import dataProgramas from "../data/programas.json";
+import sitio from "../data/sitio.json";
+import { getProgramSlug } from "../lib/programas-utils";
+
+const {
+  txt_titulo: titulo,
+  txt_subtitulo: subtitulo,
+  lista_programas: listaRaw,
+} = dataProgramas;
+const tema = sitio._estilo;
+
+interface Programa {
+  _orden?: number;
+  boolean_featured?: boolean;
+  img_logo?: string;
+  txt_titulo: string;
+  txt_subtitulo?: string;
+  lista_descripcion?: Array<{ txt_descripcion?: string }>;
+  lista_adjuntos?: Array<{ txt_nombre?: string; link_url?: string }>;
+  gallery_imagenes?: Array<{ url?: string; img_fondo?: string }>;
+}
+
+const programas = (listaRaw ?? []) as Programa[];
+const programasOrdenados = [...programas].sort((a, b) => {
+  const aFeatured = a.boolean_featured ? 1 : 0;
+  const bFeatured = b.boolean_featured ? 1 : 0;
+  if (bFeatured !== aFeatured) return bFeatured - aFeatured;
+  return (a._orden ?? 0) - (b._orden ?? 0);
+});
+const hayProgramas = programasOrdenados.length > 0;
+
+/** En la página programas se usa la primera imagen de la galería (no img_logo). */
+function getPrimeraImagen(p: Programa): string {
+  const first = p.gallery_imagenes?.[0];
+  if (!first) return "";
+  return first.url ?? first.img_fondo ?? "";
+}
+
+function getPrimerParrafo(p: Programa): string {
+  const desc = p.lista_descripcion?.[0]?.txt_descripcion;
+  return desc ?? p.txt_subtitulo ?? "";
+}
+
+function getPrimerEnlace(p: Programa): string {
+  const adj = p.lista_adjuntos?.[0]?.link_url;
+  return adj ?? "#";
+}
+
+// Solo hay “destacado” para la tarjeta grande si algún programa tiene boolean_featured
+const programaDestacado = hayProgramas
+  ? (programasOrdenados.find((p) => p.boolean_featured) ?? null)
+  : null;
+const indexDestacado = programaDestacado ? programasOrdenados.indexOf(programaDestacado) : 0;
+---
+
+<Layout title={`Programas | ${sitio.txt_nombreCorto}`}>
+  <main class="main-content">
+    <section class="hero-page">
+      <div class="container">
+        <h1>{titulo}</h1>
+        <p>{subtitulo}</p>
+      </div>
+    </section>
+
+    {
+      hayProgramas && (
+        <section class="filters-bar">
+          <div class="container filters-flex">
+            <div class="search-wrapper">
+              <svg
+                class="search-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                id="programas-search"
+                placeholder="Buscar programas..."
+                class="search-input"
+                autocomplete="off"
+              />
+            </div>
+            <div class="categories-wrapper" id="categoriesWrapper">
+              <button class="btn-cat active" data-filter="todos">
+                Todos
+              </button>
+              <button class="btn-cat" data-filter="destacados">
+                Destacados
+              </button>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      hayProgramas && programaDestacado && (
+        <section class="featured-section" id="featuredSection">
+          <div class="container">
+            <a
+              href={`/programas/${getProgramSlug(programaDestacado, indexDestacado)}`}
+              class="featured-card"
+              data-featured-id={programaDestacado.txt_titulo}
+            >
+              <div class="featured-image">
+                {getPrimeraImagen(programaDestacado) ? (
+                  <img
+                    src={getPrimeraImagen(programaDestacado)}
+                    alt={programaDestacado.txt_titulo}
+                    loading="eager"
+                  />
+                ) : (
+                  <div class="featured-placeholder">
+                    {programaDestacado.img_logo ? (
+                      <img
+                        src={programaDestacado.img_logo}
+                        alt=""
+                        class="logo-placeholder"
+                      />
+                    ) : (
+                      <span class="sigla-placeholder">
+                        {programaDestacado.txt_titulo.slice(0, 2).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {programaDestacado.boolean_featured && (
+                  <span class="badge-destacada">Destacado</span>
+                )}
+              </div>
+              <div class="featured-info">
+                <h2>{programaDestacado.txt_titulo}</h2>
+                <p>
+                  {programaDestacado.txt_subtitulo ??
+                    getPrimerParrafo(programaDestacado)}
+                </p>
+                <div class="featured-footer">
+                  <span class="read-more">Ver programa &rarr;</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      hayProgramas ? (
+        <section class="programs-list-section">
+          <div class="container">
+            <p
+              id="programsNoResults"
+              class="no-results-message"
+              style="display: none"
+            >
+              No se encontraron programas con los filtros aplicados.
+            </p>
+            <div class="programs-grid" id="programsGrid">
+              {programasOrdenados.map((prog, index) => {
+                const searchText = [
+                  prog.txt_titulo ?? "",
+                  prog.txt_subtitulo ?? "",
+                  ...(prog.lista_descripcion ?? []).map(
+                    (d) => d.txt_descripcion ?? "",
+                  ),
+                ]
+                  .join(" ")
+                  .toLowerCase();
+                const isFeaturedCard =
+                  programaDestacado !== null && prog === programaDestacado;
+                return (
+                  <a
+                    href={`/programas/${getProgramSlug(prog, index)}`}
+                    class="program-card"
+                    data-title={searchText}
+                    data-featured={prog.boolean_featured ? "true" : "false"}
+                    data-featured-card={isFeaturedCard ? "true" : "false"}
+                  >
+                    <div class="card-image">
+                      {getPrimeraImagen(prog) ? (
+                        <img
+                          src={getPrimeraImagen(prog)}
+                          alt={prog.txt_titulo}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div class="card-placeholder">
+                          {prog.img_logo ? (
+                            <img src={prog.img_logo} alt="" class="card-logo" />
+                          ) : (
+                            <span class="card-sigla">
+                              {prog.txt_titulo.slice(0, 2).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {prog.boolean_featured && (
+                        <span class="card-badge">Destacado</span>
+                      )}
+                    </div>
+                    <div class="card-content">
+                      <h3>{prog.txt_titulo}</h3>
+                      <p>{prog.txt_subtitulo ?? getPrimerParrafo(prog)}</p>
+                      <span class="card-link">Ver programa &rarr;</span>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+            <div class="pagination" id="pagination" />
+          </div>
+        </section>
+      ) : (
+        <section class="section-disclaimer">
+          <div class="container">
+            <div class="disclaimer-content">
+              <p>No hay programas cargados en este momento.</p>
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </main>
+</Layout>
+
+<script is:inline>
+  (function () {
+    var ITEMS_PER_PAGE = 6;
+    var currentPage = 1;
+    var currentFilter = "todos";
+    var searchQuery = "";
+
+    function normalize(str) {
+      return (str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function runProgramsFilters() {
+      var grid = document.getElementById("programsGrid");
+      var featuredSection = document.getElementById("featuredSection");
+      var filtersBar = document.querySelector(".main-content .filters-bar");
+      if (!grid) return;
+
+      var cards = Array.from(grid.querySelectorAll(".program-card"));
+      var filterButtons = filtersBar
+        ? Array.from(filtersBar.querySelectorAll(".btn-cat[data-filter]"))
+        : [];
+      var searchInput = document.getElementById("programas-search");
+      var paginationEl = document.getElementById("pagination");
+      var noResultsEl = document.getElementById("programsNoResults");
+
+      function updateDisplay() {
+        var hasSearch = searchQuery.trim() !== "";
+        var isFiltering = currentFilter !== "todos" || hasSearch;
+        var hideFeaturedSection = hasSearch || currentFilter === "destacados";
+
+        if (featuredSection) {
+          featuredSection.style.display = hideFeaturedSection
+            ? "none"
+            : "block";
+        }
+
+        filterButtons.forEach(function (btn) {
+          btn.classList.toggle(
+            "active",
+            btn.getAttribute("data-filter") === currentFilter,
+          );
+        });
+
+        var q = normalize(searchQuery);
+        var filteredCards = cards.filter(function (card) {
+          var title = card.getAttribute("data-title") || "";
+          var featured = card.getAttribute("data-featured") === "true";
+          var matchesSearch = !q || normalize(title).includes(q);
+          var matchesFilter =
+            currentFilter === "todos" ||
+            (currentFilter === "destacados" && featured);
+          if (!matchesSearch || !matchesFilter) return false;
+          if (
+            currentFilter === "todos" &&
+            !hasSearch &&
+            card.getAttribute("data-featured-card") === "true"
+          )
+            return false;
+          return true;
+        });
+
+        var totalPages = Math.max(
+          1,
+          Math.ceil(filteredCards.length / ITEMS_PER_PAGE),
+        );
+        currentPage = Math.min(currentPage, totalPages);
+        var start = (currentPage - 1) * ITEMS_PER_PAGE;
+        var end = start + ITEMS_PER_PAGE;
+
+        cards.forEach(function (card) {
+          card.style.display = "none";
+        });
+        filteredCards.slice(start, end).forEach(function (card) {
+          card.style.display = "block";
+        });
+
+        if (noResultsEl) {
+          noResultsEl.style.display =
+            filteredCards.length === 0 ? "block" : "none";
+        }
+
+        function renderPagination(total) {
+          if (!paginationEl) return;
+          paginationEl.innerHTML = "";
+          if (total <= 1) return;
+          for (var i = 1; i <= total; i++) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.textContent = String(i);
+            if (i === currentPage) btn.classList.add("active");
+            (function (page) {
+              btn.addEventListener("click", function () {
+                currentPage = page;
+                updateDisplay();
+                grid.scrollIntoView({ behavior: "smooth", block: "start" });
+              });
+            })(i);
+            paginationEl.appendChild(btn);
+          }
+        }
+        renderPagination(totalPages);
+      }
+
+      filterButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          filterButtons.forEach(function (b) {
+            b.classList.remove("active");
+          });
+          btn.classList.add("active");
+          currentFilter = btn.getAttribute("data-filter") || "todos";
+          currentPage = 1;
+          updateDisplay();
+        });
+      });
+
+      if (searchInput) {
+        searchInput.addEventListener("input", function () {
+          searchQuery = searchInput.value || "";
+          currentPage = 1;
+          updateDisplay();
+        });
+      }
+
+      updateDisplay();
+    }
+
+    if (typeof document !== "undefined") {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", runProgramsFilters);
+      } else {
+        runProgramsFilters();
+      }
+    }
+  })();
+</script>
+
+<style define:vars={{ primary: tema.primario, secondary: tema.secundario }}>
+  .main-content {
+    min-height: 100vh;
+    background-color: #f8fafc;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .hero-page {
+    background-color: var(--primary);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+  .hero-page h1 {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .hero-page p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 650px;
+    margin: 0 auto;
+  }
+
+  /* --- Barra de filtros (consistente con noticias/agenda) --- */
+  .filters-bar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filters-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+  .search-wrapper .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    pointer-events: none;
+  }
+  .search-input {
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+    min-height: 40px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  .categories-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .btn-cat {
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    border: 1px solid #e2e8f0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-cat:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .btn-cat.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  /* --- Card destacada --- */
+  .featured-section {
+    padding: 3rem 0;
+  }
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--primary);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.3s ease;
+  }
+  .featured-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  }
+  .featured-image {
+    position: relative;
+    min-height: 320px;
+    background: #1f2937;
+  }
+  .featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .featured-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #374151 0%, #111827 100%);
+  }
+  .logo-placeholder {
+    max-width: 120px;
+    max-height: 120px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+  .sigla-placeholder {
+    font-size: 3rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .badge-destacada {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-weight: 700;
+    font-size: 0.75rem;
+  }
+  .featured-info {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .featured-info h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+  }
+  .featured-info p {
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .featured-footer .read-more {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  /* --- Grilla de programas --- */
+  .programs-list-section {
+    padding: 4rem 0;
+  }
+  .no-results-message {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--secondary);
+    font-size: 1.1rem;
+  }
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+  .program-card {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    display: block;
+  }
+  .program-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+  }
+  .program-card:has(.card-badge) {
+    border-color: var(--primary);
+    border-width: 1px;
+  }
+  .program-card:has(.card-badge) .card-content h3 {
+    color: var(--primary);
+  }
+  .card-image {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: #1f2937;
+  }
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #374151 0%, #111827 100%);
+  }
+  .card-logo {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+  .card-sigla {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .card-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: var(--primary);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .card-content {
+    padding: 1.5rem;
+  }
+  .card-content h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+  }
+  .card-content p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+  }
+  .card-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .program-card:hover .card-link {
+    text-decoration: underline;
+  }
+
+  /* --- Paginación --- */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+  .pagination :global(button) {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .pagination :global(button:hover) {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .pagination :global(button.active) {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .section-disclaimer {
+    padding: 4rem 0;
+  }
+  .disclaimer-content {
+    text-align: center;
+    color: #64748b;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .featured-card {
+      grid-template-columns: 1fr;
+    }
+    .featured-image {
+      min-height: 240px;
+    }
+    .featured-info {
+      padding: 2rem;
+    }
+    .filters-flex {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .search-input {
+      max-width: none;
+    }
+  }
+</style>

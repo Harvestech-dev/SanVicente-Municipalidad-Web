@@ -1,6 +1,5 @@
 {
-  "imagen": "/images/Banner-ejemplo.png",
-  "alt": "Banner Vecino Digital",
-  "enlace": "vecinodigital.com/asdasd",
-  "titulo": "Vecino Digital"
+  "img_fondo": "/images/banner-ejemplo.png",
+  "txt_alt": "Vecino Digital",
+  "link_destino":"https://sanvicentevecinodigital.sanvicente.gob"
 }

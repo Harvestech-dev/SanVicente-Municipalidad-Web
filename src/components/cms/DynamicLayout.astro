@@ -1,0 +1,50 @@
+---
+/**
+ * Layout dinámico que renderiza componentes según datos del CMS o fallback local.
+ * Mapea type → componente Astro y pasa data como prop.
+ */
+
+import HeroCarousel from "../HeroCarousel.astro";
+import Banner from "../Banner.astro";
+/* import AccesosRapidos from "../AccesosRapidos.astro";
+ */ import Programas from "../Programas.astro";
+import AgendaCultural from "../AgendaCultural.astro";
+import Noticias from "../Noticias.astro";
+import TelefonosUtiles from "../TelefonosUtiles.astro";
+import RedesSociales from "../RedesSociales.astro";
+import type { CMSComponent } from "../../lib/cms/types";
+
+interface Props {
+  components: CMSComponent[];
+}
+
+const { components } = Astro.props;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const componentMap: Record<string, any> = {
+  hero_carousel: HeroCarousel,
+  hero_carrousel: HeroCarousel,
+  banner_hero: Banner,
+  banner_promocional: Banner,
+  banner_imagen: Banner,
+  /*   accesos_rapidos: AccesosRapidos,
+   */ programas_section: Programas,
+  programas_home: Programas,
+  agenda_cultural: AgendaCultural,
+  noticias_section: Noticias,
+  noticias: Noticias,
+  telefonos_utiles: TelefonosUtiles,
+  telfonos_tiles: TelefonosUtiles,
+  telfonos_utiles: TelefonosUtiles,
+  telfonos_utiles_contacto: TelefonosUtiles,
+  redes_sociales: RedesSociales,
+};
+---
+
+{
+  components.map((cmsComponent) => {
+    const Component = componentMap[cmsComponent.type];
+    if (!Component) return null;
+    return <Component data={cmsComponent.data} />;
+  })
+}

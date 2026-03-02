@@ -1,0 +1,1117 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SocialIcon } from "../components/SocialIcon";
+import { ContactSearch } from "../components/ContactSearch";
+import { fetchCMSComponents, getComponentsByPage } from "../lib/cms/fetch-cms";
+import sitioData from "../data/sitio.json";
+
+const PAGE_CONTACTO = "Contacto";
+
+// 1. Cargar componentes CMS para página Contacto. Solo API, sin fallback a JSON.
+const components = await fetchCMSComponents();
+const contactComponents = getComponentsByPage(components, PAGE_CONTACTO);
+
+const apiCabecera = contactComponents.find((c) => c.type === "cabecera_contacto");
+const apiBanner = contactComponents.find((c) => c.type === "banner_flotante");
+const apiContactAreas = contactComponents.find((c) => c.type === "contact_areas");
+const apiTelefonos = contactComponents.find(
+  (c) => c.type === "telefonos_utiles" || c.type === "telfonos_utiles_contacto"
+);
+const apiRedes = contactComponents.find((c) => c.type === "redes_sociales");
+
+// Cabecera (hero)
+const hero = {
+  txt_titulo: apiCabecera?.data?.txt_titulo ?? "Contacto",
+  txt_descripcion: apiCabecera?.data?.txt_descripcion ?? "Estamos para ayudarte.",
+};
+
+// Banner flotante: API usa btn_boton con txt_label y link_destino
+const btnBanner = apiBanner?.data?.btn_boton as { txt_label?: string; link_destino?: string } | undefined;
+const bannerDigital = {
+  txt_titulo: apiBanner?.data?.txt_titulo ?? "¿Tenés un reclamo o sugerencia?",
+  txt_subtitulo: apiBanner?.data?.txt_subtitulo ?? "Usá Vecino Digital para seguimiento de tu solicitud",
+  txt_boton: btnBanner?.txt_label ?? "Ir a Vecino Digital",
+  link_url: btnBanner?.link_destino ?? "https://sanvicente.vecino.digital",
+};
+
+// Áreas de contacto: API usa lista_contacto (no lista_contactos)
+const areasData = apiContactAreas?.data ?? {};
+const edificios = (areasData.lista_oficinas ?? []) as Edificio[];
+const sectionTitle = areasData.txt_title ?? areasData.txt_titulo ?? "Organización y Contacto";
+const sectionSubtitle = areasData.txt_subtitle ?? areasData.txt_subtitulo ?? "Edificios, secretarías y áreas de la Municipalidad.";
+
+// Teléfonos útiles
+const telefonosUtiles = (apiTelefonos?.data ?? {}) as Record<string, unknown>;
+const listaTelefonos = (telefonosUtiles.lista_telefonos ?? telefonosUtiles.lista_contacto ?? []) as TelefonoItem[];
+
+// Redes sociales
+const listaRedes = (apiRedes?.data?.lista_contacto ?? []) as RedItem[];
+
+interface Contacto {
+  icon_contacto?: string;
+  txt_label?: string;
+  link_destino?: string;
+  txt_valor?: string;
+}
+
+interface Dependencia {
+  _id?: string;
+  txt_titulo?: string;
+  _orden?: number;
+  _icon?: string;
+  lista_contacto?: Contacto[];
+  lista_contactos?: Contacto[];
+  lista_dependencias?: Dependencia[];
+}
+
+interface Edificio {
+  txt_titulo?: string;
+  txt_subtitulo?: string;
+  _id?: string;
+  _orden?: number;
+  _boolean_isDefault?: boolean;
+  _icon?: string;
+  lista_contacto?: Contacto[];
+  lista_contactos?: Contacto[];
+  lista_dependencias?: Dependencia[];
+}
+
+interface TelefonoItem {
+  _orden?: number;
+  txt_nombre?: string;
+  _icon?: string;
+  lista_contacto?: Contacto[];
+  lista_contactos?: Contacto[];
+}
+
+interface RedItem {
+  icon_contacto?: string;
+  link_destino?: string;
+  txt_label?: string;
+  txt_valor?: string;
+}
+
+interface SearchResultItem {
+  titulo: string;
+  label: string;
+  valor: string;
+  link: string;
+  icon: string;
+}
+
+function getContactos(obj: { lista_contacto?: Contacto[]; lista_contactos?: Contacto[] }): Contacto[] {
+  return obj.lista_contacto ?? obj.lista_contactos ?? [];
+}
+
+function buildSearchIndex(edificios: Edificio[], telefonos: TelefonoItem[]): SearchResultItem[] {
+  const items: SearchResultItem[] = [];
+  const addContact = (titulo: string, c: Contacto, icon: string) => {
+    items.push({
+      titulo,
+      label: c.txt_label ?? "",
+      valor: c.txt_valor ?? "",
+      link: c.link_destino ?? "",
+      icon: c.icon_contacto ?? icon,
+    });
+  };
+  (edificios ?? []).forEach((e) => {
+    const baseTitulo = e.txt_titulo ?? "";
+    getContactos(e).forEach((c) => addContact(baseTitulo, c, e._icon ?? "FaLink"));
+    (e.lista_dependencias ?? []).forEach((sec) => {
+      const tituloSec = baseTitulo ? `${baseTitulo} › ${sec.txt_titulo ?? ""}` : (sec.txt_titulo ?? "");
+      getContactos(sec).forEach((c) => addContact(tituloSec, c, sec._icon ?? "FaLink"));
+      (sec.lista_dependencias ?? []).forEach((sub) => {
+        const tituloSub = tituloSec ? `${tituloSec} › ${sub.txt_titulo ?? ""}` : (sub.txt_titulo ?? "");
+        getContactos(sub).forEach((c) => addContact(tituloSub, c, sub._icon ?? "FaLink"));
+      });
+    });
+  });
+  (telefonos ?? []).forEach((tel) => {
+    const titulo = tel.txt_nombre ?? "";
+    getContactos(tel).forEach((c) => addContact(titulo, c, tel._icon ?? "FaPhone"));
+  });
+  return items;
+}
+
+const searchIndex = buildSearchIndex(edificios, listaTelefonos);
+---
+
+<Layout title={`${hero.txt_titulo} | ${sitioData.txt_nombreCorto}`}>
+  <main class="contact-page">
+    <section class="hero-contact">
+      <div class="container">
+        <h1>{hero.txt_titulo}</h1>
+        <p>{hero.txt_descripcion}</p>
+        <div class="hero-social-grid">
+          {
+            listaRedes.filter((r) => r.link_destino).map((redItem) => (
+              <a
+                href={redItem.link_destino}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="hero-social-icon"
+                aria-label={redItem.txt_label ?? ""}
+              >
+                <SocialIcon iconName={redItem.icon_contacto ?? "FaLink"} size={22} />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    {apiBanner && (
+    <div id="vecino-digital-tip" class="vecino-digital-floating" role="complementary" aria-label="Sugerencia Vecino Digital">
+      <button type="button" class="vecino-digital-close" aria-label="Cerrar sugerencia">&times;</button>
+      <div class="digital-card digital-card-floating">
+          <div class="digital-content">
+            <div class="digital-badge">Contactanos</div>
+            <h3>{bannerDigital.txt_titulo}</h3>
+            <p>{bannerDigital.txt_subtitulo}</p>
+          </div>
+          <a
+            href={bannerDigital.link_url}
+            target="_blank"
+            class="btn-digital-new"
+          >
+            <span>{bannerDigital.txt_boton}</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        </div>
+    </div>
+    )}
+
+    {(edificios.length > 0 || searchIndex.length > 0) && (
+    <ContactSearch searchIndex={searchIndex} client:load placeholder="Buscar contactos..." />
+    )}
+
+    {edificios.length > 0 && (
+    <section class="section-offices">
+      <div class="container">
+        <h2 class="section-title">{sectionTitle}</h2>
+        <p class="section-desc section-desc-centered">
+          {sectionSubtitle}
+        </p>
+        <div class="edificios-list">
+          {
+            [...edificios]
+              .sort((a, b) => (a._orden ?? 0) - (b._orden ?? 0))
+              .map((edificio) => {
+                const contactos = getContactos(edificio);
+                return (
+                <article
+                  class={`edificio-card ${edificio._boolean_isDefault ? "edificio-default" : ""}`}
+                >
+                  <header class="edificio-header">
+                    <div class="edificio-icon">
+                      <SocialIcon
+                        iconName={edificio._icon ?? "FaBuilding"}
+                        size={24}
+                      />
+                    </div>
+                    <div class="edificio-titles">
+                      <h3 class="edificio-title">{edificio.txt_titulo}</h3>
+                      {edificio.txt_subtitulo && (
+                        <p class="edificio-subtitle">
+                          {edificio.txt_subtitulo}
+                        </p>
+                      )}
+                    </div>
+                  </header>
+                  <div class="edificio-contactos">
+                    {contactos.map((c) => (
+                      <div class="contacto-item">
+                        <span class="contact-icon">
+                          <SocialIcon
+                            iconName={c.icon_contacto ?? "FaLink"}
+                            size={16}
+                          />
+                        </span>
+                        {c.link_destino ? (
+                          <a
+                            href={c.link_destino}
+                            target={
+                              c.link_destino.startsWith("http")
+                                ? "_blank"
+                                : undefined
+                            }
+                            rel={
+                              c.link_destino.startsWith("http")
+                                ? "noopener noreferrer"
+                                : undefined
+                            }
+                            class="contact-link"
+                          >
+                            {c.txt_valor ?? c.link_destino}
+                          </a>
+                        ) : (
+                          <span>{c.txt_valor ?? ""}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {(edificio.lista_dependencias ?? []).length > 0 && (
+                    <div class="dependencias-wrap">
+                      <details class="nivel-details secretarias-details">
+                        <summary class="nivel-label nivel-label-toggle">
+                          <span class="chevron" aria-hidden="true" />
+                          Áreas
+                        </summary>
+                        <ul class="secretarias-list">
+                          {(edificio.lista_dependencias ?? [])
+                            .sort((a, b) => (a._orden ?? 0) - (b._orden ?? 0))
+                            .map((sec) => {
+                              const secContactos = getContactos(sec);
+                              return (
+                              <li class="secretaria-item">
+                                <div class="secretaria-header">
+                                  <SocialIcon
+                                    iconName={sec._icon ?? "FaBuilding"}
+                                    size={18}
+                                  />
+                                  <h4 class="secretaria-title">
+                                    {sec.txt_titulo}
+                                  </h4>
+                                </div>
+                                <div class="secretaria-content">
+                                  <div class="secretaria-contactos">
+                                    {secContactos.map((c) => (
+                                      <div class="contacto-item contacto-item-sm">
+                                        <span class="contact-icon">
+                                          <SocialIcon
+                                            iconName={
+                                              c.icon_contacto ?? "FaLink"
+                                            }
+                                            size={14}
+                                          />
+                                        </span>
+                                        {c.link_destino ? (
+                                          <a
+                                            href={c.link_destino}
+                                            target={
+                                              c.link_destino.startsWith("http")
+                                                ? "_blank"
+                                                : undefined
+                                            }
+                                            rel={
+                                              c.link_destino.startsWith("http")
+                                                ? "noopener noreferrer"
+                                                : undefined
+                                            }
+                                            class="contact-link"
+                                          >
+                                            {c.txt_valor ?? c.link_destino}
+                                          </a>
+                                        ) : (
+                                          <span>{c.txt_valor ?? ""}</span>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                  {(sec.lista_dependencias ?? []).length >
+                                    0 && (
+                                    <div class="subsecretarias-wrap">
+                                      <details class="nivel-details subsecretarias-details">
+                                        <summary class="nivel-label nivel-label-sm nivel-label-toggle">
+                                          <span
+                                            class="chevron chevron-sm"
+                                            aria-hidden="true"
+                                          />
+                                          Subsecretarías
+                                        </summary>
+                                        <ul class="subsecretarias-list">
+                                          {(sec.lista_dependencias ?? [])
+                                            .sort(
+                                              (a, b) =>
+                                                (a._orden ?? 0) -
+                                                (b._orden ?? 0),
+                                            )
+                                            .map((sub) => {
+                                              const subContactos = getContactos(sub);
+                                              return (
+                                              <li class="subsecretaria-item">
+                                                <div class="subsecretaria-header">
+                                                  <SocialIcon
+                                                    iconName={
+                                                      sub._icon ?? "FaLink"
+                                                    }
+                                                    size={16}
+                                                  />
+                                                  <h5 class="subsecretaria-title">
+                                                    {sub.txt_titulo}
+                                                  </h5>
+                                                </div>
+                                                <div class="subsecretaria-contactos">
+                                                  {subContactos.map((c) => (
+                                                    <div class="contacto-item contacto-item-xs">
+                                                      <span class="contact-icon">
+                                                        <SocialIcon
+                                                          iconName={
+                                                            c.icon_contacto ??
+                                                            "FaLink"
+                                                          }
+                                                          size={12}
+                                                        />
+                                                      </span>
+                                                      {c.link_destino ? (
+                                                        <a
+                                                          href={c.link_destino}
+                                                          target={
+                                                            c.link_destino.startsWith(
+                                                              "http",
+                                                            )
+                                                              ? "_blank"
+                                                              : undefined
+                                                          }
+                                                          rel={
+                                                            c.link_destino.startsWith(
+                                                              "http",
+                                                            )
+                                                              ? "noopener noreferrer"
+                                                              : undefined
+                                                          }
+                                                          class="contact-link"
+                                                        >
+                                                          {c.txt_valor ??
+                                                            c.link_destino}
+                                                        </a>
+                                                      ) : (
+                                                        <span>
+                                                          {c.txt_valor ?? ""}
+                                                        </span>
+                                                      )}
+                                                    </div>
+                                                  ))}
+                                                </div>
+                                              </li>
+                                            );
+                                            })}
+                                        </ul>
+                                      </details>
+                                    </div>
+                                  )}
+                                </div>
+                              </li>
+                            );
+                            })}
+                        </ul>
+                      </details>
+                    </div>
+                  )}
+                </article>
+              );
+              })}
+        </div>
+      </div>
+    </section>
+    )}
+
+    {apiTelefonos && listaTelefonos.length > 0 && (
+    <section class="section-phones">
+      <div class="container">
+        <h2 class="section-subtitle section-subtitle-centered">{telefonosUtiles.txt_titulo ?? "Teléfonos útiles"}</h2>
+        <p class="section-desc section-desc-centered">{telefonosUtiles.txt_subtitulo ?? "Contactos importantes para situaciones urgentes"}</p>
+        <div class="phones-grid">
+          {[...listaTelefonos]
+            .sort((a, b) => (a._orden ?? 0) - (b._orden ?? 0))
+            .map((tel) => {
+              const contactos = getContactos(tel);
+              return (
+                <article class="phone-card">
+                  <div class="phone-card-icon">
+                    <SocialIcon
+                      iconName={tel._icon ?? "FaPhone"}
+                      size={24}
+                    />
+                  </div>
+                  <div class="phone-card-content">
+                    <h3 class="phone-card-title">{tel.txt_nombre}</h3>
+                    <div class="phone-contacts">
+                      {contactos.map((c) => (
+                        <div class="phone-contact-item">
+                          <div class="phone-contact-content">
+                            <span class="phone-contact-label">{c.txt_label ?? ""}</span>
+                            {c.link_destino ? (
+                              <a
+                                href={c.link_destino}
+                                target={c.link_destino.startsWith("http") ? "_blank" : undefined}
+                                rel={c.link_destino.startsWith("http") ? "noopener noreferrer" : undefined}
+                                class="phone-contact-link"
+                              >
+                                <span class="phone-contact-icon">
+                                  <SocialIcon
+                                    iconName={c.icon_contacto ?? tel._icon ?? "FaPhone"}
+                                    size={12}
+                                  />
+                                </span>
+                                <span>{c.txt_valor ?? ""}</span>
+                              </a>
+                            ) : (
+                              <span class="phone-contact-value">
+                                <span class="phone-contact-icon">
+                                  <SocialIcon
+                                    iconName={c.icon_contacto ?? tel._icon ?? "FaPhone"}
+                                    size={12}
+                                  />
+                                </span>
+                                <span>{c.txt_valor ?? ""}</span>
+                              </span>
+                            )}
+              </div>
+              </div>
+                      ))}
+            </div>
+            </div>
+                </article>
+              );
+            })}
+        </div>
+      </div>
+    </section>
+    )}
+  </main>
+</Layout>
+
+<script define:vars={{ contactComponents }}>
+  if (typeof window !== "undefined") {
+    console.log("[API] Página Contacto - Toda la información:", {
+      cms: { componentesContacto: contactComponents },
+    });
+  }
+
+  // --- Card flotante Vecino Digital ---
+  const STORAGE_KEY = "vecino-digital-tip-closed";
+  const tipEl = document.getElementById("vecino-digital-tip");
+  const closeBtn = tipEl?.querySelector(".vecino-digital-close");
+
+  if (tipEl && closeBtn) {
+    if (typeof localStorage !== "undefined" && localStorage.getItem(STORAGE_KEY) === "true") {
+      tipEl.classList.add("hidden");
+    }
+    closeBtn.addEventListener("click", () => {
+      tipEl.classList.add("hidden");
+      try {
+        localStorage.setItem(STORAGE_KEY, "true");
+      } catch (_) {}
+    });
+  }
+</script>
+
+<style>
+  /* --- CONFIGURACIÓN BASE --- */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* --- HERO (igualado al resto de páginas: Gobierno, Noticias, etc.) --- */
+  .hero-contact {
+    background-color: var(--color-primario);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+  .hero-contact h1 {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .hero-contact p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .hero-social-grid {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .hero-social-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  .hero-social-icon:hover {
+    background: white;
+    color: var(--color-primario);
+    border-color: white;
+    transform: scale(1.05);
+  }
+
+  /* --- CARD FLOTANTE VECINO DIGITAL --- */
+  .vecino-digital-floating {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1000;
+    max-width: 340px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .vecino-digital-floating.hidden {
+    transform: translateY(120%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .vecino-digital-close {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: #64748b;
+    color: white;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    transition: background 0.2s;
+  }
+  .vecino-digital-close:hover {
+    background: #475569;
+  }
+  .digital-card-floating {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .digital-card-floating .digital-content h3 {
+    font-size: 1.25rem;
+  }
+  .digital-card-floating .digital-content p {
+    font-size: 0.95rem;
+  }
+  .digital-card-floating .btn-digital-new {
+    width: 85%;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+  }
+  @media (max-width: 480px) {
+    .vecino-digital-floating {
+      right: 1rem;
+      left: 1rem;
+      max-width: none;
+    }
+  }
+  .digital-badge {
+    background: var(--color-primario-claro, #e0f2fe);
+    color: var(--color-primario);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+  .digital-content h3 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-texto);
+    margin-bottom: 0.5rem;
+  }
+  .digital-content p {
+    color: #64748b;
+    font-size: 1.1rem;
+  }
+
+  .btn-digital-new {
+    background: var(--color-primario);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .btn-digital-new:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+
+  /* --- FILTROS / BUSCADOR (ContactSearch React: :global para que apliquen al DOM hidratado) --- */
+  :global(.filters-bar) {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  :global(.filters-bar .container) {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  :global(.filters-flex) {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  :global(.filters-bar .search-wrapper) {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  :global(.filters-bar .search-wrapper .search-icon) {
+    position: absolute;
+    left: 1rem;
+    color: var(--color-primario);
+    pointer-events: none;
+  }
+  :global(.filters-bar .search-input) {
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+    min-height: 40px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  :global(.filters-bar .search-input:focus) {
+    outline: none;
+    border-color: var(--color-primario);
+  }
+
+  :global(.search-results) {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  :global(.search-results .search-result-item) {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    transition: border-color 0.2s;
+  }
+  :global(.search-results .search-result-item:hover) {
+    border-color: var(--color-primario);
+  }
+  :global(.search-results .search-result-titulo) {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-primario);
+    margin: 0 0 0.5rem 0;
+  }
+  :global(.search-results .search-result-contact) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+  :global(.search-results .search-result-icon) {
+    color: var(--color-primario);
+    flex-shrink: 0;
+  }
+  :global(.search-results .search-result-icon svg) {
+    display: block;
+  }
+  :global(.search-results .search-result-content) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  :global(.search-results .search-result-label) {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+  }
+  :global(.search-results .search-result-link),
+  :global(.search-results .search-result-value) {
+    color: inherit;
+    text-decoration: none;
+  }
+  :global(.search-results .search-result-link:hover) {
+    color: var(--color-primario);
+  }
+  :global(.search-results .search-no-results) {
+    color: #64748b;
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  /* --- JERARQUÍA: EDIFICIOS > SECRETARÍAS > SUBSECRETARÍAS --- */
+  .section-offices {
+    padding: 6rem 0;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+  }
+  .section-desc-centered {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 4rem;
+  }
+
+  .edificios-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 3rem;
+  }
+  @media (min-width: 1024px) {
+    .edificios-list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .edificio-card {
+    background: white;
+    border-radius: 1.25rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .edificio-card:hover {
+    border-color: var(--color-primario);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+  .edificio-card.edificio-default {
+    border-color: var(--color-primario);
+    border-width: 1px;
+    background: linear-gradient(135deg, rgba(194, 109, 14, 0.04), white);
+  }
+
+  .edificio-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .edificio-icon {
+    background: var(--color-primario);
+    color: white;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .edificio-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-primario);
+    margin: 0;
+  }
+  .edificio-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0.25rem 0 0;
+  }
+
+  .edificio-contactos {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1.5rem 2rem;
+    padding: 1.5rem 2rem;
+  }
+  .contacto-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+  .contacto-item-sm {
+    font-size: 0.9rem;
+  }
+  .contacto-item-xs {
+    font-size: 0.85rem;
+  }
+  .contact-icon {
+    color: var(--color-primario);
+    display: flex;
+    align-items: center;
+  }
+  .contact-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .contact-link:hover {
+    color: var(--color-primario);
+  }
+
+  .dependencias-wrap {
+    padding: 0 2rem 2rem;
+  }
+  .secretarias-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .secretaria-item {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .secretaria-item:last-child {
+    border-bottom: none;
+  }
+  .nivel-details summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .nivel-details summary::-webkit-details-marker,
+  .nivel-details summary::marker {
+    display: none;
+  }
+  .nivel-label-toggle {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-primario);
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+  }
+  .nivel-label-sm.nivel-label-toggle {
+    font-size: 0.7rem;
+    margin-bottom: 0.75rem;
+  }
+  .secretarias-details[open] .nivel-label-toggle,
+  .subsecretarias-details[open] .nivel-label-toggle {
+    margin-bottom: 1rem;
+  }
+  .chevron {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 6px solid var(--color-primario);
+    margin-right: 0.5rem;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .chevron-sm {
+    border-left-width: 5px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+  }
+  .secretarias-details[open] .chevron,
+  .subsecretarias-details[open] .chevron {
+    transform: rotate(90deg);
+  }
+  .secretaria-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .secretaria-header .contact-icon {
+    color: var(--color-primario);
+  }
+  .secretaria-title {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: #1e293b;
+    margin: 0;
+  }
+  .secretaria-contactos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    padding-left: 2rem;
+  }
+
+  .subsecretarias-wrap {
+    margin-top: 1rem;
+    padding-left: 2rem;
+  }
+  .subsecretarias-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+  }
+  .subsecretaria-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .subsecretaria-item:last-child {
+    border-bottom: none;
+  }
+  .subsecretaria-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+  .subsecretaria-header .contact-icon {
+    color: #64748b;
+  }
+  .subsecretaria-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0;
+  }
+  .subsecretaria-contactos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    padding-left: 1.75rem;
+  }
+
+  /* --- TELÉFONOS ÚTILES --- */
+  .section-phones {
+    padding: 6rem 0;
+    background-color: var(--color-primario-claro);
+  }
+  .section-subtitle {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+  }
+  .section-subtitle-centered {
+    text-align: center;
+  }
+  .section-phones .section-desc {
+    text-align: center;
+  }
+  .section-desc {
+    color: #64748b;
+    margin-bottom: 2.5rem;
+  }
+
+  .phones-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 640px) {
+    .phones-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .phones-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .phone-card {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  .phone-card:hover {
+    border-color: var(--color-primario);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.03);
+  }
+  .phone-card-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--color-primario);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-card-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .phone-card-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-primario);
+    margin: 0 0 0.75rem 0;
+  }
+  .phone-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .phone-contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .phone-contact-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    color: #475569;
+  }
+  .phone-contact-link,
+  .phone-contact-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .phone-contact-icon {
+    flex-shrink: 0;
+    color: var(--color-primario);
+    display: inline-flex;
+    align-items: center;
+  }
+  .phone-contact-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+  }
+  .phone-contact-link {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .phone-contact-link:hover {
+    color: var(--color-primario);
+  }
+  .phone-contact-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #334155;
+  }
+</style>

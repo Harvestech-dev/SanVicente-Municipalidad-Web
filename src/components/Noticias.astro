@@ -1,39 +1,69 @@
 ---
 import dataNoticias from "../data/noticias.json";
 
-const { noticias, titulo, subtitulo, textoVerTodo, urlVerTodo } = dataNoticias;
+const { data: cmsData } = Astro.props;
+const source = (cmsData as Record<string, unknown>) ?? dataNoticias;
+const dataNoticiasObj = dataNoticias as Record<string, unknown>;
+const btn = source.btn_boton as { txt_label?: string; label_texto?: string; link_url?: string; src_destino?: string } | undefined;
 
-const noticiaDestacada = noticias.find((n) => n.destacada) || noticias[0];
-const otrasNoticias = noticias
-  .filter((n) => n.slug !== noticiaDestacada.slug) 
-  .slice(0, 3);
+const titulo = (source.txt_titulo ?? dataNoticiasObj.txt_titulo ?? "Noticias") as string;
+const subtitulo = (source.txt_subtitulo ?? dataNoticiasObj.txt_subtitulo ?? "Enterate de las últimas novedades de nuestra ciudad") as string;
+const textoVerTodo = (source.txt_ver_todo ?? dataNoticiasObj.txt_ver_todo ?? btn?.txt_label ?? btn?.label_texto ?? "Ver todas las noticias") as string;
+const urlVerTodoRaw = (source.link_ver_todo ?? dataNoticiasObj.link_ver_todo ?? btn?.link_url ?? btn?.src_destino ?? "/noticias") as string;
+const urlVerTodo = urlVerTodoRaw.startsWith("/") ? urlVerTodoRaw : `/${urlVerTodoRaw}`;
+
+interface Noticia {
+  _slug?: string;
+  boolean_destacada?: boolean;
+  img_principal?: string;
+  txt_titulo?: string;
+  txt_categoria?: string;
+  txt_extracto?: string;
+  txt_fecha?: string;
+}
+const listaNoticias = (source.lista_noticias ?? []) as Noticia[];
+const disclamerSinNoticias = (source.lista_disclamer_sin_noticias ?? []) as { txt_parrafo?: string }[];
+const ocultarSiNoHayNoticias = source.boolean_ocultar_si_no_hay_noticias === true;
+const hayNoticias = listaNoticias.length > 0;
+
+const noticiaDestacada = hayNoticias ? (listaNoticias.find((n) => n.boolean_destacada) || listaNoticias[0]) : null;
+const otrasNoticias = noticiaDestacada ? listaNoticias.filter((n) => n._slug !== noticiaDestacada._slug).slice(0, 3) : [];
 ---
 
+{(!hayNoticias && ocultarSiNoHayNoticias) ? null : (
 <section class="noticias-section">
   <div class="container">
     <div class="header-noticias">
-      <h2>{titulo}</h2>
-      <p>{subtitulo}</p>
+      <div class="title-group">
+        <h2>{titulo}</h2>
+        <p>{subtitulo}</p>
+      </div>
+      {hayNoticias && (
+        <a href={urlVerTodo} class="btn-ver-todo desktop-only">
+          {textoVerTodo}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+      )}
     </div>
 
     {
-      noticiaDestacada && (
+      noticiaDestacada && hayNoticias && (
         <article class="destacada-card">
           {/* CAMBIO: id por slug */}
-          <a href={`/Noticias/${noticiaDestacada.slug}`} class="destacada-link">
+          <a href={`/Noticias/${noticiaDestacada._slug}`} class="destacada-link">
             <div class="destacada-img">
               <img
-                src={noticiaDestacada.imagen}
-                alt={noticiaDestacada.titulo}
+                src={noticiaDestacada.img_principal}
+                alt={noticiaDestacada.txt_titulo}
               />
               <span class="tag-destacado">Destacada</span>
             </div>
             <div class="destacada-content">
-              <span class="categoria">{noticiaDestacada.categoria}</span>
-              <h3>{noticiaDestacada.titulo}</h3>
-              <p>{noticiaDestacada.extracto}</p>
+              <span class="categoria">{noticiaDestacada.txt_categoria}</span>
+              <h3>{noticiaDestacada.txt_titulo}</h3>
+              <p>{noticiaDestacada.txt_extracto}</p>
               <div class="destacada-footer">
-                <span class="fecha">{noticiaDestacada.fecha}</span>
+                <span class="fecha">{noticiaDestacada.txt_fecha}</span>
                 <span class="leer-mas">Leer más →</span>
               </div>
             </div>
@@ -43,33 +73,43 @@ const otrasNoticias = noticias
     }
 
     <div class="noticias-grid">
-      {
+      {hayNoticias ? (
         otrasNoticias.map((noticia) => (
           <article class="noticia-card">
             {/* CAMBIO: id por slug */}
-            <a href={`/Noticias/${noticia.slug}`}>
+            <a href={`/Noticias/${noticia._slug}`}>
               <div class="card-img">
-                <img src={noticia.imagen} alt={noticia.titulo} />
-                <span class="tag-categoria">{noticia.categoria}</span>
+                <img src={noticia.img_principal} alt={noticia.txt_titulo} />
+                <span class="tag-categoria">{noticia.txt_categoria}</span>
               </div>
               <div class="card-content">
-                <h4>{noticia.titulo}</h4>
-                <p>{noticia.extracto}</p>
-                <span class="fecha">{noticia.fecha}</span>
+                <h4>{noticia.txt_titulo}</h4>
+                <p>{noticia.txt_extracto}</p>
+                <span class="fecha">{noticia.txt_fecha}</span>
               </div>
             </a>
           </article>
         ))
-      }
+      ) : disclamerSinNoticias.length > 0 ? (
+        <div class="noticias-empty">
+          {disclamerSinNoticias.map((p) => (
+            <p>{p.txt_parrafo ?? ""}</p>
+          ))}
+        </div>
+      ) : null}
     </div>
 
-    <div class="ver-todo-container">
-      <a href={`/${urlVerTodo}`} class="btn-ver-todo">
-        {textoVerTodo}
-      </a>
-    </div>
+    {hayNoticias && (
+      <div class="ver-todo-container mobile-only">
+        <a href={urlVerTodo} class="btn-ver-todo">
+          {textoVerTodo}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+      </div>
+    )}
   </div>
 </section>
+)}
 
 <style>
   .noticias-section {
@@ -81,8 +121,24 @@ const otrasNoticias = noticias
     margin: 0 auto;
   }
   .header-noticias {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
     margin-bottom: 3rem;
+  }
+  .header-noticias .title-group {
+    flex: 1;
+  }
+  .header-noticias .desktop-only {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .header-noticias .desktop-only {
+      display: inline-flex;
+    }
+    .header-noticias .mobile-only {
+      display: none;
+    }
   }
   .header-noticias h2 {
     font-size: 2.5rem;
@@ -99,7 +155,7 @@ const otrasNoticias = noticias
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     margin-bottom: 3rem;
-    border: 1px solid #eee;
+    border: 1px solid var(--color-primario, #c27d0d);
   }
   .destacada-link {
     display: grid;
@@ -120,7 +176,7 @@ const otrasNoticias = noticias
     position: absolute;
     top: 1rem;
     left: 1rem;
-    background: var(--color-secundario);
+    background: var(--color-primario, #c27d0d);
     color: white;
     padding: 0.3rem 0.8rem;
     border-radius: 4px;
@@ -172,9 +228,6 @@ const otrasNoticias = noticias
     border: 1px solid #eee;
     transition: transform 0.3s ease;
   }
-  .noticia-card:hover {
-    transform: translateY(-5px);
-  }
   .noticia-card a {
     text-decoration: none;
     color: inherit;
@@ -224,18 +277,45 @@ const otrasNoticias = noticias
     text-align: center;
     margin-top: 3.5rem;
   }
+  .ver-todo-container.mobile-only {
+    display: block;
+  }
+  @media (min-width: 768px) {
+    .ver-todo-container.mobile-only {
+      display: none;
+    }
+  }
+  .noticias-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: #64748b;
+  }
+  .noticias-empty p {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+  .noticias-empty p:last-child {
+    margin-bottom: 0;
+  }
   .btn-ver-todo {
-    display: inline-block;
-    padding: 0.8rem 2rem;
-    background-color: var(--color-primario);
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    background: white;
+    color: var(--color-primario, #c27d0d);
     text-decoration: none;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background 0.3s;
+    border: 1px solid var(--color-primario, #c27d0d);
+    border-radius: 14px;
+    font-weight: 700;
+    transition: all 0.3s ease;
   }
   .btn-ver-todo:hover {
-    background-color: var(--color-primario-hover);
+    background: var(--color-primario, #c27d0d);
+    border-color: var(--color-primario, #c27d0d);
+    color: white;
   }
   @media (max-width: 768px) {
     .destacada-link {

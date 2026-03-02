@@ -1,10 +1,10 @@
 {
-  "nombre": "Municipalidad de San Vicente",
-  "nombreCorto": "San Vicente",
-  "descripcion": "Portal oficial de la Municipalidad de San Vicente, Santa Fe. Información sobre trámites, agenda cultural y servicios al vecino.",
-  "url": "https://www.sanvicente.gob.ar",
-  "tema": {
-    "primario": "#C26D0E", 
+  "txt_nombre": "Municipalidad de San Vicente",
+  "txt_nombreCorto": "San Vicente",
+  "txt_descripcion": "Portal oficial de la Municipalidad de San Vicente, Santa Fe. Información sobre trámites, agenda cultural y servicios al vecino.",
+  "link_url": "https://www.sanvicente.gob.ar",
+  "_estilo": {
+    "primario": "#C26D0E",
     "primarioHover": "#A05A0B",
     "primarioSuave": "#FDF2E9",
     "secundario": "#1E293B",
@@ -16,23 +16,12 @@
     "exito": "#16A34A",
     "error": "#DC2626"
   },
-  "contacto": {
-    "telefono": "03492-470622",
-    "horario": "Lunes a Viernes, 07:00 a 13:00 hs",
-    "direccion": "Bv. Sarmiento 160",
-    "email": "sanvicente@sanvicente.com.ar"
-  },
-  "redesSociales": {
-    "facebook": "https://www.facebook.com/sanvicenteok",
-    "instagram": "https://www.instagram.com/sanvicenteok",
-    "youtube": "https://www.youtube.com/@sanvicenteok",
-    "whatsapp": "https://api.whatsapp.com/send?phone=5493492304058"
-  },
+
   "footer": {
-    "copyright": "Todos los derechos reservados.",
-    "reclamos": {
-      "titulo": "Ir a Vecino Digital",
-      "url": "vecinodigital"
+    "txt_copyright": "Todos los derechos reservados.",
+    "btn_reclamos": {
+      "txt_label": "Ir a Vecino Digital",
+      "link_url": "https://sanvicente.vecino.digital"
     }
   }
 }

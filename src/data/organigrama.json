@@ -1,0 +1,176 @@
+{
+    "intendencia": {
+      "secretaria_intendente": {
+        "areas": [
+          "Asesoría Legal",
+          "C.P.N.",
+          "Área de Atención Ciudadana",
+          "Jardín Maternal",
+          "Área Comunicación y Prensa"
+        ]
+      },
+      "secretarias": [
+        {
+          "nombre": "Secretaría de Gestión",
+          "subsecretarias": [
+            {
+              "nombre": "Subsecretaría de Obras y Servicios Públicos",
+              "departamentos": [
+                {
+                  "nombre": "Departamento de Planeamiento Urbano",
+                  "areas": [
+                    "Área Edificaciones Privadas",
+                    "Área Catastro",
+                    "Área Ordenamiento Territorial",
+                    "Área Medio Ambiente",
+                    "Área Estudios y Proyectos"
+                  ]
+                },
+                {
+                  "nombre": "Departamento de Obras Civiles",
+                  "areas": [
+                    "Área Infraestructura Habitacional"
+                  ]
+                },
+                {
+                  "nombre": "Departamento de Obras de Arquitectura",
+                  "areas": [
+                    "Área Arquitectura General"
+                  ]
+                },
+                {
+                  "nombre": "Departamento de Servicios Públicos",
+                  "areas": [
+                    "Área Residuos Sólidos Urbanos",
+                    "Área Mantenimiento y Conservación de Espacios y Edificios Públicos",
+                    "Área Alumbrado Público e Instalaciones Eléctricas",
+                    "Área Talleres",
+                    "Área Automotor y Equipos Pesados",
+                    "Área Servicios Varios"
+                  ],
+                  "unidades_operativas": [
+                    "Cuadrilla Comunal y Contratada para Caminos Rurales",
+                    "Cuadrillas para Obras de Vivienda",
+                    "Cuadrillas para Obras de Arquitectura",
+                    "Recolección y Transporte de Residuos",
+                    "Planta de Recupero",
+                    "Recolección de Escombros y Ramas",
+                    "Vivero Municipal",
+                    "Mantenimiento Cementerio",
+                    "Planta Elaboradora de Hormigón",
+                    "Cuadrilla Multipropósito"
+                  ]
+                }
+              ]
+            },
+            {
+              "nombre": "Subsecretaría de Hábitat y Medio Ambiente",
+              "areas": [
+                "Área Infraestructura Vial e Hidráulica",
+                "Área Infraestructura Sanitaria"
+              ],
+              "unidades_operativas": [
+                "Cuadrillas de Pavimento, Cordón Cuneta, Bacheo y Desagües Pluviales",
+                "Cuadrilla de Ampliación Red Cloacal y Mantenimiento"
+              ]
+            },
+            {
+              "nombre": "Subsecretaría de Hacienda",
+              "departamentos": [
+                {
+                  "nombre": "Departamento de Administración General",
+                  "areas": [
+                    "Área Cajas y Servicio de Cobro",
+                    "Área Sueldos",
+                    "Registro de Gastos",
+                    "Pago a Proveedores",
+                    "Pagos Varios"
+                  ]
+                },
+                {
+                  "nombre": "Área Técnica y Administrativa",
+                  "areas": [
+                    "Cadetería",
+                    "Órdenes de Compra",
+                    "Pliegos de Licitación",
+                    "Presupuestos"
+                  ]
+                },
+                {
+                  "nombre": "Área Coordinación de Impuestos y Comercios",
+                  "areas": [
+                    "Inscripción de Comercios",
+                    "Liquidación de Tasas",
+                    "Impuesto Inmobiliario y Patente",
+                    "Ingresos Varios"
+                  ]
+                }
+              ]
+            },
+            {
+              "nombre": "Departamento de Coordinación de Convivencia Comunitaria",
+              "areas": [
+                "Inspectores de Tránsito",
+                "Área Licencias de Conducir",
+                "Área Tránsito",
+                "Área Bromatología",
+                "Boca de Expendio IAPOS",
+                "Juzgado de Faltas"
+              ]
+            }
+          ]
+        },
+        {
+          "nombre": "Secretaría de Innovación y Desarrollo",
+          "areas": [
+            "Punto Digital",
+            "Área Educación",
+            "Área Deportes",
+            "Equipo de Investigación",
+            "Talleres, Museo y Archivo Histórico",
+            "Biblioteca Popular"
+          ],
+          "programas": [
+            "San Vicente Emprende",
+            "San Vicente Capacita",
+            "San Vicente Joven",
+            "Gestión de Créditos",
+            "Asesoramiento a Empresas y Emprendedores"
+          ]
+        },
+        {
+          "nombre": "Subsecretaría de Cultura",
+          "funciones": [
+            "Organización de talleres comunales",
+            "Programación de actos públicos",
+            "Organización de actividades culturales",
+            "Ferias de artesanos y emprendedores"
+          ]
+        },
+        {
+          "nombre": "Subsecretaría de Producción",
+          "funciones": [
+            "Coordinación de programas productivos",
+            "Asesoramiento empresarial",
+            "Trámites varios"
+          ]
+        },
+        {
+          "nombre": "Subsecretaría de Salud, Desarrollo Social y Equidad",
+          "areas": [
+            "Equipo de Promoción y Protección de Derechos",
+            "Adultos Mayores",
+            "Discapacidad",
+            "Niñez, Adolescencia y Juventud",
+            "Asesoramiento sobre Beneficios y Programas",
+            "Asistencia Salud y Vivienda",
+            "Acompañamiento Educativo",
+            "Coordinación Servicio de Ambulancia",
+            "Promoción y Prevención",
+            "Intervención Comunitaria",
+            "Defensa Civil"
+          ]
+        }
+      ]
+    }
+  }

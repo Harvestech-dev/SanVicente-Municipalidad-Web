@@ -13,23 +13,35 @@
         {"txt_descripcion": "El diseño de las propuestas de formación y capacitación está pensado en función de las necesidades de cada localidad, generando productos a medida, que se sumergen en un proceso de mejora constante y continua."},
         {"txt_descripcion": "Considerando las limitaciones que impuso la pandemia, actualmente se está trabajando con propuestas virtuales, cuyo cursado se da de manera asincrónica a través de la plataforma combinado con formatos de encuentros sincrónicos."}
       ],
-      "lista_adjuntos": [
+      "attachments_adjuntos": [
         {
-          "txt_nombre": "Plan de trabajo",
-          "link_url": "/docs/plan-de-trabajo.pdf"},
+          "txt_label": "Plan de trabajo",
+          "_type": "file",
+          "txt_url": "/docs/plan-de-trabajo.pdf"},
+        {
+          "txt_label": "Imagen de fondo",
+          "_type": "image",
+          "txt_url": "/images/programas/san-vicente-emprende.png"},
           {
-          "txt_nombre": "Ir a la plataforma",
-          "link_url": "https://sanvicentecapacita.educativa.org/"
+          "txt_label": "Ir a la plataforma",
+          "_type": "url",
+          "txt_url": "https://sanvicentecapacita.educativa.org/"
         }],
       "gallery_imagenes": [
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 1
         },
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 2
         },
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 3
         }
       ]
     },
@@ -44,23 +56,31 @@
         {"txt_descripcion": "El programa tiene como objetivos generar un programa de desarrollo de emprendedores organizado y sistematizado y crear un registro de emprendedores. Asimismo, se propone brindar capacitación en planes de negocio y ofrecer tutorías, asistencia técnica, apoyo en trámites y gestiones, líneas de créditos y búsqueda de mercado. También contempla tramitar líneas de crédito de la Asociación para el Desarrollo y establecer vínculos con empresarios y supermercadistas."},
         {"txt_descripcion": "Además, busca fomentar la cultura emprendedora y organizar conversatorios y otras dinámicas para el intercambio de experiencias. Se orienta a potenciar el asociativismo, el cooperativismo, la empleabilidad y la intermediación laboral. Finalmente, promueve la innovación productiva, suministrando herramientas a los distintos sectores productivos para la introducción de nuevos productos y servicios, con mejoras en los procesos de producción, en la organización y en los procesos de comercialización."}
       ],
-      "lista_adjuntos": [
+      "attachments_adjuntos": [
         {
-          "txt_nombre": "Plan de trabajo",
-          "link_url": "/docs/plan-de-trabajo.pdf"},
+          "txt_label": "Plan de trabajo",
+          "_type": "file",
+          "txt_url": "/docs/plan-de-trabajo.pdf"},
           {
-          "txt_nombre": "Ir a la plataforma",
-          "link_url": "https://sanvicentecapacita.educativa.org/"
+          "txt_label": "Ir a la plataforma",
+          "_type": "url",
+          "txt_url": "https://sanvicentecapacita.educativa.org/"
         }],
       "gallery_imagenes": [
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 1
         },
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 2
         },
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 3
         }
       ]
     },{
@@ -73,23 +93,31 @@
         {"txt_descripcion": "A través de este programa se busca reconocer, fortalecer e impulsar la capacidad de los jóvenes fomentando su participación en el desarrollo de políticas públicas."},
         {"txt_descripcion": "Con el primero de los proyectos presentado en 2021 se busca incentivar la participación juvenil de manera colectiva a través del financiamiento y acompañamiento para la puesta en marcha de ideas innovadoras que promuevan el avance de San Vicente Ciudad a partir de sus intereses y de la detección de problemáticas locales."}
       ],
-      "lista_adjuntos": [
+      "attachments_adjuntos": [
         {
-          "txt_nombre": "Plan de trabajo",
-          "link_url": "/docs/plan-de-trabajo.pdf"},
+          "txt_label": "Plan de trabajo",
+          "_type": "file",
+          "txt_url": "/docs/plan-de-trabajo.pdf"},
           {
-          "txt_nombre": "Ir a la plataforma",
-          "link_url": "https://sanvicentecapacita.educativa.org/"
+          "txt_label": "Ir a la plataforma",
+          "_type": "url",
+          "txt_url": "https://sanvicentecapacita.educativa.org/"
         }],
       "gallery_imagenes": [
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 1
         },
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 2
         },
         {
-          "img_fondo": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800"
+          "url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=800",
+          "alt": "Imagen de fondo",
+          "order": 3
         }
       ]
     } 

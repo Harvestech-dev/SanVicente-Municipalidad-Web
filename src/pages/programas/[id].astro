@@ -1,0 +1,315 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import dataProgramas from "../../data/programas.json";
+import sitio from "../../data/sitio.json";
+import { getProgramSlug } from "../../lib/programas-utils";
+
+interface Programa {
+  _id?: string;
+  _orden?: number;
+  boolean_featured?: boolean;
+  img_logo?: string;
+  img_imagen?: string;
+  txt_titulo?: string;
+  txt_subtitulo?: string;
+  lista_descripcion?: Array<{ txt_descripcion?: string }>;
+  lista_adjuntos?: Array<{ txt_nombre?: string; link_url?: string }>;
+  attachments_adjuntos?: Array<{ txt_label?: string; txt_url?: string; _type?: string }>;
+  gallery_imagenes?: Array<{ url?: string; img_fondo?: string; alt?: string }>;
+}
+
+export async function getStaticPaths() {
+  const lista = (dataProgramas.lista_programas ?? []) as Programa[];
+  return lista.map((prog, i) => ({
+    params: { id: getProgramSlug(prog, i) },
+    props: { program: prog },
+  }));
+}
+
+const { program } = Astro.props;
+if (!program) {
+  return Astro.redirect("/programas");
+}
+
+const tema = sitio._estilo;
+
+/** Una sola imagen para el detalle: img_imagen, o primera de gallery_imagenes, o img_logo. */
+function getImagenPrincipal(p: Programa): { src: string; alt: string } | null {
+  const raw = p as Record<string, unknown>;
+  const imgImagen = raw.img_imagen ?? p.img_imagen;
+  if (typeof imgImagen === "string" && imgImagen.trim() !== "")
+    return { src: imgImagen.trim(), alt: p.txt_titulo ?? "Programa" };
+  const gal = raw.gallery_imagenes ?? p.gallery_imagenes;
+  const arr = Array.isArray(gal) ? gal : [];
+  const first = arr[0] as Record<string, unknown> | undefined;
+  if (first) {
+    const u = first.url ?? first.img_fondo ?? first.txt_url;
+    if (typeof u === "string" && u.trim() !== "")
+      return { src: u.trim(), alt: String(first.alt ?? p.txt_titulo ?? "Programa") };
+  }
+  if (p.img_logo && String(p.img_logo).trim() !== "")
+    return { src: String(p.img_logo).trim(), alt: p.txt_titulo ?? "Programa" };
+  return null;
+}
+
+const imagenPrincipal = getImagenPrincipal(program);
+const tieneImagen = imagenPrincipal !== null;
+const descripciones = program.lista_descripcion ?? [];
+const adjuntos = program.attachments_adjuntos ?? program.lista_adjuntos ?? [];
+const linksAdjuntos = adjuntos.filter((a) => {
+  const url = (a as { txt_url?: string; link_url?: string }).txt_url ?? (a as { link_url?: string }).link_url;
+  return url && String(url).trim() !== "";
+}).map((a) => ({
+  label: (a as { txt_label?: string; txt_nombre?: string }).txt_label ?? (a as { txt_nombre?: string }).txt_nombre ?? "Enlace",
+  url: (a as { txt_url?: string }).txt_url ?? (a as { link_url?: string }).link_url ?? "#",
+}));
+---
+
+<Layout title={`${program.txt_titulo ?? "Programa"} | ${sitio.txt_nombreCorto}`}>
+  <main class="main-content">
+    <section class="hero-page">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Miga de pan">
+          <a href="/programas">Programas</a>
+          <span class="sep">/</span>
+          <span>{program.txt_titulo}</span>
+        </nav>
+        <h1 class="hero-title">{program.txt_titulo}</h1>
+        {program.txt_subtitulo && (
+          <p class="hero-subtitle">{program.txt_subtitulo}</p>
+        )}
+      </div>
+    </section>
+
+    {tieneImagen && imagenPrincipal && (
+      <section class="gallery-section" aria-label="Imagen del programa">
+        <div class="container gallery-container">
+          <figure class="main-figure">
+            <img src={imagenPrincipal.src} alt={imagenPrincipal.alt} class="gallery-image" />
+          </figure>
+        </div>
+      </section>
+    )}
+
+    <article class="article-page">
+    <div class="article-body">
+      <div class="container-narrow">
+        {descripciones.length > 0 && (
+          <div class="content">
+            {descripciones.map((d) => d.txt_descripcion && (
+              <p>{d.txt_descripcion}</p>
+            ))}
+          </div>
+        )}
+
+        {linksAdjuntos.length > 0 && (
+          <div class="attachments">
+            <h2 class="attachments-title">Enlaces y recursos</h2>
+            <ul class="attachments-list">
+              {linksAdjuntos.map((link) => (
+                <li>
+                  <a
+                    href={link.url}
+                    target={link.url.startsWith("http") ? "_blank" : undefined}
+                    rel={link.url.startsWith("http") ? "noopener noreferrer" : undefined}
+                    class="attachment-link"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div class="article-footer">
+          <a href="/programas" class="btn-back">
+            &larr; Volver a todos los programas
+          </a>
+        </div>
+      </div>
+    </div>
+    </article>
+  </main>
+</Layout>
+
+<style define:vars={{ primary: tema.primario }}>
+  .main-content {
+    min-height: 100vh;
+    background: #f8fafc;
+  }
+
+  .hero-page {
+    background-color: var(--primary);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .hero-page .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .hero-page .breadcrumb {
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.95;
+  }
+
+  .hero-page .breadcrumb a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .hero-page .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .hero-page .breadcrumb .sep {
+    margin: 0 0.35rem;
+    opacity: 0.8;
+  }
+
+  .hero-page .breadcrumb span:last-child {
+    opacity: 0.9;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: 1.4;
+  }
+
+  .gallery-section {
+    padding: 3rem 0 4rem;
+    background: #fff;
+  }
+
+  .gallery-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .main-figure {
+    margin: 0;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  .gallery-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+  }
+
+  .article-page {
+    padding-bottom: 5rem;
+    background: #f8fafc;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .container-narrow {
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .article-body {
+    padding-top: 4rem;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #334155;
+  }
+
+  .content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .attachments {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .attachments-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 1rem 0;
+  }
+
+  .attachments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .attachments-list li {
+    margin-bottom: 0.75rem;
+  }
+
+  .attachment-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .attachment-link:hover {
+    text-decoration: underline;
+  }
+
+  .article-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .btn-back {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s;
+  }
+
+  .btn-back:hover {
+    transform: translateX(-5px);
+  }
+
+  @media (max-width: 768px) {
+    .gallery-section {
+      padding: 2rem 0 3rem;
+    }
+    .main-figure {
+      border-radius: 0;
+      margin: 0 -1.5rem;
+    }
+    .hero-page {
+      padding: 2.5rem 0 3rem;
+    }
+  }
+</style>

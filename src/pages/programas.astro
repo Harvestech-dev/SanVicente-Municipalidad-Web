@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import dataProgramas from "../data/programas.json";
 import sitio from "../data/sitio.json";
+import { getProgramSlug } from "../lib/programas-utils";
 
 const {
   txt_titulo: titulo,
@@ -18,7 +19,7 @@ interface Programa {
   txt_subtitulo?: string;
   lista_descripcion?: Array<{ txt_descripcion?: string }>;
   lista_adjuntos?: Array<{ txt_nombre?: string; link_url?: string }>;
-  gallery_imagenes?: Array<{ img_fondo?: string }>;
+  gallery_imagenes?: Array<{ url?: string; img_fondo?: string }>;
 }
 
 const programas = (listaRaw ?? []) as Programa[];
@@ -30,10 +31,11 @@ const programasOrdenados = [...programas].sort((a, b) => {
 });
 const hayProgramas = programasOrdenados.length > 0;
 
+/** En la página programas se usa la primera imagen de la galería (no img_logo). */
 function getPrimeraImagen(p: Programa): string {
-  const gal = p.gallery_imagenes?.[0]?.img_fondo;
-  if (gal) return gal;
-  return p.img_logo ?? "";
+  const first = p.gallery_imagenes?.[0];
+  if (!first) return "";
+  return first.url ?? first.img_fondo ?? "";
 }
 
 function getPrimerParrafo(p: Programa): string {
@@ -50,6 +52,7 @@ function getPrimerEnlace(p: Programa): string {
 const programaDestacado = hayProgramas
   ? (programasOrdenados.find((p) => p.boolean_featured) ?? null)
   : null;
+const indexDestacado = programaDestacado ? programasOrdenados.indexOf(programaDestacado) : 0;
 ---
 
 <Layout title={`Programas | ${sitio.txt_nombreCorto}`}>
@@ -107,7 +110,7 @@ const programaDestacado = hayProgramas
         <section class="featured-section" id="featuredSection">
           <div class="container">
             <a
-              href={getPrimerEnlace(programaDestacado)}
+              href={`/programas/${getProgramSlug(programaDestacado, indexDestacado)}`}
               class="featured-card"
               data-featured-id={programaDestacado.txt_titulo}
             >
@@ -165,7 +168,7 @@ const programaDestacado = hayProgramas
               No se encontraron programas con los filtros aplicados.
             </p>
             <div class="programs-grid" id="programsGrid">
-              {programasOrdenados.map((prog) => {
+              {programasOrdenados.map((prog, index) => {
                 const searchText = [
                   prog.txt_titulo ?? "",
                   prog.txt_subtitulo ?? "",
@@ -179,7 +182,7 @@ const programaDestacado = hayProgramas
                   programaDestacado !== null && prog === programaDestacado;
                 return (
                   <a
-                    href={getPrimerEnlace(prog)}
+                    href={`/programas/${getProgramSlug(prog, index)}`}
                     class="program-card"
                     data-title={searchText}
                     data-featured={prog.boolean_featured ? "true" : "false"}

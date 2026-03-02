@@ -4,6 +4,7 @@ import DynamicLayout from "../components/cms/DynamicLayout.astro";
 import { fetchCMSComponents, getComponentsByPage } from "../lib/cms/fetch-cms";
 import { fetchNoticiasAdaptadas, fetchEventosAdaptados } from "../lib/api-vecino";
 import type { CMSComponent } from "../lib/cms/types";
+import dataProgramas from "../data/programas.json";
 
 const PAGE_INICIO = "Inicio";
 
@@ -68,6 +69,18 @@ pageComponents = pageComponents.map((comp: CMSComponent) => {
       "Todas",
       ...Array.from(new Set((data.lista_noticias as { txt_categoria?: string }[]).map((n) => n.txt_categoria).filter(Boolean))),
     ];
+  }
+
+  // Programas home: metadata del CMS (Inicio); lista_programas desde componente página Programas o fallback local
+  if (comp.type === "programas_home") {
+    const compProgramas = components.find(
+      (c) => c.page === "Programas" && (c.type === "programas" || c.type === "programas_section" || c.type === "programas_home")
+    );
+    const programasPageData = (compProgramas?.data ?? {}) as Record<string, unknown>;
+    const listaFromCms = programasPageData.lista_programas ?? comp.data?.lista_programas;
+    data.lista_programas = Array.isArray(listaFromCms) && listaFromCms.length > 0
+      ? listaFromCms
+      : (dataProgramas.lista_programas ?? []);
   }
 
   return { ...comp, data };

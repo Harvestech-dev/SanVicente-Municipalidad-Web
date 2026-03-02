@@ -3,7 +3,11 @@ import Layout from "../layouts/Layout.astro";
 import dataProgramas from "../data/programas.json";
 import sitio from "../data/sitio.json";
 
-const { txt_titulo: titulo, txt_subtitulo: subtitulo, lista_programas: listaRaw } = dataProgramas;
+const {
+  txt_titulo: titulo,
+  txt_subtitulo: subtitulo,
+  lista_programas: listaRaw,
+} = dataProgramas;
 const tema = sitio._estilo;
 
 interface Programa {
@@ -42,8 +46,9 @@ function getPrimerEnlace(p: Programa): string {
   return adj ?? "#";
 }
 
+// Solo hay “destacado” para la tarjeta grande si algún programa tiene boolean_featured
 const programaDestacado = hayProgramas
-  ? programasOrdenados.find((p) => p.boolean_featured) ?? programasOrdenados[0]
+  ? (programasOrdenados.find((p) => p.boolean_featured) ?? null)
   : null;
 ---
 
@@ -56,77 +61,122 @@ const programaDestacado = hayProgramas
       </div>
     </section>
 
-    {hayProgramas && (
-      <section class="filters-bar">
-        <div class="container filters-flex">
-          <div class="search-wrapper">
-            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
-              type="text"
-              id="programas-search"
-              placeholder="Buscar programas..."
-              class="search-input"
-              autocomplete="off"
-            />
-          </div>
-          <div class="categories-wrapper" id="categoriesWrapper">
-            <button class="btn-cat active" data-filter="todos">Todos</button>
-            <button class="btn-cat" data-filter="destacados">Destacados</button>
-          </div>
-        </div>
-      </section>
-    )}
-
-    {hayProgramas && programaDestacado && (
-      <section class="featured-section" id="featuredSection">
-        <div class="container">
-          <a
-            href={getPrimerEnlace(programaDestacado)}
-            class="featured-card"
-            data-featured-id={programaDestacado.txt_titulo}
-          >
-            <div class="featured-image">
-              {getPrimeraImagen(programaDestacado) ? (
-                <img src={getPrimeraImagen(programaDestacado)} alt={programaDestacado.txt_titulo} loading="eager" />
-              ) : (
-                <div class="featured-placeholder">
-                  {programaDestacado.img_logo ? (
-                    <img src={programaDestacado.img_logo} alt="" class="logo-placeholder" />
-                  ) : (
-                    <span class="sigla-placeholder">{programaDestacado.txt_titulo.slice(0, 2).toUpperCase()}</span>
-                  )}
-                </div>
-              )}
-              {programaDestacado.boolean_featured && <span class="badge-destacada">Destacado</span>}
+    {
+      hayProgramas && (
+        <section class="filters-bar">
+          <div class="container filters-flex">
+            <div class="search-wrapper">
+              <svg
+                class="search-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                id="programas-search"
+                placeholder="Buscar programas..."
+                class="search-input"
+                autocomplete="off"
+              />
             </div>
-            <div class="featured-info">
-              <h2>{programaDestacado.txt_titulo}</h2>
-              <p>{programaDestacado.txt_subtitulo ?? getPrimerParrafo(programaDestacado)}</p>
-              <div class="featured-footer">
-                <span class="read-more">Ver programa &rarr;</span>
+            <div class="categories-wrapper" id="categoriesWrapper">
+              <button class="btn-cat active" data-filter="todos">
+                Todos
+              </button>
+              <button class="btn-cat" data-filter="destacados">
+                Destacados
+              </button>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      hayProgramas && programaDestacado && (
+        <section class="featured-section" id="featuredSection">
+          <div class="container">
+            <a
+              href={getPrimerEnlace(programaDestacado)}
+              class="featured-card"
+              data-featured-id={programaDestacado.txt_titulo}
+            >
+              <div class="featured-image">
+                {getPrimeraImagen(programaDestacado) ? (
+                  <img
+                    src={getPrimeraImagen(programaDestacado)}
+                    alt={programaDestacado.txt_titulo}
+                    loading="eager"
+                  />
+                ) : (
+                  <div class="featured-placeholder">
+                    {programaDestacado.img_logo ? (
+                      <img
+                        src={programaDestacado.img_logo}
+                        alt=""
+                        class="logo-placeholder"
+                      />
+                    ) : (
+                      <span class="sigla-placeholder">
+                        {programaDestacado.txt_titulo.slice(0, 2).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {programaDestacado.boolean_featured && (
+                  <span class="badge-destacada">Destacado</span>
+                )}
               </div>
-            </div>
-          </a>
-        </div>
-      </section>
-    )}
+              <div class="featured-info">
+                <h2>{programaDestacado.txt_titulo}</h2>
+                <p>
+                  {programaDestacado.txt_subtitulo ??
+                    getPrimerParrafo(programaDestacado)}
+                </p>
+                <div class="featured-footer">
+                  <span class="read-more">Ver programa &rarr;</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </section>
+      )
+    }
 
-    {hayProgramas ? (
-      <section class="programs-list-section">
-        <div class="container">
-          <p id="programsNoResults" class="no-results-message" style="display: none">No se encontraron programas con los filtros aplicados.</p>
-          <div class="programs-grid" id="programsGrid">
-            {
-              programasOrdenados.map((prog) => {
+    {
+      hayProgramas ? (
+        <section class="programs-list-section">
+          <div class="container">
+            <p
+              id="programsNoResults"
+              class="no-results-message"
+              style="display: none"
+            >
+              No se encontraron programas con los filtros aplicados.
+            </p>
+            <div class="programs-grid" id="programsGrid">
+              {programasOrdenados.map((prog) => {
                 const searchText = [
                   prog.txt_titulo ?? "",
                   prog.txt_subtitulo ?? "",
-                  ...(prog.lista_descripcion ?? []).map((d) => d.txt_descripcion ?? ""),
-                ].join(" ").toLowerCase();
-                const isFeaturedCard = programaDestacado && prog.txt_titulo === programaDestacado.txt_titulo;
+                  ...(prog.lista_descripcion ?? []).map(
+                    (d) => d.txt_descripcion ?? "",
+                  ),
+                ]
+                  .join(" ")
+                  .toLowerCase();
+                const isFeaturedCard =
+                  programaDestacado !== null && prog === programaDestacado;
                 return (
                   <a
                     href={getPrimerEnlace(prog)}
@@ -137,17 +187,25 @@ const programaDestacado = hayProgramas
                   >
                     <div class="card-image">
                       {getPrimeraImagen(prog) ? (
-                        <img src={getPrimeraImagen(prog)} alt={prog.txt_titulo} loading="lazy" />
+                        <img
+                          src={getPrimeraImagen(prog)}
+                          alt={prog.txt_titulo}
+                          loading="lazy"
+                        />
                       ) : (
                         <div class="card-placeholder">
                           {prog.img_logo ? (
                             <img src={prog.img_logo} alt="" class="card-logo" />
                           ) : (
-                            <span class="card-sigla">{prog.txt_titulo.slice(0, 2).toUpperCase()}</span>
+                            <span class="card-sigla">
+                              {prog.txt_titulo.slice(0, 2).toUpperCase()}
+                            </span>
                           )}
                         </div>
                       )}
-                      {prog.boolean_featured && <span class="card-badge">Destacado</span>}
+                      {prog.boolean_featured && (
+                        <span class="card-badge">Destacado</span>
+                      )}
                     </div>
                     <div class="card-content">
                       <h3>{prog.txt_titulo}</h3>
@@ -156,21 +214,21 @@ const programaDestacado = hayProgramas
                     </div>
                   </a>
                 );
-              })
-            }
+              })}
+            </div>
+            <div class="pagination" id="pagination" />
           </div>
-          <div class="pagination" id="pagination"></div>
-        </div>
-      </section>
-    ) : (
-      <section class="section-disclaimer">
-        <div class="container">
-          <div class="disclaimer-content">
-            <p>No hay programas cargados en este momento.</p>
+        </section>
+      ) : (
+        <section class="section-disclaimer">
+          <div class="container">
+            <div class="disclaimer-content">
+              <p>No hay programas cargados en este momento.</p>
+            </div>
           </div>
-        </div>
-      </section>
-    )}
+        </section>
+      )
+    }
   </main>
 </Layout>
 
@@ -182,7 +240,11 @@ const programaDestacado = hayProgramas
     var searchQuery = "";
 
     function normalize(str) {
-      return (str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+      return (str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
     }
 
     function runProgramsFilters() {
@@ -192,7 +254,9 @@ const programaDestacado = hayProgramas
       if (!grid) return;
 
       var cards = Array.from(grid.querySelectorAll(".program-card"));
-      var filterButtons = filtersBar ? Array.from(filtersBar.querySelectorAll(".btn-cat[data-filter]")) : [];
+      var filterButtons = filtersBar
+        ? Array.from(filtersBar.querySelectorAll(".btn-cat[data-filter]"))
+        : [];
       var searchInput = document.getElementById("programas-search");
       var paginationEl = document.getElementById("pagination");
       var noResultsEl = document.getElementById("programsNoResults");
@@ -203,26 +267,40 @@ const programaDestacado = hayProgramas
         var hideFeaturedSection = hasSearch || currentFilter === "destacados";
 
         if (featuredSection) {
-          featuredSection.style.display = hideFeaturedSection ? "none" : "block";
+          featuredSection.style.display = hideFeaturedSection
+            ? "none"
+            : "block";
         }
 
         filterButtons.forEach(function (btn) {
-          btn.classList.toggle("active", btn.getAttribute("data-filter") === currentFilter);
+          btn.classList.toggle(
+            "active",
+            btn.getAttribute("data-filter") === currentFilter,
+          );
         });
 
         var q = normalize(searchQuery);
         var filteredCards = cards.filter(function (card) {
           var title = card.getAttribute("data-title") || "";
-          var titleNorm = normalize(title);
           var featured = card.getAttribute("data-featured") === "true";
-
-          var matchesSearch = !q || titleNorm.includes(q);
-          var matchesFilter = currentFilter === "todos" || (currentFilter === "destacados" && featured);
-
-          return matchesSearch && matchesFilter;
+          var matchesSearch = !q || normalize(title).includes(q);
+          var matchesFilter =
+            currentFilter === "todos" ||
+            (currentFilter === "destacados" && featured);
+          if (!matchesSearch || !matchesFilter) return false;
+          if (
+            currentFilter === "todos" &&
+            !hasSearch &&
+            card.getAttribute("data-featured-card") === "true"
+          )
+            return false;
+          return true;
         });
 
-        var totalPages = Math.max(1, Math.ceil(filteredCards.length / ITEMS_PER_PAGE));
+        var totalPages = Math.max(
+          1,
+          Math.ceil(filteredCards.length / ITEMS_PER_PAGE),
+        );
         currentPage = Math.min(currentPage, totalPages);
         var start = (currentPage - 1) * ITEMS_PER_PAGE;
         var end = start + ITEMS_PER_PAGE;
@@ -235,7 +313,8 @@ const programaDestacado = hayProgramas
         });
 
         if (noResultsEl) {
-          noResultsEl.style.display = filteredCards.length === 0 ? "block" : "none";
+          noResultsEl.style.display =
+            filteredCards.length === 0 ? "block" : "none";
         }
 
         function renderPagination(total) {

@@ -1,0 +1,706 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import LicitacionAttachment from "../../components/LicitacionAttachment.astro";
+import { fetchBiddings } from "../../lib/api-licitaciones";
+import type {
+  BiddingItem,
+  BiddingAttachment,
+  EffectiveStatus,
+} from "../../lib/api-licitaciones";
+
+// Datos solo desde la API (sin fallback ni JSON local)
+const { items: apiItems } = await fetchBiddings({ limit: 50 });
+
+const titulo = "Licitaciones y Concursos";
+const descripcion =
+  "Consulta todos los procesos de contratación pública vigentes y participa de manera transparente.";
+
+// Normalizar items de la API (adjuntos completos para mostrar todos con iconos)
+interface LicitacionDisplay {
+  id: string;
+  title: string;
+  subtitle?: string;
+  object_of_contract?: string;
+  area?: string;
+  budget_display: string;
+  opening_date_display: string;
+  bidding_end_date_display: string;
+  effective_status?: EffectiveStatus;
+  consultation_contact?: string;
+  opening_location?: string;
+  procedure_type?: string;
+  attachments?: BiddingAttachment[];
+}
+
+function formatDate(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString("es-AR", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return String(iso);
+  }
+}
+
+function formatBudget(amount: number | undefined, currency?: string): string {
+  if (amount == null) return "—";
+  const sym = currency === "ARS" ? "$" : (currency ?? "$");
+  return `${sym} ${amount.toLocaleString("es-AR")}`;
+}
+
+function hasAttachmentUrl(a: BiddingAttachment): boolean {
+  const url = (a.external_url ?? a.file_url)?.trim();
+  return !!url;
+}
+
+const licitaciones: LicitacionDisplay[] = apiItems.map((item) => ({
+  id: item.id,
+  title: item.title,
+  subtitle: item.subtitle,
+  object_of_contract: item.object_of_contract,
+  area: item.area,
+  budget_display: formatBudget(item.budget_official, item.currency),
+  opening_date_display: formatDate(item.dates?.opening_date),
+  bidding_end_date_display: formatDate(item.dates?.bidding_end_date),
+  effective_status: item.effective_status,
+  consultation_contact: item.consultation_contact,
+  opening_location: item.opening_location,
+  procedure_type: item.procedure_type,
+  attachments: item.attachments ?? [],
+}));
+
+const statusLabels: Record<string, string> = {
+  upcoming: "Próxima",
+  open: "Abierta",
+  in_evaluation: "En evaluación",
+  closed: "Cerrada",
+  awarded: "Adjudicada",
+  deserted: "Desierta",
+  cancelled: "Cancelada",
+  suspended: "Suspendida",
+};
+
+const statusClasses: Record<string, string> = {
+  upcoming: "status-upcoming",
+  open: "status-open",
+  in_evaluation: "status-evaluation",
+  closed: "status-closed",
+  awarded: "status-awarded",
+  deserted: "status-deserted",
+  cancelled: "status-cancelled",
+  suspended: "status-suspended",
+};
+
+// Filtros: estados presentes en los datos + "Todas"
+const estadosParaFiltro = [
+  "Todas",
+  ...(Array.from(
+    new Set(licitaciones.map((l) => l.effective_status).filter(Boolean)),
+  ) as string[]),
+];
+
+// Texto para búsqueda (título, subtítulo, objeto, área)
+function searchableText(lic: LicitacionDisplay): string {
+  const parts = [
+    lic.title,
+    lic.subtitle,
+    lic.object_of_contract,
+    lic.area,
+  ].filter(Boolean);
+  return parts.join(" ").toLowerCase();
+}
+---
+
+<Layout>
+  <main class="licitaciones-container">
+    <section class="hero-licitaciones">
+      <div class="content-wrapper">
+        <h1>{titulo}</h1>
+        <p>{descripcion}</p>
+      </div>
+    </section>
+
+    {
+      licitaciones.length > 0 && (
+        <section class="filters-bar">
+          <div class="content-wrapper filters-flex">
+            <div class="search-wrapper">
+              <svg
+                class="search-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                id="searchLicitaciones"
+                placeholder="Buscar por título, objeto o área..."
+                class="search-input"
+              />
+            </div>
+            <div class="categories-wrapper" id="categoriesWrapperLicitaciones">
+              {estadosParaFiltro.map((estado) => (
+                <button
+                  type="button"
+                  class={`btn-cat ${estado === "Todas" ? "active" : ""}`}
+                  data-category={estado}
+                >
+                  {estado === "Todas"
+                    ? "Todas"
+                    : (statusLabels[estado] ?? estado)}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="list-section">
+      <div class="content-wrapper grid-gap">
+        {
+          licitaciones.length === 0 ? (
+            <div class="empty-state">
+              <p>No hay licitaciones publicadas en este momento.</p>
+            </div>
+          ) : (
+            <>
+              <div class="licitaciones-list" id="licitacionesGrid">
+                {licitaciones.map((lic) => (
+                  <article
+                    class="licitacion-card"
+                    data-status={lic.effective_status ?? ""}
+                    data-search={searchableText(lic)}
+                  >
+                    <div class="card-main-info">
+
+                      <h3>
+                        <a
+                          href={`/Transparencia/licitaciones/${lic.id}`}
+                          class="card-title-link"
+                        >
+                          {lic.title}
+                        </a>
+                      </h3>
+                      {lic.subtitle && (
+                        <p class="card-subtitle">{lic.subtitle}</p>
+                      )}
+                      {lic.object_of_contract && (
+                        <p class="card-desc">{lic.object_of_contract}</p>
+                      )}
+
+                      <div class="data-grid">
+                        
+                        <div class="data-item">
+                          <span class="label">Apertura:</span>
+                          <span class="value">{lic.opening_date_display}</span>
+                        </div>
+                        <div class="data-item">
+                          <span class="label">Cierre:</span>
+                          <span class="value">
+                            {lic.bidding_end_date_display}
+                          </span>
+                        </div>
+                        {lic.area && (
+                          <div class="data-item">
+                            <span class="label">Área:</span>
+                            <span class="value">{lic.area}</span>
+                          </div>
+                        )}
+
+                      </div>
+                    </div>
+
+                    <div class="card-side-info">
+                      <div class="budget-box">
+                        <div class="meta-row">
+                        {lic.effective_status && (
+                          <span
+                            class={`status-badge ${statusClasses[lic.effective_status] ?? ""}`}
+                          >
+                            {statusLabels[lic.effective_status] ??
+                              lic.effective_status}
+                          </span>
+                        )}
+                        {!lic.effective_status && lic.procedure_type && (
+                          <span class="type-badge">{lic.procedure_type}</span>
+                        )}
+                      </div>
+                      </div>
+                        <a
+                          href={`/Transparencia/licitaciones/${lic.id}`}
+                          class="btn-primary-sm btn-detalle"
+                        >
+                          Ver detalle
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="m9 18 6-6-6-6" />
+                          </svg>
+                        </a>
+                
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <div class="pagination" id="paginationLicitaciones" />
+            </>
+          )
+        }
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  const ITEMS_PER_PAGE = 8;
+  let currentPage = 1;
+  let currentCategory = "Todas";
+  let searchQuery = "";
+
+  const grid = document.getElementById("licitacionesGrid");
+  const cards = grid
+    ? (Array.from(grid.querySelectorAll(".licitacion-card")) as HTMLElement[])
+    : [];
+  const categoryButtons = document.querySelectorAll(
+    "#categoriesWrapperLicitaciones .btn-cat",
+  );
+  const searchInput = document.getElementById(
+    "searchLicitaciones",
+  ) as HTMLInputElement | null;
+  const paginationContainer = document.getElementById("paginationLicitaciones");
+
+  function updateDisplay(): void {
+    if (!grid) return;
+
+    const filtered = cards.filter((card) => {
+      const status = card.getAttribute("data-status") ?? "";
+      const search = card.getAttribute("data-search") ?? "";
+      const matchStatus =
+        currentCategory === "Todas" || status === currentCategory;
+      const matchSearch = search.includes(searchQuery.toLowerCase().trim());
+      return matchStatus && matchSearch;
+    });
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+    currentPage = Math.min(currentPage, totalPages);
+
+    cards.forEach((c) => {
+      c.style.display = "none";
+    });
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    filtered.slice(start, end).forEach((c) => {
+      c.style.display = "";
+    });
+
+    if (paginationContainer) {
+      paginationContainer.innerHTML = "";
+      if (totalPages > 1) {
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.innerText = String(i);
+          if (i === currentPage) btn.classList.add("active");
+          btn.addEventListener("click", () => {
+            currentPage = i;
+            updateDisplay();
+            grid.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+          paginationContainer.appendChild(btn);
+        }
+      }
+    }
+  }
+
+  categoryButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      categoryButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentCategory = btn.getAttribute("data-category") ?? "Todas";
+      currentPage = 1;
+      updateDisplay();
+    });
+  });
+
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const target = e.target as HTMLInputElement;
+      searchQuery = target?.value ?? "";
+      currentPage = 1;
+      updateDisplay();
+    });
+  }
+
+  if (cards.length > 0) updateDisplay();
+</script>
+
+<style>
+  .licitaciones-container {
+    min-height: 100vh;
+    background-color: var(--color-fondo-claro);
+  }
+  .content-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .grid-gap {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .hero-licitaciones {
+    background-color: var(--color-primario);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+  .hero-licitaciones h1 {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .hero-licitaciones p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .filters-bar {
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filters-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-wrapper .search-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--color-primario);
+    pointer-events: none;
+  }
+  .search-input {
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 320px;
+    min-height: 40px;
+    box-sizing: border-box;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+  }
+  .categories-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .btn-cat {
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    border: 1px solid #e2e8f0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  .btn-cat.active {
+    background: var(--color-primario);
+    color: white;
+    border-color: var(--color-primario);
+  }
+
+  .list-section {
+    padding: 3rem 0;
+  }
+  .licitaciones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .licitacion-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    transition: transform 0.2s;
+  }
+  .licitacion-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    align-items: right;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .type-badge {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: 1px solid #e2e8f0;
+  }
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .status-upcoming {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+  .status-open {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .status-evaluation {
+    background: #ffedd5;
+    color: #c2410c;
+  }
+  .status-closed {
+    background: #f1f5f9;
+    color: #475569;
+  }
+  .status-awarded {
+    background: #e0e7ff;
+    color: #3730a3;
+  }
+  .status-deserted {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .status-cancelled,
+  .status-suspended {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .licitacion-card h3 {
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: var(--color-texto);
+  }
+  .card-title-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .card-title-link:hover {
+    color: var(--color-primario);
+  }
+  .card-subtitle {
+    font-size: 0.95rem;
+    color: var(--color-primario);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .card-desc {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .data-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .data-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .data-item-full {
+    width: 100%;
+  }
+  .data-item .label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .data-item .value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #334155;
+  }
+
+  .card-side-info {
+    min-width: 220px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .budget-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+  .budget-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-primario);
+    margin-top: 0.25rem;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .btn-primary-sm,
+  .btn-outline-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+  .btn-primary-sm {
+    background: var(--color-primario);
+    color: white;
+  }
+  .btn-primary-sm:hover {
+    background: var(--color-primario-hover);
+  }
+  .btn-outline-sm {
+    border: 1.5px solid var(--color-primario);
+    color: var(--color-primario);
+  }
+  .btn-outline-sm:hover {
+    background: var(--color-primario);
+    color: white;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px dashed #e2e8f0;
+  }
+  .empty-state p {
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  .empty-hint {
+    font-size: 0.9rem !important;
+    color: #94a3b8 !important;
+  }
+  .empty-hint code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  .pagination :global(button) {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .pagination :global(button.active) {
+    background: var(--color-primario);
+    color: white;
+    border-color: var(--color-primario);
+  }
+
+  @media (max-width: 768px) {
+    .licitacion-card {
+      flex-direction: column;
+      padding: 1.5rem;
+    }
+    .card-side-info {
+      text-align: left;
+      min-width: auto;
+    }
+    .button-group {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .button-group a {
+      flex: 1;
+      min-width: 140px;
+    }
+    .hero-licitaciones h1 {
+      font-size: 2.25rem;
+    }
+    .filters-flex {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .search-input {
+      max-width: none;
+    }
+  }
+</style>

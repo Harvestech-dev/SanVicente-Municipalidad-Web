@@ -1,68 +1,16 @@
 {
   "txt_titulo": "Agenda Cultural",
   "txt_subtitulo": "Descubrí los eventos, talleres y actividades en San Vicente.",
-  "txt_ver_todo": "Ver toda la agenda",
-  "link_ver_todo": "/agendaPage",
-  "lista_eventos": [
+  "btn_boton": {
+    "src_destino": "/agenda",
+    "txt_label": "ver todos los eventos"
+  },
+  "boolean_ocultar_si_no_hay_eventos": false,
+  "lista_disclamer_sin_eventos": [
+    { "txt_parrafo": "No hay eventos programados en este momento." },
     {
-      "_orden": 1,
-      "txt_titulo": "Feria de Artesanos y Emprendedores",
-      "txt_fecha": "Sábado 15 de Marzo",
-      "_fechaISO": "2026-03-15",
-      "txt_horario": "16:00 hs",
-      "txt_ubicacion": "Plaza Estanislao López",
-      "txt_categoria": "Feria",
-      "img_principal": "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "_orden": 2,
-      "txt_titulo": "Cine bajo las Estrellas",
-      "txt_fecha": "Domingo 16 de Marzo",
-      "_fechaISO": "2026-03-16",
-      "txt_horario": "20:30 hs",
-      "txt_ubicacion": "Anfiteatro Municipal",
-      "txt_categoria": "Cine",
-      "img_principal": "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "_orden": 3,
-      "txt_titulo": "Maratón Nocturna San Vicente",
-      "txt_fecha": "Viernes 20 de Marzo",
-      "_fechaISO": "2026-03-20",
-      "txt_horario": "21:00 hs",
-      "txt_ubicacion": "Punto de salida: Municipalidad",
-      "txt_categoria": "Deportes",
-      "img_principal": "https://images.unsplash.com/photo-1532444458054-01a7dd3e9fca?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "_orden": 4,
-      "txt_titulo": "Taller de Pintura al Aire Libre",
-      "txt_fecha": "Sábado 21 de Marzo",
-      "_fechaISO": "2026-03-21",
-      "txt_horario": "10:00 hs",
-      "txt_ubicacion": "Parque Municipal",
-      "txt_categoria": "Talleres",
-      "img_principal": "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "_orden": 5,
-      "txt_titulo": "Encuentro de Coros Regionales",
-      "txt_fecha": "Sábado 28 de Marzo",
-      "_fechaISO": "2026-03-28",
-      "txt_horario": "19:00 hs",
-      "txt_ubicacion": "Parroquia San Vicente",
-      "txt_categoria": "Cultura",
-      "img_principal": "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-      "_orden": 6,
-      "txt_titulo": "Torneo de Ajedrez Juvenil",
-      "txt_fecha": "Sábado 4 de Abril",
-      "_fechaISO": "2026-04-04",
-      "txt_horario": "09:30 hs",
-      "txt_ubicacion": "Biblioteca Municipal",
-      "txt_categoria": "Educación",
-      "img_principal": "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&q=80&w=800"
+      "txt_parrafo": "Consultá la agenda más adelante para conocer las próximas actividades."
     }
-  ]
+  ],
+  "lista_eventos": []
 }

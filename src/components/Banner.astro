@@ -1,9 +1,9 @@
 ---
 /**
  * GUÍA TÉCNICA PARA DISEÑO DE BANNERS (CMS):
- * ----------------------------------------------------------------            
+ * ----------------------------------------------------------------
  * DIMENSIONES RECOMENDADAS: 1200px x 300px (Proporción 4:1)
- * * ZONA SEGURA (SAFE ZONE): 
+ * * ZONA SEGURA (SAFE ZONE):
  * - Área central visible en todo dispositivo: 530px centrales.
  * - Evitar info importante en los 335px laterales (izq/der).
  * * COMPORTAMIENTO:
@@ -11,29 +11,47 @@
  * - Mobile: Se ajusta a 200px de alto para no ocupar toda la pantalla.
  */
 
-import bannerData from "../data/banner.json";
-
 const { data: cmsData } = Astro.props;
-const source = (cmsData as Record<string, unknown>) ?? bannerData;
-const img_principal = (source.img_principal ?? "/images/placeholder-banner.jpg") as string;
-const txt_alt = (source.txt_alt ?? "Banner municipal") as string;
-const link_destino = (source.link_destino ?? "#") as string;
-const txt_titulo = (source.txt_titulo ?? "Información importante") as string;
+const source = (cmsData as Record<string, unknown>) ?? {};
+const imgFondo = (source.img_fondo ?? source.img_principal) as
+  | string
+  | undefined;
+const txtAlt = (source.txt_alt ?? "") as string;
+const linkDestino = (source.link_destino ?? "") as string;
+const txtTitulo = (source.txt_titulo ?? source.txt_alt ?? "") as string;
 ---
 
-<section class="banner-wrapper">
-  <div class="banner-container">
-    {link_destino ? (
-      <a href={link_destino} class="banner-link" title={txt_titulo}>
-        <img src={img_principal} alt={txt_alt} class="banner-img" loading="eager" />
-      </a>
-    ) : (
-      <div class="banner-link">
-        <img src={img_principal} alt={txt_alt} class="banner-img" />
+{
+  imgFondo ? (
+    <section class="banner-wrapper">
+      <div class="banner-container">
+        {linkDestino ? (
+          <a
+            href={linkDestino}
+            class="banner-link"
+            title={txtTitulo || undefined}
+          >
+            <img
+              src={imgFondo}
+              alt={txtAlt}
+              class="banner-img"
+              loading="eager"
+            />
+          </a>
+        ) : (
+          <div class="banner-link">
+            <img
+              src={imgFondo}
+              alt={txtAlt}
+              class="banner-img"
+              loading="eager"
+            />
+          </div>
+        )}
       </div>
-    )}
-  </div>
-</section>
+    </section>
+  ) : null
+}
 
 <style>
   .banner-wrapper {
@@ -50,16 +68,15 @@ const txt_titulo = (source.txt_titulo ?? "Información importante") as string;
     transition: transform 0.3s ease;
   }
 
-
   .banner-img {
     width: 100%;
     display: block;
-    
+
     /* ALTURA DESKTOP */
-    height: 300px; 
-    
-    object-fit: cover; 
-    object-position: center; 
+    height: 300px;
+
+    object-fit: cover;
+    object-position: center;
   }
 
   /* TABLETS */
@@ -68,7 +85,7 @@ const txt_titulo = (source.txt_titulo ?? "Información importante") as string;
       width: 90%;
     }
     .banner-img {
-      height: 250px; 
+      height: 250px;
     }
   }
 
@@ -79,7 +96,7 @@ const txt_titulo = (source.txt_titulo ?? "Información importante") as string;
       margin: 1.2rem auto;
     }
     .banner-img {
-      height: 180px; 
+      height: 180px;
     }
   }
 </style>

@@ -1,15 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
 import sitioData from "../data/sitio.json";
 
 const tema = sitioData._estilo;
 ---
 
 <Layout title="Sección en Construcción | Municipalidad">
-  <Header />
-
   <main class="construction-container">
     <div class="container">
       <div class="construction-card">
@@ -69,8 +65,6 @@ const tema = sitioData._estilo;
       </div>
     </div>
   </main>
-
-  <Footer />
 </Layout>
 
 <style define:vars={{ primario: tema.primario, secundario: tema.secundario }}>

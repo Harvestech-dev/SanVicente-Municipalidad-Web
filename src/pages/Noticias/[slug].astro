@@ -1,7 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
-import Footer from "../../components/Footer.astro";
 import dataNoticias from "../../data/noticias.json";
 import sitio from "../../data/sitio.json";
 import { fetchNoticiasAdaptadas } from "../../lib/api-vecino";
@@ -26,13 +24,11 @@ const tema = sitio._estilo;
 ---
 
 <Layout title={`${noticia.txt_titulo} | ${sitio.txt_nombreCorto}`}>
-  <Header />
-
   <article class="article-page">
     <header class="article-header">
       <div class="container-narrow">
         <div class="breadcrumb">
-            <a href="/noticiasPage">Noticias</a> / <span>{noticia.txt_categoria}</span>
+            <a href="/noticias">Noticias</a> / <span>{noticia.txt_categoria}</span>
         </div>
         <h1 class="article-title">{noticia.txt_titulo}</h1>
         <div class="article-meta">
@@ -54,15 +50,13 @@ const tema = sitio._estilo;
         <div class="content" set:html={noticia.txt_cuerpo} />
         
         <div class="article-footer">
-          <a href="/noticiasPage" class="btn-back">
+          <a href="/noticias" class="btn-back">
             &larr; Volver a todas las noticias
           </a>
         </div>
       </div>
     </div>
   </article>
-
-  <Footer />
 </Layout>
 
 <style define:vars={{ primary: tema.primario }}>

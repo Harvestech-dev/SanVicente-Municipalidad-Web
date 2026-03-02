@@ -1,24 +1,34 @@
 ---
-import carruselData from "../data/carrusel.json";
-
-// Estructura para que TypeScript no marque errores
 interface Slide {
   _orden?: number;
   txt_titulo: string;
   txt_descripcion: string;
   img_principal: string;
-  link_destino: string;
   txt_categoria: string;
+  btn_boton?: { txt_label?: string; link_destino?: string };
+  link_destino?: string;
+}
+
+interface SlideResolved extends Slide {
+  link_destino: string;
+  btn_label: string;
 }
 
 const { data: cmsData, slides: propSlides } = Astro.props;
-const slides = (propSlides ?? (cmsData as Record<string, unknown>)?.lista_slides ?? carruselData.lista_slides) as Slide[];
+const listaSlides = (propSlides ?? (cmsData as Record<string, unknown>)?.lista_slides) ?? [];
+const rawSlides = listaSlides as Slide[];
+const slides: SlideResolved[] = rawSlides.map((s) => ({
+  ...s,
+  link_destino: s.btn_boton?.link_destino ?? s.link_destino ?? "#",
+  btn_label: s.btn_boton?.txt_label ?? "Leer más",
+}));
 ---
 
+{slides.length > 0 && (
 <section class="hero-carrousel" aria-label="Galería de novedades">
   <div class="slides-container">
     {
-      slides.map((slide: Slide, index: number) => (
+      slides.map((slide: SlideResolved, index: number) => (
         <div class={`slide ${index === 0 ? "active" : ""}`} data-index={index}>
           <img src={slide.img_principal} alt={slide.txt_titulo} class="slide-bg" />
           <div class="slide-overlay" />
@@ -29,7 +39,7 @@ const slides = (propSlides ?? (cmsData as Record<string, unknown>)?.lista_slides
               <h2 class="titulo">{slide.txt_titulo}</h2>
               <p class="descripcion">{slide.txt_descripcion}</p>
               <a href={slide.link_destino} class="btn-primary">
-                Leer más
+                {slide.btn_label}
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
               </a>
             </div>
@@ -66,7 +76,7 @@ const slides = (propSlides ?? (cmsData as Record<string, unknown>)?.lista_slides
 
   <div class="dots-container">
     {
-      slides.map((_: Slide, index: number) => (
+      slides.map((_: SlideResolved, index: number) => (
         <button
           class={`dot ${index === 0 ? "active" : ""}`}
           data-goto={index}
@@ -76,6 +86,7 @@ const slides = (propSlides ?? (cmsData as Record<string, unknown>)?.lista_slides
     }
   </div>
 </section>
+)}
 
 <style>
   .hero-carrousel {

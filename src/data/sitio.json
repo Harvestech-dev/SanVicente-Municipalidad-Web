@@ -16,39 +16,12 @@
     "exito": "#16A34A",
     "error": "#DC2626"
   },
-  "contacto": {
-    "txt_telefono": "03492-470622",
-    "txt_horario": "Lunes a Viernes, 07:00 a 13:00 hs",
-    "txt_direccion": "Bv. Sarmiento 160",
-    "txt_email": "sanvicente@sanvicente.com.ar"
-  },
-  "lista_redes": [
-    {
-      "_red": "facebook",
-      "link_destino": "https://www.facebook.com/sanvicenteok",
-      "txt_label": "Facebook"
-    },
-    {
-      "_red": "instagram",
-      "link_destino": "https://www.instagram.com/sanvicenteok",
-      "txt_label": "Instagram"
-    },
-    {
-      "_red": "youtube",
-      "link_destino": "https://www.youtube.com/@sanvicenteok",
-      "txt_label": "YouTube"
-    },
-    {
-      "_red": "whatsapp",
-      "link_destino": "https://api.whatsapp.com/send?phone=5493492304058",
-      "txt_label": "WhatsApp"
-    }
-  ],
+
   "footer": {
     "txt_copyright": "Todos los derechos reservados.",
     "btn_reclamos": {
       "txt_label": "Ir a Vecino Digital",
-      "link_url": "vecinodigital"
+      "link_url": "https://sanvicente.vecino.digital"
     }
   }
 }

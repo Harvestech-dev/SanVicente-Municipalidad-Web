@@ -26,6 +26,7 @@
     "nueva": ["DNI original y fotocopia", "Certificado de domicilio (antigüedad máxima 30 días)", "Certificado de grupo sanguíneo", "Curso de educación vial (se realiza en el lugar)", "Examen psicofísico", "Examen teórico y práctico"],
     "renovacion": ["DNI original", "Licencia anterior", "Certificado de libre deuda de multas", "Examen psicofísico"],
     "duplicado": ["DNI original", "Denuncia policial por robo/extravío", "Certificado de libre deuda de multas"]
+    
   },
   "lista_categorias": [
     { "_cat": "A1", "txt_desc": "Ciclomotor hasta 50cc" },

@@ -1,97 +1,16 @@
 {
   "txt_titulo": "Noticias",
   "txt_subtitulo": "Enterate de las últimas novedades de nuestra ciudad",
-  "txt_ver_todo": "Ver todas las noticias",
-  "link_ver_todo": "noticiasPage",
-  "lista_categorias": ["Todas", "Obras", "Salud", "Cultura", "Deportes", "Educación", "Gobierno", "Transporte"],
-  "lista_noticias": [
+  "btn_boton": {
+    "src_destino": "/noticias",
+    "txt_label": "Ver todas las noticias"
+  },
+  "boolean_ocultar_si_no_hay_noticias": false,
+  "lista_disclamer_sin_noticias": [
+    { "txt_parrafo": "No hay noticias en este momento." },
     {
-      "_orden": 1,
-      "_slug": "nuevo-centro-salud-barrio-norte",
-      "txt_titulo": "Se inauguró el nuevo Centro de Salud Barrio Norte",
-      "txt_extracto": "El intendente presidió la apertura del moderno establecimiento que atenderá a más de 15.000 vecinos de la zona.",
-      "txt_cuerpo": "<p>El nuevo Centro de Salud del Barrio Norte representa un hito en la descentralización sanitaria de nuestra ciudad. Con una inversión récord, el espacio cuenta con tecnología de punta y personal especializado.</p><p>Durante el acto, el intendente destacó que 'este es un compromiso cumplido con los vecinos que antes debían trasladarse hasta el hospital central para una consulta básica'.</p><ul><li>6 consultorios médicos.</li><li>Laboratorio propio.</li><li>Guardia 24 hs.</li></ul>",
-      "txt_fecha": "10 Feb 2025",
-      "txt_categoria": "Salud",
-      "img_principal": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&h=500&fit=crop",
-      "boolean_destacada": true
-    },
-    {
-      "_orden": 2,
-      "_slug": "operativo-bacheo-casco-centrico",
-      "txt_titulo": "Comienza el operativo de bacheo en el casco céntrico",
-      "txt_extracto": "Durante las próximas semanas se repararán las calles principales del centro comercial para mejorar la transitabilidad.",
-      "txt_cuerpo": "<p>La Secretaría de Obras Públicas dio inicio al plan intensivo de bacheo urbano. Las cuadrillas trabajarán específicamente sobre las arterias de mayor flujo vehicular.</p><p>Se solicita a los conductores circular con precaución y respetar la señalización temporal. Los trabajos se realizarán principalmente de noche.</p>",
-      "txt_fecha": "9 Feb 2025",
-      "txt_categoria": "Obras",
-      "img_principal": "https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=600&h=400&fit=crop",
-      "boolean_destacada": false
-    },
-    {
-      "_orden": 3,
-      "_slug": "inscripciones-colonias-vacaciones",
-      "txt_titulo": "Inscripciones abiertas para colonias de vacaciones",
-      "txt_extracto": "Ya están disponibles los formularios para las actividades de verano en todos los polideportivos municipales.",
-      "txt_cuerpo": "<p>Un verano lleno de actividades deportivas y recreativas espera a los niños de San Vicente. Las inscripciones se realizan de manera online o presencial en el polideportivo más cercano.</p><p>Requisitos: DNI del menor y certificado de aptitud física.</p>",
-      "txt_fecha": "8 Feb 2025",
-      "txt_categoria": "Deportes",
-      "img_principal": "https://images.unsplash.com/photo-1526676037777-05a232554f77?w=600&h=400&fit=crop",
-      "boolean_destacada": false
-    },
-    {
-      "_orden": 4,
-      "_slug": "nueva-linea-colectivos-barrios-sur",
-      "txt_titulo": "Nueva línea de colectivos conectará los barrios del sur",
-      "txt_extracto": "A partir del 1 de marzo, el recorrido 45 unirá Villa del Sol con los complejos habitacionales del sector sur.",
-      "txt_cuerpo": "<p>La nueva línea 45 responde a un pedido histórico de los vecinos del sector sur. Con una frecuencia de 15 minutos en hora pico, garantizará el acceso rápido al centro y zonas escolares.</p>",
-      "txt_fecha": "7 Feb 2025",
-      "txt_categoria": "Transporte",
-      "img_principal": "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=600&h=400&fit=crop",
-      "boolean_destacada": false
-    },
-    {
-      "_orden": 5,
-      "_slug": "festival-cultural-verano-2025",
-      "txt_titulo": "Festival Cultural de Verano 2025: música, arte y gastronomía",
-      "txt_extracto": "Del 20 al 25 de febrero, la plaza central se transformará en un espacio de encuentro para toda la familia.",
-      "txt_cuerpo": "<p>El Festival Cultural de Verano es una celebración anual que reúne a artistas locales e internacionales. Habrá conciertos gratuitos, exposiciones de arte y una feria gastronómica con lo mejor de la cocina regional.</p><p>¡No te lo pierdas!</p>",
-      "txt_fecha": "6 Feb 2025",
-      "txt_categoria": "Cultura",
-      "img_principal": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=400&fit=crop",
-      "boolean_destacada": false
-    },
-    {
-      "_orden": 6,
-      "_slug": "nueva-escuela-secundaria-barrio-este",
-      "txt_titulo": "Se construirá una nueva escuela secundaria en el Barrio Este",
-      "txt_extracto": "El proyecto educativo contempla la creación de un establecimiento moderno con capacidad para 800 alumnos.",
-      "txt_cuerpo": "<p>La Municipalidad anunció la construcción de una nueva escuela secundaria en el Barrio Este, respondiendo a la creciente demanda educativa de la zona. El edificio contará con aulas equipadas, laboratorios y espacios deportivos.</p><p>La obra comenzará en abril y se espera que esté finalizada para el ciclo lectivo 2026.</p>",
-      "txt_fecha": "5 Feb 2025",
-      "txt_categoria": "Educación",
-      "img_principal": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=400&fit=crop",
-      "boolean_destacada": false
-    },
-    {
-      "_orden": 7,
-      "_slug": "reunion-vecinal-seguridad-barrio-norte",
-      "txt_titulo": "Reunión vecinal para abordar temas de seguridad en Barrio Norte",
-      "txt_extracto": "El encuentro se realizará el próximo jueves en el centro comunitario del barrio, con la presencia de autoridades municipales y policiales.",
-      "txt_cuerpo": "<p>Ante el aumento de denuncias por robos menores, los vecinos del Barrio Norte convocan a una reunión para discutir estrategias de seguridad. Participarán representantes de la policía local y funcionarios municipales.</p><p>Se abordarán temas como patrullaje, iluminación pública y programas de prevención del delito.</p>",
-      "txt_fecha": "4 Feb 2025",
-      "txt_categoria": "Gobierno",
-      "img_principal": "https://images.unsplash.com/photo-1520975915910-1a9b8e9f1c3e?w=600&h=400&fit=crop",
-      "boolean_destacada": false
-    },
-    {
-      "_orden": 8,
-      "_slug": "torneo-futbol-infantil-verano-2025",
-      "txt_titulo": "Torneo de Fútbol Infantil Verano 2025: inscripciones abiertas",
-      "txt_extracto": "Equipos de toda la ciudad podrán participar en esta competencia que promueve el deporte y la integración.",
-      "txt_cuerpo": "<p>El Torneo de Fútbol Infantil es una tradición que reúne a niños de entre 6 y 12 años. Las inscripciones están abiertas hasta el 15 de febrero, y los partidos se jugarán en los polideportivos municipales.</p><p>¡Anímate a formar tu equipo y participar!</p>",
-      "txt_fecha": "3 Feb 2025",
-      "txt_categoria": "Deportes",
-      "img_principal": "https://images.unsplash.com/photo-1505678261036-a3fcc5e884ee?w=600&h=400&fit=crop",
-      "boolean_destacada": false
+      "txt_parrafo": "Consultá más adelante para conocer las últimas novedades."
     }
-  ]
+  ],
+  "lista_noticias": []
 }

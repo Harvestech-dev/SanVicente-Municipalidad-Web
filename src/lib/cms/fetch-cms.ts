@@ -64,24 +64,50 @@ export async function fetchCMSComponents(
   const base = API_CONFIG.BASE_URL;
   if (!base) return [];
 
-  const params: Record<string, string> = {};
-  if (filters?.type) params.type = filters.type;
-  if (filters?.page_filter) params.page_filter = filters.page_filter;
-  if (filters?.status) params.status = filters.status;
-
-  const url = buildApiUrl(API_CONFIG.ENDPOINTS.CMS_COMPONENTS, params);
+  const url = buildApiUrl(API_CONFIG.ENDPOINTS.CMS_COMPONENTS);
 
   try {
     const res = await fetchWithTimeout(url);
+    const json = await res.json();
+
     if (!res.ok) return [];
 
-    const json: CMSComponentsResponse = await res.json();
-    if (!json.success || !json.data?.components) return [];
+    const parsed = json as CMSComponentsResponse;
+    if (!parsed.success || !parsed.data?.components) return [];
 
-    return json.data.components.filter((c) => c.isActive && c.isVisible);
+    return parsed.data.components.filter((c) => c.isActive && c.isVisible);
   } catch {
     return [];
   }
+}
+
+/**
+ * Extrae lista_oficinas del componente contact_areas.
+ * Busca en todos los componentes. Retorna [] si no hay.
+ */
+export function getContactAreasFromComponents(
+  components: CMSComponent[]
+): Array<Record<string, unknown>> {
+  const comp = components.find((c) => c.type === "contact_areas");
+  const lista = (comp?.data?.lista_oficinas ?? []) as Array<Record<string, unknown>>;
+  return Array.isArray(lista) ? lista : [];
+}
+
+/**
+ * Extrae lista_contacto del componente redes_sociales.
+ * Busca en todos los componentes. Retorna [] si no hay.
+ */
+export function getRedesFromComponents(
+  components: CMSComponent[]
+): Array<{ icon_contacto?: string; link_destino?: string; txt_label?: string; txt_valor?: string }> {
+  const comp = components.find((c) => c.type === "redes_sociales");
+  const lista = (comp?.data?.lista_contacto ?? []) as Array<{
+    icon_contacto?: string;
+    link_destino?: string;
+    txt_label?: string;
+    txt_valor?: string;
+  }>;
+  return Array.isArray(lista) ? lista : [];
 }
 
 /**

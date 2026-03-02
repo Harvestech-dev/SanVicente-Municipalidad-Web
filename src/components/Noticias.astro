@@ -3,27 +3,51 @@ import dataNoticias from "../data/noticias.json";
 
 const { data: cmsData } = Astro.props;
 const source = (cmsData as Record<string, unknown>) ?? dataNoticias;
-const noticias = (source.lista_noticias ?? dataNoticias.lista_noticias) as typeof dataNoticias.lista_noticias;
-const titulo = (source.txt_titulo ?? dataNoticias.txt_titulo) as string;
-const subtitulo = (source.txt_subtitulo ?? dataNoticias.txt_subtitulo) as string;
-const textoVerTodo = (source.txt_ver_todo ?? dataNoticias.txt_ver_todo) as string;
-const urlVerTodo = (source.link_ver_todo ?? dataNoticias.link_ver_todo) as string;
+const dataNoticiasObj = dataNoticias as Record<string, unknown>;
+const btn = source.btn_boton as { txt_label?: string; label_texto?: string; link_url?: string; src_destino?: string } | undefined;
 
-const noticiaDestacada = noticias.find((n: { boolean_destacada?: boolean }) => n.boolean_destacada) || noticias[0];
-const otrasNoticias = noticias
-  .filter((n: { _slug?: string }) => n._slug !== noticiaDestacada._slug) 
-  .slice(0, 3);
+const titulo = (source.txt_titulo ?? dataNoticiasObj.txt_titulo ?? "Noticias") as string;
+const subtitulo = (source.txt_subtitulo ?? dataNoticiasObj.txt_subtitulo ?? "Enterate de las últimas novedades de nuestra ciudad") as string;
+const textoVerTodo = (source.txt_ver_todo ?? dataNoticiasObj.txt_ver_todo ?? btn?.txt_label ?? btn?.label_texto ?? "Ver todas las noticias") as string;
+const urlVerTodoRaw = (source.link_ver_todo ?? dataNoticiasObj.link_ver_todo ?? btn?.link_url ?? btn?.src_destino ?? "/noticias") as string;
+const urlVerTodo = urlVerTodoRaw.startsWith("/") ? urlVerTodoRaw : `/${urlVerTodoRaw}`;
+
+interface Noticia {
+  _slug?: string;
+  boolean_destacada?: boolean;
+  img_principal?: string;
+  txt_titulo?: string;
+  txt_categoria?: string;
+  txt_extracto?: string;
+  txt_fecha?: string;
+}
+const listaNoticias = (source.lista_noticias ?? []) as Noticia[];
+const disclamerSinNoticias = (source.lista_disclamer_sin_noticias ?? []) as { txt_parrafo?: string }[];
+const ocultarSiNoHayNoticias = source.boolean_ocultar_si_no_hay_noticias === true;
+const hayNoticias = listaNoticias.length > 0;
+
+const noticiaDestacada = hayNoticias ? (listaNoticias.find((n) => n.boolean_destacada) || listaNoticias[0]) : null;
+const otrasNoticias = noticiaDestacada ? listaNoticias.filter((n) => n._slug !== noticiaDestacada._slug).slice(0, 3) : [];
 ---
 
+{(!hayNoticias && ocultarSiNoHayNoticias) ? null : (
 <section class="noticias-section">
   <div class="container">
     <div class="header-noticias">
-      <h2>{titulo}</h2>
-      <p>{subtitulo}</p>
+      <div class="title-group">
+        <h2>{titulo}</h2>
+        <p>{subtitulo}</p>
+      </div>
+      {hayNoticias && (
+        <a href={urlVerTodo} class="btn-ver-todo desktop-only">
+          {textoVerTodo}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+      )}
     </div>
 
     {
-      noticiaDestacada && (
+      noticiaDestacada && hayNoticias && (
         <article class="destacada-card">
           {/* CAMBIO: id por slug */}
           <a href={`/Noticias/${noticiaDestacada._slug}`} class="destacada-link">
@@ -49,7 +73,7 @@ const otrasNoticias = noticias
     }
 
     <div class="noticias-grid">
-      {
+      {hayNoticias ? (
         otrasNoticias.map((noticia) => (
           <article class="noticia-card">
             {/* CAMBIO: id por slug */}
@@ -66,17 +90,26 @@ const otrasNoticias = noticias
             </a>
           </article>
         ))
-      }
+      ) : disclamerSinNoticias.length > 0 ? (
+        <div class="noticias-empty">
+          {disclamerSinNoticias.map((p) => (
+            <p>{p.txt_parrafo ?? ""}</p>
+          ))}
+        </div>
+      ) : null}
     </div>
 
-    <div class="ver-todo-container">
-      <a href={`/${urlVerTodo}`} class="btn-ver-todo">
-        {textoVerTodo}
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </a>
-    </div>
+    {hayNoticias && (
+      <div class="ver-todo-container mobile-only">
+        <a href={urlVerTodo} class="btn-ver-todo">
+          {textoVerTodo}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+      </div>
+    )}
   </div>
 </section>
+)}
 
 <style>
   .noticias-section {
@@ -88,8 +121,24 @@ const otrasNoticias = noticias
     margin: 0 auto;
   }
   .header-noticias {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
     margin-bottom: 3rem;
+  }
+  .header-noticias .title-group {
+    flex: 1;
+  }
+  .header-noticias .desktop-only {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .header-noticias .desktop-only {
+      display: inline-flex;
+    }
+    .header-noticias .mobile-only {
+      display: none;
+    }
   }
   .header-noticias h2 {
     font-size: 2.5rem;
@@ -227,6 +276,27 @@ const otrasNoticias = noticias
   .ver-todo-container {
     text-align: center;
     margin-top: 3.5rem;
+  }
+  .ver-todo-container.mobile-only {
+    display: block;
+  }
+  @media (min-width: 768px) {
+    .ver-todo-container.mobile-only {
+      display: none;
+    }
+  }
+  .noticias-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: #64748b;
+  }
+  .noticias-empty p {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+  .noticias-empty p:last-child {
+    margin-bottom: 0;
   }
   .btn-ver-todo {
     display: inline-flex;

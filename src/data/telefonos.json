@@ -1,44 +1,8 @@
 {
   "txt_titulo": "Teléfonos Útiles",
   "txt_subtitulo": "Atención de emergencias y servicios las 24 horas",
-  "txt_ver_todo": "Ver todos",
-  "link_ver_todo": "telefonosPage",
-  "_maxHomeDisplay": 4,
-  "lista_telefonos": [
-    {
-      "_orden": 1,
-      "txt_nombre": "Emergencias Médicas",
-      "txt_numero": "107",
-      "icon_contacto": "hospital",
-      "_color": "#ef4444"
-    },
-    {
-      "_orden": 2,
-      "txt_nombre": "Policía",
-      "txt_numero": "911",
-      "icon_contacto": "shield",
-      "_color": "#3b82f6"
-    },
-    {
-      "_orden": 3,
-      "txt_nombre": "Bomberos Voluntarios",
-      "txt_numero": "100",
-      "icon_contacto": "flame",
-      "_color": "#f97316"
-    },
-    {
-      "_orden": 4,
-      "txt_nombre": "Defensa Civil",
-      "txt_numero": "103",
-      "icon_contacto": "alert",
-      "_color": "#eab308"
-    },
-    {
-      "_orden": 5,
-      "txt_nombre": "Atención Ciudadana",
-      "txt_numero": "147",
-      "icon_contacto": "phone",
-      "_color": "#6366f1"
-    }
-  ]
+"btn_boton": {  "txt_label": "Ver todos",
+  "link_destino": "/contacto"
+},
+  "_maxHomeDisplay": 5
 }

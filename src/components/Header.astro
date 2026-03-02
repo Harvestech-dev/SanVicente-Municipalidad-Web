@@ -4,12 +4,12 @@ import { SocialIcon } from "./SocialIcon";
 
 const navItems = [
   { label: "Inicio", href: "/" },
-  { label: "Gobierno", href: "/gobiernoPage" },
+  { label: "Gobierno", href: "/gobierno" },
   {
     label: "Trámites",
     href: "/tramites",
     submenu: [
-      { label: "Licencia de Conducir", href: "/Tramites/licenciaPage" },
+      // { label: "Licencia de Conducir", href: "/Tramites/licencia" }, // Oculto por el momento
       {
         label: "Boletas y Pagos",
         href: "https://sanvicente.miportal.ar/",
@@ -19,30 +19,30 @@ const navItems = [
   },
   {
     label: "Licitaciones",
-    href: "/Transparencia/licitacionesPage",
+    href: "/Transparencia/licitaciones",
   },
-  { label: "Noticias", href: "/noticiasPage" },
-  { label: "Agenda", href: "/agendaPage" },
-  { label: "Recolección", href: "/recoleccionesPage" },
-  { label: "Contacto", href: "/contactoPage" },
+  { label: "Noticias", href: "/noticias" },
+  { label: "Agenda", href: "/agenda" },
+  // { label: "Recolección", href: "/recolecciones" }, // Oculto por el momento
+  { label: "Contacto", href: "/contacto" },
 ];
 
 const {
   nombreCorto = datosSitio.txt_nombreCorto,
-  contacto = datosSitio.contacto,
-  listaRedes = datosSitio.lista_redes,
+  contacto = {},
+  listaRedes = [],
 } = Astro.props;
 
-const whatsappItem = listaRedes?.find((r: { _red?: string }) => r._red === "whatsapp");
+const whatsappItem = listaRedes?.find((r: { icon_contacto?: string }) => r.icon_contacto === "FaWhatsapp");
 const whatsappLink = whatsappItem?.link_destino
   ? (whatsappItem.link_destino.includes("wa.me") ? whatsappItem.link_destino : `https://wa.me/${whatsappItem.link_destino.replace(/\D/g, "")}`)
   : null;
 ---
 
 <header class="main-header" id="mainHeader">
-  <div class="top-bar">
+<!--   <div class="top-bar">
     <div class="container top-bar-content">
-<!--       <div class="contact-info">
+      <div class="contact-info">
         <a
           href={`tel:${contacto.txt_telefono.replace(/\D/g, "")}`}
           class="contact-link"
@@ -64,34 +64,27 @@ const whatsappLink = whatsappItem?.link_destino
           {contacto.txt_telefono}
         </a>
         <span class="schedule">{contacto.txt_horario}</span>
-      </div> -->
+      </div> 
 
       <div class="social-links">
         {
           listaRedes?.filter((r: { link_destino?: string }) => r.link_destino).map(
-            (redItem: { _red?: string; link_destino?: string }) => {
-              const red = redItem._red ?? "";
-              const url = redItem.link_destino ?? "";
-              const href = red === "whatsapp" && !url.includes("wa.me")
-                ? `https://wa.me/${url.replace(/\D/g, "")}`
-                : url;
-              return (
-                <a
-                  href={href}
-                  aria-label={red}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="social-icon"
-                >
-                  <SocialIcon value={red} size={16} />
-                </a>
-              );
-            }
+            (redItem: { icon_contacto?: string; link_destino?: string; txt_label?: string }) => (
+              <a
+                href={redItem.link_destino}
+                aria-label={redItem.txt_label ?? ""}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="social-icon"
+              >
+                <SocialIcon iconName={redItem.icon_contacto ?? "FaLink"} size={16} />
+              </a>
+            )
           )
         }
       </div>
     </div>
-  </div>
+  </div> -->
 
   <nav class="container nav-main">
     <a href="/" class="logo">

@@ -11,9 +11,27 @@ function getBaseUrl(): string {
   return "";
 }
 
+function getClientSlug(): string {
+  const slug = import.meta.env.CLIENT_SLUG ?? import.meta.env.PUBLIC_CLIENT_SLUG;
+  return (slug && String(slug).trim()) || "";
+}
+
+function isDevelopment(): boolean {
+  const env = import.meta.env.ENVIRONMENT ?? import.meta.env.ENVIROMENT ?? "";
+  return String(env).toLowerCase() === "development";
+}
+
 export const API_CONFIG = {
   get BASE_URL(): string {
     return getBaseUrl();
+  },
+
+  get CLIENT_SLUG(): string {
+    return getClientSlug();
+  },
+
+  get IS_DEVELOPMENT(): boolean {
+    return isDevelopment();
   },
 
   ENDPOINTS: {
@@ -23,8 +41,16 @@ export const API_CONFIG = {
 } as const;
 
 /**
+ * Parámetros de query para desarrollo (?clientSlug=slug).
+ */
+function getDevParams(): Record<string, string> {
+  if (!API_CONFIG.IS_DEVELOPMENT || !API_CONFIG.CLIENT_SLUG) return {};
+  return { clientSlug: API_CONFIG.CLIENT_SLUG };
+}
+
+/**
  * Construye URL completa para un endpoint.
- * Si BASE_URL es "https://api.com/api/public/v1", el endpoint se concatena.
+ * En development agrega ?clientSlug=CLIENT_SLUG.
  */
 export function buildApiUrl(
   endpoint: string,
@@ -39,13 +65,13 @@ export function buildApiUrl(
 
   try {
     const parsed = new URL(fullUrl);
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value != null && String(value).trim() !== "") {
-          parsed.searchParams.append(key, String(value));
-        }
-      });
-    }
+    const devParams = getDevParams();
+    const allParams = { ...devParams, ...params };
+    Object.entries(allParams).forEach(([key, value]) => {
+      if (value != null && String(value).trim() !== "") {
+        parsed.searchParams.append(key, String(value));
+      }
+    });
     return parsed.toString();
   } catch {
     return fullUrl;

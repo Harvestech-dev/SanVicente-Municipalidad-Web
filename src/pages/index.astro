@@ -1,44 +1,72 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
 import DynamicLayout from "../components/cms/DynamicLayout.astro";
 import { fetchCMSComponents, getComponentsByPage } from "../lib/cms/fetch-cms";
-import { getLocalComponentsAsCMS } from "../lib/cms/fallback-local";
 import { fetchNoticiasAdaptadas, fetchEventosAdaptados } from "../lib/api-vecino";
 import type { CMSComponent } from "../lib/cms/types";
 
 const PAGE_INICIO = "Inicio";
 
-// 1. Intentar cargar desde API CMS (en build, PUBLIC_API_URL vacío = no hay API)
-let components = await fetchCMSComponents();
+// 1. Cargar componentes desde API miwebcms. Sin fallback local.
+const components = await fetchCMSComponents();
 let pageComponents = getComponentsByPage(components, PAGE_INICIO);
 
-// 2. Fallback a JSON locales si no hay componentes de la API
-if (pageComponents.length === 0) {
-  const localComponents = getLocalComponentsAsCMS();
-  pageComponents = getComponentsByPage(localComponents, PAGE_INICIO);
-}
-
-// 3. Noticias y eventos desde API Vecino (endpoints separados)
+// 2. Noticias y eventos desde API Vecino (endpoints separados)
 const [noticiasApi, eventosApi] = await Promise.all([
   fetchNoticiasAdaptadas(),
   fetchEventosAdaptados(),
 ]);
 
-// 4. Inyectar datos de API Vecino en componentes agenda_cultural y noticias_section
+// 3. Inyectar metadatos CMS + lista_eventos/lista_noticias de Vecino en componentes
 pageComponents = pageComponents.map((comp: CMSComponent) => {
   const data = { ...comp.data };
 
-  if (comp.type === "agenda_cultural" && eventosApi.length > 0) {
+  if (comp.type === "agenda_cultural") {
+    const btn = comp.data?.btn_boton as { txt_label?: string; label_texto?: string; link_url?: string; src_destino?: string } | undefined;
+    if (btn) {
+      data.txt_ver_todo = btn.txt_label ?? btn.label_texto;
+      data.link_ver_todo = btn.link_url ?? btn.src_destino;
+    }
     data.lista_eventos = eventosApi.slice(0, 10);
+    data.lista_categorias = [
+      "Todas",
+      ...Array.from(new Set((data.lista_eventos as { txt_categoria?: string }[]).map((e) => e.txt_categoria).filter(Boolean))),
+    ];
   }
 
-  if (comp.type === "noticias_section" && noticiasApi.length > 0) {
+  // Tipos que la API puede enviar: telefonos_utiles, telfonos_tiles (typo), telfonos_utiles_contacto
+  const isTelefonosUtilesInicio =
+    comp.type === "telefonos_utiles" || comp.type === "telfonos_tiles" || comp.type === "telfonos_utiles";
+  if (isTelefonosUtilesInicio) {
+    const btn = comp.data?.btn_boton as { txt_label?: string; label_texto?: string; link_destino?: string; link_url?: string; src_destino?: string } | undefined;
+    if (btn) {
+      data.txt_ver_todo = btn.txt_label ?? btn.label_texto;
+      data.link_ver_todo = btn.link_destino ?? btn.link_url ?? btn.src_destino;
+    }
+    // En Inicio: metadata del comp. page:Inicio; lista de teléfonos del comp. page:Contacto
+    const compContacto = components.find(
+      (c) => (c.type === "telefonos_utiles" || c.type === "telfonos_utiles_contacto" || c.type === "telfonos_tiles") && c.page === "Contacto"
+    );
+    const contactData = (compContacto?.data ?? {}) as Record<string, unknown>;
+    const listaContacto = contactData.lista_telefonos ?? contactData.lista_contacto;
+    if (Array.isArray(listaContacto) && listaContacto.length > 0) {
+      data.lista_telefonos = listaContacto;
+      data.lista_contacto = listaContacto;
+    }
+    // Normalizar type para que DynamicLayout renderice TelefonosUtiles
+    comp.type = "telefonos_utiles";
+  }
+
+  if (comp.type === "noticias_section" || comp.type === "noticias") {
+    const btn = comp.data?.btn_boton as { txt_label?: string; label_texto?: string; link_url?: string; src_destino?: string } | undefined;
+    if (btn) {
+      data.txt_ver_todo = btn.txt_label ?? btn.label_texto;
+      data.link_ver_todo = btn.link_url ?? btn.src_destino;
+    }
     data.lista_noticias = noticiasApi;
     data.lista_categorias = [
       "Todas",
-      ...Array.from(new Set(noticiasApi.map((n) => (n as { txt_categoria?: string }).txt_categoria).filter(Boolean))),
+      ...Array.from(new Set((data.lista_noticias as { txt_categoria?: string }[]).map((n) => n.txt_categoria).filter(Boolean))),
     ];
   }
 
@@ -47,7 +75,14 @@ pageComponents = pageComponents.map((comp: CMSComponent) => {
 ---
 
 <Layout>
-  <Header />
   <DynamicLayout components={pageComponents} />
-  <Footer />
 </Layout>
+
+<script define:vars={{ components, pageComponents, noticiasApi, eventosApi }}>
+  if (typeof window !== "undefined") {
+    console.log("[API] Página Inicio - Toda la información:", {
+      cms: { componentes: components, componentesInicio: pageComponents },
+      vecino: { noticias: noticiasApi, eventos: eventosApi },
+    });
+  }
+</script>

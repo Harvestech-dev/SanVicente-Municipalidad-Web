@@ -5,13 +5,36 @@ import { SocialIcon } from "./SocialIcon";
 const {
   nombre = sitioData.txt_nombre,
   nombreCorto = sitioData.txt_nombreCorto,
-  contacto = sitioData.contacto,
-  listaRedes = sitioData.lista_redes,
+  contacto: contactoProp = {},
+  listaRedes = [],
+  listaOficinas = [],
   footer = sitioData.footer,
 } = Astro.props;
 
 const tema = sitioData._estilo;
 const añoActual = new Date().getFullYear();
+
+const edificioDefault = (listaOficinas as Array<{ _boolean_isDefault?: boolean; lista_contacto?: unknown[]; lista_contactos?: unknown[] }>).find(
+  (o) => o._boolean_isDefault
+);
+const contactosDefault = (edificioDefault?.lista_contacto ?? edificioDefault?.lista_contactos ?? []) as Array<{ icon_contacto?: string; txt_valor?: string; link_destino?: string }>;
+
+const getContacto = (icon: string) => contactosDefault.find((c: { icon_contacto?: string }) => c.icon_contacto === icon);
+const contactoUbicacion = getContacto("FaMapMarkerAlt");
+const contactoTelefono = getContacto("FaPhone");
+const contactoEmail = getContacto("FaEnvelope");
+const contactoHorario = getContacto("FaClock");
+
+const c = contactoProp as { txt_direccion?: string; txt_telefono?: string; txt_email?: string; txt_horario?: string };
+const contacto = {
+  txt_direccion: contactoUbicacion?.txt_valor ?? c.txt_direccion ?? "",
+  link_direccion: contactoUbicacion?.link_destino || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contactoUbicacion?.txt_valor ?? c.txt_direccion ?? "")}`,
+  txt_telefono: contactoTelefono?.txt_valor ?? c.txt_telefono ?? "",
+  link_telefono: contactoTelefono?.link_destino || `tel:${(contactoTelefono?.txt_valor ?? c.txt_telefono ?? "").replace(/\D/g, "")}`,
+  txt_email: contactoEmail?.txt_valor ?? c.txt_email ?? "",
+  link_email: contactoEmail?.link_destino || `mailto:${contactoEmail?.txt_valor ?? c.txt_email ?? ""}`,
+  txt_horario: contactoHorario?.txt_valor ?? c.txt_horario ?? "",
+};
 ---
 
 <footer class="footer">
@@ -26,15 +49,15 @@ const añoActual = new Date().getFullYear();
         <div class="social-grid">
           {
             listaRedes?.filter((r: { link_destino?: string }) => r.link_destino).map(
-              (redItem: { _red?: string; link_destino?: string }) => (
+              (redItem: { icon_contacto?: string; link_destino?: string; txt_label?: string }) => (
                 <a
                   href={redItem.link_destino}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon"
-                  aria-label={redItem._red ?? ""}
+                  aria-label={redItem.txt_label ?? ""}
                 >
-                  <SocialIcon value={redItem._red ?? "otro"} size={20} />
+                  <SocialIcon iconName={redItem.icon_contacto ?? "FaLink"} size={20} />
                 </a>
               ),
             )
@@ -43,12 +66,12 @@ const añoActual = new Date().getFullYear();
       </div>
 
       <div class="col-links">
-        <h3 class="footer-title">Contacto Oficial</h3>
+        <h3 class="footer-title">Contactos</h3>
         <ul class="contact-list">
           <li>
             <span class="contact-icon"><SocialIcon value="ubicacion" size={18} /></span>
             <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contacto.txt_direccion)}`}
+              href={contacto.link_direccion}
               target="_blank"
               rel="noopener noreferrer"
               class="contact-link">{contacto.txt_direccion}</a
@@ -57,13 +80,13 @@ const añoActual = new Date().getFullYear();
           <li>
             <span class="contact-icon"><SocialIcon value="telefono" size={18} /></span>
             <a
-              href={`tel:${contacto.txt_telefono.replace(/\s+/g, "")}`}
+              href={contacto.link_telefono}
               class="contact-link">{contacto.txt_telefono}</a
             >
           </li>
           <li>
             <span class="contact-icon"><SocialIcon value="mail" size={18} /></span>
-            <a href={`mailto:${contacto.txt_email}`} class="contact-link"
+            <a href={contacto.link_email} class="contact-link"
               >{contacto.txt_email}</a
             >
           </li>
@@ -94,9 +117,9 @@ const añoActual = new Date().getFullYear();
         </p>
         <p class="dev-credit">
           Desarrollado por <a
-            href="https://harvestech.dev"
+            href="https://harvi.digital"
             target="_blank"
-            rel="noopener noreferrer">Harvestech</a
+            rel="noopener noreferrer">Harvi Digital</a
           >
         </p>
       </div>

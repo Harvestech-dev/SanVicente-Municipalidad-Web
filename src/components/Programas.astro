@@ -4,21 +4,49 @@ import sitioData from "../data/sitio.json";
 
 interface Programa {
   _orden?: number;
-  txt_nombre: string;
-  txt_descripcion: string;
-  link_url: string;
+  boolean_featured?: boolean;
+  txt_titulo?: string;
+  txt_nombre?: string;
+  txt_subtitulo?: string;
+  txt_descripcion?: string;
+  lista_descripcion?: Array<{ txt_descripcion?: string }>;
+  lista_adjuntos?: Array<{ link_url?: string }>;
+  link_url?: string;
   _sigla?: string;
   img_logo?: string;
   img_fondo?: string;
+  gallery_imagenes?: Array<{ img_fondo?: string }>;
 }
 
 const { data: cmsData, titulo: propTitulo, subtitulo: propSubtitulo } = Astro.props;
 const source = (cmsData as Record<string, unknown>) ?? data;
-const programasRaw = (source.lista_programas ?? data.lista_programas).slice(0, 6);
-const programas = (programasRaw as unknown) as Programa[];
+const programasRaw = Array.isArray(source.lista_programas) ? source.lista_programas : (Array.isArray(data.lista_programas) ? data.lista_programas : []);
+const programasSorted = [...(programasRaw as Programa[])].sort((a, b) => {
+  const aF = a.boolean_featured ? 1 : 0;
+  const bF = b.boolean_featured ? 1 : 0;
+  return bF - aF;
+});
+const programas = (programasSorted.slice(0, 6) as unknown) as Programa[];
 const titulo = (propTitulo ?? source.txt_titulo ?? data.txt_titulo) as string;
 const subtitulo = (propSubtitulo ?? source.txt_subtitulo ?? data.txt_subtitulo) as string;
 const tema = sitioData._estilo;
+
+function getProgramaNombre(p: Programa): string {
+  return p.txt_titulo ?? p.txt_nombre ?? "";
+}
+function getProgramaDesc(p: Programa): string {
+  if (p.txt_subtitulo) return p.txt_subtitulo;
+  if (p.txt_descripcion) return p.txt_descripcion;
+  const first = p.lista_descripcion?.[0]?.txt_descripcion;
+  return first ?? "";
+}
+function getProgramaUrl(p: Programa): string {
+  const adj = p.lista_adjuntos?.[0]?.link_url;
+  return adj ?? p.link_url ?? "/programas";
+}
+function getProgramaImagen(p: Programa): string {
+  return p.img_logo ?? p.gallery_imagenes?.[0]?.img_fondo ?? p.img_fondo ?? "";
+}
 ---
 
 <section class="featured-programs">
@@ -31,18 +59,18 @@ const tema = sitioData._estilo;
     <div class="programs-grid">
       {
         programas.map((prog: Programa) => (
-          <a href={prog.link_url} class="program-card">
+          <a href={getProgramaUrl(prog)} class="program-card">
             <div class="logo-box">
-              {prog.img_logo ? (
-                <img src={prog.img_logo} alt={prog.txt_nombre} />
+              {getProgramaImagen(prog) ? (
+                <img src={getProgramaImagen(prog)} alt={getProgramaNombre(prog)} />
               ) : (
-                <span class="sigla">{prog._sigla}</span>
+                <span class="sigla">{prog._sigla ?? getProgramaNombre(prog).slice(0, 2).toUpperCase()}</span>
               )}
             </div>
 
             <div class="content">
-              <h3 class="program-name">{prog.txt_nombre}</h3>
-              <p class="program-desc">{prog.txt_descripcion}</p>
+              <h3 class="program-name">{getProgramaNombre(prog)}</h3>
+              <p class="program-desc">{getProgramaDesc(prog)}</p>
             </div>
           </a>
         ))
@@ -50,7 +78,7 @@ const tema = sitioData._estilo;
     </div>
 
     <div class="action-container">
-      <a href="/programasPage" class="btn-ver-todos">
+      <a href="/programas" class="btn-ver-todos">
         Ver todos los programas
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </a>

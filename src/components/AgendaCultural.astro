@@ -15,25 +15,33 @@ interface Evento {
 
 const { data: cmsData } = Astro.props;
 const source = (cmsData as Record<string, unknown>) ?? agendaData;
-const title = (Astro.props.title ?? source.txt_titulo ?? agendaData.txt_titulo) as string;
-const subtitle = (Astro.props.subtitle ?? source.txt_subtitulo ?? agendaData.txt_subtitulo) as string;
-const viewAllText = (Astro.props.viewAllText ?? source.txt_ver_todo ?? agendaData.txt_ver_todo) as string;
-const viewAllHref = (Astro.props.viewAllHref ?? source.link_ver_todo ?? agendaData.link_ver_todo) as string;
+const btn = source.btn_boton as { txt_label?: string; label_texto?: string; link_url?: string; src_destino?: string } | undefined;
+
+const agenda = agendaData as Record<string, unknown>;
+const title = (Astro.props.title ?? source.txt_titulo ?? agenda.txt_titulo ?? "Agenda Cultural") as string;
+const subtitle = (Astro.props.subtitle ?? source.txt_subtitulo ?? agenda.txt_subtitulo ?? "Descubrí los eventos y actividades en San Vicente.") as string;
+const viewAllText = (Astro.props.viewAllText ?? source.txt_ver_todo ?? agenda.txt_ver_todo ?? btn?.txt_label ?? btn?.label_texto ?? "Ver toda la agenda") as string;
+const viewAllHref = (Astro.props.viewAllHref ?? source.link_ver_todo ?? agenda.link_ver_todo ?? btn?.link_url ?? btn?.src_destino ?? "/agenda") as string;
 
 /**
  * LÓGICA DE FILTRADO Y ORDEN
  * 1. Ordenamos por _fechaISO (AAAA-MM-DD)
  * 2. .slice(0, 4) toma solo los primeros 4 eventos resultantes
  */
-const proximosEventos = ((source.lista_eventos ?? agendaData.lista_eventos) as Evento[])
+const listaEventos = (source.lista_eventos ?? []) as Evento[];
+const proximosEventos = listaEventos
   .sort(
     (a, b) => new Date(a._fechaISO ?? a.txt_fecha).getTime() - new Date(b._fechaISO ?? b.txt_fecha).getTime(),
   )
   .slice(0, 4);
 
+const disclamerSinEventos = (source.lista_disclamer_sin_eventos ?? []) as { txt_parrafo?: string }[];
+const ocultarSiNoHayEventos = source.boolean_ocultar_si_no_hay_eventos === true;
+const hayEventos = proximosEventos.length > 0;
 const tema = sitioData._estilo;
 ---
 
+{(!hayEventos && ocultarSiNoHayEventos) ? null : (
 <section id="agenda" class="agenda-section">
   <div class="container">
     <div class="header-flex">
@@ -41,14 +49,16 @@ const tema = sitioData._estilo;
         <h2>{title}</h2>
         <p>{subtitle}</p>
       </div>
-      <a href={viewAllHref} class="btn-outline desktop-only">
-        {viewAllText}
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </a>
+      {hayEventos && (
+        <a href={viewAllHref} class="btn-outline desktop-only">
+          {viewAllText}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+      )}
     </div>
 
     <div class="events-grid">
-      {
+      {proximosEventos.length > 0 ? (
         proximosEventos.map((event: Evento) => (
           <article class="event-card">
             <div class="image-container">
@@ -113,17 +123,26 @@ const tema = sitioData._estilo;
             </div>
           </article>
         ))
-      }
+      ) : disclamerSinEventos.length > 0 ? (
+        <div class="agenda-empty">
+          {disclamerSinEventos.map((p) => (
+            <p>{p.txt_parrafo ?? ""}</p>
+          ))}
+        </div>
+      ) : null}
     </div>
 
-    <div class="mobile-only mt-8">
-      <a href={viewAllHref} class="btn-outline full-width">
-        {viewAllText}
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </a>
-    </div>
+    {hayEventos && (
+      <div class="mobile-only mt-8">
+        <a href={viewAllHref} class="btn-outline full-width">
+          {viewAllText}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+      </div>
+    )}
   </div>
 </section>
+)}
 
 <style
   define:vars={{
@@ -153,7 +172,7 @@ const tema = sitioData._estilo;
   }
   .title-group h2 {
     font-size: clamp(1.8rem, 5vw, 2.25rem);
-    color: var(--secondary);
+    color: var(--primary);
     font-weight: 800;
     margin-bottom: 0.5rem;
     letter-spacing: -0.025em;
@@ -293,5 +312,19 @@ const tema = sitioData._estilo;
   }
   .mt-8 {
     margin-top: 2rem;
+  }
+
+  .agenda-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: #64748b;
+  }
+  .agenda-empty p {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+  .agenda-empty p:last-child {
+    margin-bottom: 0;
   }
 </style>

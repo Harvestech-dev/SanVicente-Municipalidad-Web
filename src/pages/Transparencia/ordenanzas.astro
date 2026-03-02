@@ -1,15 +1,12 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import data from "../../data/Transparencia/ordenanzas.json";
-import Footer from "../../components/Footer.astro";
-import Header from "../../components/Header.astro";
 
 // Simulamos los datos del JSON (puedes importar el archivo directamente)
 const { lista_documentos: documentos, lista_categorias: categorias, lista_tipos: tipos, lista_anios: años } = data;
 ---
 
 <Layout>
-  <Header />
   <main class="ordenanzas-page">
     <section class="hero">
       <div class="container">
@@ -87,7 +84,6 @@ const { lista_documentos: documentos, lista_categorias: categorias, lista_tipos:
       </div>
     </section>
   </main>
-  <Footer />
 </Layout>
 
 <style>

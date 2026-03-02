@@ -10,14 +10,6 @@
       "_color": "#003366"
     },
     {
-      "_orden": 2,
-      "txt_titulo": "Licencia de Conducir",
-      "txt_descripcion": "Turnos y requisitos",
-      "link_url": "/Tramites/licenciaPage",
-      "icon_servicio": "car",
-      "_color": "#006633"
-    },
-    {
       "_orden": 3,
       "txt_titulo": "Reclamos",
       "txt_descripcion": "Vecino Digital",
@@ -29,7 +21,7 @@
       "_orden": 4,
       "txt_titulo": "Licitaciones",
       "txt_descripcion": "Concursos vigentes",
-      "link_url": "/Transparencia/licitacionesPage",
+      "link_url": "/Transparencia/licitaciones",
       "icon_servicio": "file-text",
       "_color": "#004a99"
     },
@@ -37,7 +29,7 @@
       "_orden": 5,
       "txt_titulo": "Agenda Cultural",
       "txt_descripcion": "Eventos y actividades",
-      "link_url": "/agendaPage",
+      "link_url": "/agenda",
       "icon_servicio": "calendar",
       "_color": "#e65100"
     }

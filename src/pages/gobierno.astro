@@ -1,0 +1,610 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { fetchCMSComponents, getComponentsByPage } from "../lib/cms/fetch-cms";
+import sitio from "../data/sitio.json";
+
+const PAGE_GOBIERNO = "Gobierno";
+const components = await fetchCMSComponents();
+const govComponents = getComponentsByPage(components, PAGE_GOBIERNO);
+
+const apiEncabezado = govComponents.find((c) => c.type === "gobierno_encabezado");
+const apiGabinete = govComponents.find((c) => c.type === "gabinete");
+const apiOrganigrama = govComponents.find((c) => c.type === "organigrama");
+
+// Solo datos del CMS (sin fallback a JSON local)
+const encabezadoData = (apiEncabezado?.data ?? {}) as Record<string, unknown>;
+const titulo = (encabezadoData.txt_titulo ?? "") as string;
+const descripcion = (encabezadoData.txt_subtitulo ?? encabezadoData.txt_descripcion ?? "") as string;
+const intendente = (encabezadoData.intendente ?? null) as {
+  txt_nombre: string;
+  txt_cargo: string;
+  img_perfil?: string;
+  txt_gestion?: string;
+} | null;
+
+const gabineteData = (apiGabinete?.data ?? {}) as Record<string, unknown>;
+const gabineteTitulo = (gabineteData.txt_titulo ?? "") as string;
+const gabineteSubtitulo = (gabineteData.txt_subtitulo ?? "") as string;
+const funcionarios = (gabineteData.lista_funcionarios ?? []) as Array<{
+  txt_nombre: string;
+  txt_cargo: string;
+  txt_area?: string;
+  img_perfil?: string;
+}>;
+
+const organigramaData = (apiOrganigrama?.data ?? {}) as Record<string, unknown>;
+const organigramaTitulo = (organigramaData.txt_titulo ?? "") as string;
+const organigramaSubtitulo = (organigramaData.txt_subtitulo ?? "") as string;
+const organigramaRaw = (organigramaData.lista_organigrama ?? []) as OrganigramaItemRaw[];
+
+const tema = sitio._estilo;
+const defaultProfile = "/profile.png";
+
+// Tipos: API puede enviar áreas como string[] o como { txt_nombre: string }[]
+type AreaItem = string | { txt_nombre?: string };
+type OrganigramaItemRaw = {
+  txt_nombre: string;
+  lista_areas?: AreaItem[];
+  Lista_areas?: AreaItem[];
+  lista_subsecretarias?: OrganigramaSubRaw[];
+  lista_departamentos?: OrganigramaDeptoRaw[];
+  lista_depertamentos?: OrganigramaDeptoRaw[];
+};
+type OrganigramaSubRaw = {
+  txt_nombre: string;
+  lista_areas?: AreaItem[];
+  Lista_areas?: AreaItem[];
+  lista_departamentos?: OrganigramaDeptoRaw[];
+  lista_depertamentos?: OrganigramaDeptoRaw[];
+};
+type OrganigramaDeptoRaw = {
+  txt_nombre: string;
+  lista_areas?: AreaItem[];
+  Lista_areas?: AreaItem[];
+};
+
+function normalizeAreas(arr: AreaItem[] | undefined): string[] {
+  if (!Array.isArray(arr)) return [];
+  return arr.map((item) => (typeof item === "string" ? item : item?.txt_nombre ?? "")).filter(Boolean);
+}
+
+function getAreasRaw(node: Record<string, unknown>): string[] {
+  const arr = (node.lista_areas ?? node.Lista_areas) as AreaItem[] | undefined;
+  return normalizeAreas(Array.isArray(arr) ? arr : []);
+}
+
+function normalizeOrganigrama(raw: OrganigramaItemRaw[]): OrganigramaItem[] {
+  return raw.map((sec) => {
+    const secR = sec as Record<string, unknown>;
+    const subsecretarias = (secR.lista_subsecretarias ?? []) as OrganigramaSubRaw[];
+    const deptosTop = (secR.lista_departamentos ?? secR.lista_depertamentos ?? []) as OrganigramaDeptoRaw[];
+    return {
+      txt_nombre: sec.txt_nombre,
+      lista_areas: getAreasRaw(sec as Record<string, unknown>),
+      lista_subsecretarias: subsecretarias.map((sub) => {
+        const subR = sub as Record<string, unknown>;
+        const deptos = (subR.lista_departamentos ?? subR.lista_depertamentos ?? []) as OrganigramaDeptoRaw[];
+        return {
+          txt_nombre: sub.txt_nombre,
+          lista_areas: getAreasRaw(subR),
+          lista_departamentos: deptos.map((d) => ({
+            txt_nombre: d.txt_nombre,
+            lista_areas: getAreasRaw(d as Record<string, unknown>),
+          })),
+        };
+      }),
+      lista_departamentos: deptosTop.map((d) => ({
+        txt_nombre: d.txt_nombre,
+        lista_areas: getAreasRaw(d as Record<string, unknown>),
+      })),
+    };
+  });
+}
+
+type OrganigramaItem = {
+  txt_nombre: string;
+  lista_areas?: string[];
+  lista_subsecretarias?: OrganigramaSub[];
+  lista_departamentos?: OrganigramaDepto[];
+};
+type OrganigramaSub = {
+  txt_nombre: string;
+  lista_areas?: string[];
+  lista_departamentos?: OrganigramaDepto[];
+};
+type OrganigramaDepto = {
+  txt_nombre: string;
+  lista_areas?: string[];
+};
+
+const organigrama = normalizeOrganigrama(organigramaRaw);
+
+function getAreas(node: { lista_areas?: string[] }): string[] {
+  return node.lista_areas ?? [];
+}
+function getDepartamentos(node: { lista_departamentos?: OrganigramaDepto[] }): OrganigramaDepto[] {
+  return node.lista_departamentos ?? [];
+}
+function getSubsecretarias(sec: OrganigramaItem): OrganigramaSub[] {
+  return sec.lista_subsecretarias ?? [];
+}
+---
+
+<Layout title={`Gobierno | ${sitio.txt_nombreCorto}`}>
+  <main class="gobierno-container">
+    <section class="hero-section">
+      <div class="container">
+        <h1>{titulo}</h1>
+        <p>{descripcion}</p>
+      </div>
+    </section>
+
+    {intendente && (
+    <section class="autoridad-section">
+      <div class="container">
+        <div class="intendente-card">
+          <div class="intendente-img">
+            <img
+            src={intendente.img_perfil || defaultProfile}
+            alt={intendente.txt_nombre}
+            />
+          </div>
+          <div class="intendente-info">
+            <span class="badge">Intendencia</span>
+            <h2>{intendente.txt_nombre}</h2>
+            <p class="role">{intendente.txt_cargo}</p>
+            <p class="gestion">
+              <strong>Gestión:</strong>
+              {intendente.txt_gestion}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    )}
+
+    <section class="gabinete-section">
+      <div class="container">
+        <h2 class="section-title">{gabineteTitulo}</h2>
+        {gabineteSubtitulo && <p class="section-subtitle">{gabineteSubtitulo}</p>}
+        <div class="funcionarios-flex">
+          {
+            funcionarios.map((func) => (
+              <div class="funcionario-card">
+                <img src={func.img_perfil || defaultProfile} alt={func.txt_nombre} />
+                <div class="funcionario-details">
+                  <span class="area-tag">{func.txt_area}</span>
+                  <h3>{func.txt_nombre}</h3>
+                  <p>{func.txt_cargo}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="organigrama-section">
+      <div class="container">
+        <h2 class="section-title">{organigramaTitulo}</h2>
+        {organigramaSubtitulo && <p class="organigrama-intro">{organigramaSubtitulo}</p>}
+        <div class="organigrama-cards">
+          {
+            organigrama.map((sec) => {
+              const subsecretarias = getSubsecretarias(sec);
+              const departamentosTop = getDepartamentos(sec);
+              const areasSec = getAreas(sec);
+              return (
+                <article class="organigrama-card">
+                  <h3 class="organigrama-card-title">{sec.txt_nombre}</h3>
+                  <div class="organigrama-card-body">
+                    {areasSec.length > 0 && (
+                      <ul class="organigrama-areas organigrama-areas-1">
+                        {areasSec.map((area) => (
+                          <li><span class="bullet" />{area}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {subsecretarias.map((sub) => {
+                      const deptos = getDepartamentos(sub);
+                      const areasSub = getAreas(sub);
+                      return (
+                        <details class="organigrama-level organigrama-level-2">
+                          <summary class="organigrama-summary organigrama-summary-2">
+                            <span class="organigrama-name">{sub.txt_nombre}</span>
+                          </summary>
+                          <div class="organigrama-children">
+                            {areasSub.length > 0 && (
+                              <ul class="organigrama-areas organigrama-areas-2">
+                                {areasSub.map((area) => (
+                                  <li><span class="bullet" />{area}</li>
+                                ))}
+                              </ul>
+                            )}
+                            {deptos.map((depto) => {
+                              const areasDepto = getAreas(depto);
+                              return (
+                                <details class="organigrama-level organigrama-level-3">
+                                  <summary class="organigrama-summary organigrama-summary-3">
+                                    <span class="organigrama-name">{depto.txt_nombre}</span>
+                                  </summary>
+                                  {areasDepto.length > 0 && (
+                                    <ul class="organigrama-areas organigrama-areas-4">
+                                      {areasDepto.map((area) => (
+                                        <li><span class="bullet" />{area}</li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </details>
+                              );
+                            })}
+                          </div>
+                        </details>
+                      );
+                    })}
+                    {departamentosTop.map((depto) => {
+                      const areasDepto = getAreas(depto);
+                      return (
+                        <details class="organigrama-level organigrama-level-3">
+                          <summary class="organigrama-summary organigrama-summary-3">
+                            <span class="organigrama-name">{depto.txt_nombre}</span>
+                          </summary>
+                          {areasDepto.length > 0 && (
+                            <ul class="organigrama-areas organigrama-areas-4">
+                              {areasDepto.map((area) => (
+                                <li><span class="bullet" />{area}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </details>
+                      );
+                    })}
+                  </div>
+                </article>
+              );
+            })
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style define:vars={{ primaryColor: tema.primario }}>
+  .gobierno-container {
+    background-color: var(--color-fondo-claro);
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 1.5rem);
+  }
+
+  /* Hero */
+  .hero-section {
+    background-color: var(--color-primario);
+    color: var(--color-texto-claro);
+    padding: 4rem 0;
+    text-align: center;
+  }
+  .hero-section h1 {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .hero-section p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* --- INTENDENTE (CAMBIOS SOLICITADOS) --- */
+  .autoridad-section {
+    margin-top: -4rem; /* Un poco más de solapado */
+    padding-bottom: clamp(3rem, 6vw, 4rem);
+    position: relative;
+    z-index: 10;
+  }
+  .intendente-card {
+    background: var(--color-texto-claro);
+    /* Borde lateral con color primario para dar color */
+    border: 1px solid var(--color-primario);
+
+    border-radius: 1rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+
+    /* Sombra con un toque de color primario */
+    box-shadow: 0 15px 35px
+      color-mix(in srgb, var(--color-primario), transparent 85%);
+  }
+  .intendente-img img {
+    width: clamp(150px, 30vw, 200px);
+    height: clamp(150px, 30vw, 200px);
+    border-radius: 9999px;
+    object-fit: cover;
+
+    /* Anillo de color en la foto */
+    padding: 5px;
+    border: 2px solid color-mix(in srgb, var(--color-primario), transparent 70%);
+    background: white;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--color-primario);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .intendente-info h2 {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    margin: 0;
+    color: #1a1a1a;
+  }
+  .role {
+    color: var(--color-primario);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  .gestion {
+    border-top: 1px solid
+      color-mix(in srgb, var(--color-primario), transparent 90%);
+    padding-top: 1rem;
+  }
+
+  /* Gabinete & Organigrama */
+  .gabinete-section,
+  .organigrama-section {
+    margin-bottom: 4rem;
+  }
+
+  .funcionarios-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  .organigrama-intro {
+    text-align: center;
+    color: color-mix(in srgb, var(--color-texto), transparent 25%);
+    font-size: 0.95rem;
+    max-width: 560px;
+    margin: -1rem auto 2rem;
+  }
+
+  .organigrama-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  .organigrama-card {
+    flex: 1 1 320px;
+    max-width: 420px;
+    background: var(--color-texto-claro);
+    border: 1px solid color-mix(in srgb, var(--color-primario), transparent 60%);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 2px 10px color-mix(in srgb, var(--color-texto), transparent 95%);
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .organigrama-card:hover {
+    border-color: color-mix(in srgb, var(--color-primario), transparent 40%);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-primario), transparent 90%);
+  }
+
+  .organigrama-card-title {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-primario);
+    background: color-mix(in srgb, var(--color-primario), transparent 96%);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-primario), transparent 85%);
+  }
+
+  .organigrama-card-body {
+    padding: 1rem 1.25rem;
+  }
+
+  .organigrama-level {
+    border: 1px solid color-mix(in srgb, var(--color-texto), transparent 80%);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    background: var(--color-texto-claro);
+  }
+
+  .organigrama-summary {
+    list-style: none;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .organigrama-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .organigrama-summary::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 6px solid var(--color-primario);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .organigrama-level[open] > .organigrama-summary::before {
+    transform: rotate(90deg);
+  }
+
+  .organigrama-summary:hover {
+    background: color-mix(in srgb, var(--color-primario), transparent 92%);
+  }
+
+  .organigrama-summary-2 {
+    font-size: 0.98rem;
+    color: var(--color-texto);
+  }
+
+  .organigrama-summary-3 {
+    font-size: 0.92rem;
+    color: color-mix(in srgb, var(--color-texto), transparent 10%);
+  }
+
+  .organigrama-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: color-mix(in srgb, var(--color-texto), transparent 40%);
+    min-width: 6rem;
+  }
+
+  .organigrama-children {
+    padding: 0 1rem 1rem 1rem;
+    padding-left: 1.5rem;
+    border-left: 2px solid color-mix(in srgb, var(--color-primario), transparent 85%);
+    margin-left: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .organigrama-level-2 .organigrama-children,
+  .organigrama-level-3 .organigrama-children {
+    border-left-color: color-mix(in srgb, var(--color-texto), transparent 88%);
+  }
+
+  .organigrama-areas {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+  }
+
+  .organigrama-areas li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: color-mix(in srgb, var(--color-texto), transparent 15%);
+    margin-bottom: 0.35rem;
+  }
+
+  .organigrama-areas-4 li {
+    font-size: 0.85rem;
+    margin-left: 1.5rem;
+  }
+
+  .funcionario-card {
+    background: var(--color-texto-claro);
+    border: 1px solid color-mix(in srgb, var(--color-texto), transparent 70%);
+    &:hover {
+      border: 1px solid var(--color-primario);
+    }
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex: 0 1 340px;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border 0.2s ease;
+  }
+
+  .funcionario-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+  .funcionario-card img {
+    width: 72px;
+    height: 72px;
+    border-radius: 9999px;
+    object-fit: cover;
+    background: #eee;
+  }
+  .area-tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-primario);
+    background: color-mix(in srgb, var(--color-primario), transparent 90%);
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+  }
+  .funcionario-details h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0.25rem 0;
+  }
+  .funcionario-details p {
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--color-texto), transparent 10%);
+  }
+  .section-title {
+    text-align: center;
+    font-size: clamp(1.5rem, 4vw, 1.875rem);
+    font-weight: 700;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+    color: var(--color-texto);
+    margin-top: 4rem;
+  }
+  .section-subtitle {
+    text-align: center;
+    color: color-mix(in srgb, var(--color-texto), transparent 25%);
+    font-size: 0.95rem;
+    max-width: 560px;
+    margin: -1rem auto 2rem;
+  }
+  .bullet {
+    width: 6px;
+    height: 6px;
+    background: color-mix(in srgb, var(--color-texto), transparent 60%);
+    border-radius: 999px;
+  }
+
+  /* Mobile */
+  @media (max-width: 640px) {
+    .intendente-card {
+      flex-direction: column;
+      text-align: center;
+    }
+    .funcionario-card {
+      flex: 1 1 100%;
+    }
+    .organigrama-card {
+      flex: 1 1 100%;
+      max-width: none;
+    }
+    .organigrama-card-title {
+      padding: 0.85rem 1rem;
+      font-size: 1rem;
+    }
+    .organigrama-card-body {
+      padding: 0.85rem 1rem;
+    }
+    .organigrama-summary {
+      padding: 0.6rem 0.75rem;
+    }
+    .organigrama-children {
+      padding-left: 1rem;
+      margin-left: 0.5rem;
+    }
+  }
+</style>

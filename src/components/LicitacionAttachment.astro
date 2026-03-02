@@ -1,0 +1,87 @@
+---
+/**
+ * Muestra un adjunto de licitación con icono de tipo (link/image/file) y label.
+ * Todos los enlaces se abren en ventana externa (target="_blank").
+ */
+import { SocialIcon } from "./SocialIcon";
+
+interface Props {
+  attachment: {
+    label?: string;
+    title?: string;
+    attachment_type?: "url" | "image" | "file";
+    external_url?: string | null;
+    file_url?: string | null;
+  };
+  class?: string;
+}
+
+const { attachment, class: className = "" } = Astro.props;
+const url = (attachment.external_url ?? attachment.file_url)?.trim();
+const label = attachment.label ?? attachment.title ?? "Documento";
+const type = attachment.attachment_type ?? "url";
+
+if (!url) {
+  return null;
+}
+
+const downloadAttr = type === "file" ? { download: "" } : {};
+
+const iconByType: Record<string, string> = {
+  url: "FaLink",
+  image: "FaImage",
+  file: "FaFileLines",
+};
+const iconName = iconByType[type] ?? "FaLink";
+---
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class={`attachment-link ${className}`}
+  {...downloadAttr}
+>
+  <span class="attachment-type-icon" aria-hidden="true">
+    <SocialIcon iconName={iconName} size={18} className="attachment-icon" />
+  </span>
+  <span class="attachment-label">{label}</span>
+</a>
+
+<style>
+  .attachment-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+    border: 1.5px solid var(--color-primario);
+    color: var(--color-primario);
+
+    min-width: 0;
+  }
+  .attachment-link:hover {
+    background: var(--color-primario);
+    color: white;
+  }
+  .attachment-type-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+  }
+  .attachment-type-icon :global(svg),
+  .attachment-icon {
+    color: inherit;
+  }
+  .attachment-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>

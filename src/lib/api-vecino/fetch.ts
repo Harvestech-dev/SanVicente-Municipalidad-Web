@@ -25,10 +25,16 @@ async function fetchWithTimeout(url: string): Promise<Response> {
 /**
  * Obtiene noticias desde API Vecino.
  * Retorna [] si no hay API configurada o falla.
+ * En build (p. ej. Netlify): definir PUBLIC_API_VECINO_URL para que las noticias se incluyan.
  */
 export async function fetchVecinoNews(): Promise<VecinoNewsItem[]> {
   const base = API_VECINO_CONFIG.BASE_URL;
-  if (!base) return [];
+  if (!base) {
+    if (typeof console !== "undefined") {
+      console.warn("[API Vecino] PUBLIC_API_VECINO_URL no definida: noticias no se cargarán en este build. Definir en Netlify: Site settings > Environment variables.");
+    }
+    return [];
+  }
 
   const url = `${base}${API_VECINO_CONFIG.ENDPOINTS.NEWS}`;
 
@@ -51,7 +57,12 @@ export async function fetchVecinoNews(): Promise<VecinoNewsItem[]> {
  */
 export async function fetchVecinoEvents(): Promise<VecinoEventItem[]> {
   const base = API_VECINO_CONFIG.BASE_URL;
-  if (!base) return [];
+  if (!base) {
+    if (typeof console !== "undefined") {
+      console.warn("[API Vecino] PUBLIC_API_VECINO_URL no definida: eventos no se cargarán en este build.");
+    }
+    return [];
+  }
 
   const url = `${base}${API_VECINO_CONFIG.ENDPOINTS.EVENTS}`;
 

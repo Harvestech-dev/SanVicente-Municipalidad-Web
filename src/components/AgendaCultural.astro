@@ -1,6 +1,7 @@
 ---
 import agendaData from "../data/agenda-cultural.json";
 import sitioData from "../data/sitio.json";
+import { normalizePageUrl } from "../lib/normalize-page-url";
 
 interface Evento {
   _orden?: number;
@@ -21,7 +22,7 @@ const agenda = agendaData as Record<string, unknown>;
 const title = (Astro.props.title ?? source.txt_titulo ?? agenda.txt_titulo ?? "Agenda Cultural") as string;
 const subtitle = (Astro.props.subtitle ?? source.txt_subtitulo ?? agenda.txt_subtitulo ?? "Descubrí los eventos y actividades en San Vicente.") as string;
 const viewAllText = (Astro.props.viewAllText ?? source.txt_ver_todo ?? agenda.txt_ver_todo ?? btn?.txt_label ?? btn?.label_texto ?? "Ver toda la agenda") as string;
-const viewAllHref = (Astro.props.viewAllHref ?? source.link_ver_todo ?? agenda.link_ver_todo ?? btn?.link_url ?? btn?.src_destino ?? "/agenda") as string;
+const viewAllHref = normalizePageUrl(Astro.props.viewAllHref ?? source.link_ver_todo ?? agenda.link_ver_todo ?? btn?.link_url ?? btn?.src_destino ?? "/agenda");
 
 /**
  * LÓGICA DE FILTRADO Y ORDEN
@@ -88,6 +89,7 @@ const tema = sitioData._estilo;
                   <span>{event.txt_fecha}</span>
                 </div>
 
+                {String(event.txt_horario ?? "").trim() && (
                 <div class="info-item">
                   <svg
                     class="icon"
@@ -103,22 +105,12 @@ const tema = sitioData._estilo;
                   </svg>
                   <span>{event.txt_horario}</span>
                 </div>
-
-                <div class="info-item">
-                  <svg
-                    class="icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
+                )}
+                {String(event.txt_ubicacion ?? "").trim() && (
+                <div class="info-item info-item-ubicacion">
                   <span>{event.txt_ubicacion}</span>
                 </div>
+                )}
               </div>
             </div>
           </article>
@@ -275,7 +267,6 @@ const tema = sitioData._estilo;
     color: var(--primary);
     flex-shrink: 0;
   }
-
   .btn-outline {
     display: inline-flex;
     align-items: center;

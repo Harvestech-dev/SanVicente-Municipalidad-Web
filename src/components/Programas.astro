@@ -2,6 +2,7 @@
 import dataFallback from "../data/programas.json";
 import sitioData from "../data/sitio.json";
 import { getProgramSlug } from "../lib/programas-utils";
+import { normalizePageUrl } from "../lib/normalize-page-url";
 
 interface Programa {
   _orden?: number;
@@ -36,8 +37,8 @@ const subtitulo = (source.txt_subtitulo ?? dataFallback.txt_subtitulo ?? "") as 
 
 const btn = source.btn_boton as { txt_label?: string; link_url?: string; _icon?: string } | undefined;
 const textoVerTodo = (btn?.txt_label ?? "Ver todos los programas") as string;
-const urlVerTodoRaw = (btn?.link_url ?? "/programas") as string;
-const urlVerTodo = urlVerTodoRaw.startsWith("/") ? urlVerTodoRaw : `/${urlVerTodoRaw}`;
+const urlVerTodoRaw = normalizePageUrl(btn?.link_url ?? "/programas");
+const urlVerTodo = urlVerTodoRaw.startsWith("/") ? urlVerTodoRaw : urlVerTodoRaw ? `/${urlVerTodoRaw}` : "/programas";
 
 const ocultarSiNoHay = source.boolean_ocultar_si_no_hay_noticias ?? source.boolean_ocultar_si_no_hay_programas ?? false;
 const listaDisclaimer = (source.lista_disclamer_sin_programas ?? source.lista_disclamer_sin_noticias ?? []) as Array<{ txt_parrafo?: string }>;
@@ -76,9 +77,9 @@ function getProgramaImagen(p: Programa): string {
               {
                 programas.map((prog: Programa, i: number) => (
                   <a href={`/programas/${getProgramSlug(prog, i)}`} class="program-card">
-                    <div class="logo-box">
+                    <div class={`logo-box ${getProgramaImagen(prog) ? "has-logo" : ""}`}>
                       {getProgramaImagen(prog) ? (
-                        <img src={getProgramaImagen(prog)} alt={getProgramaNombre(prog)} />
+                        <img src={getProgramaImagen(prog)} alt={getProgramaNombre(prog)} loading="lazy" />
                       ) : (
                         <span class="sigla">{prog._sigla ?? getProgramaNombre(prog).slice(0, 2).toUpperCase()}</span>
                       )}
@@ -197,7 +198,13 @@ function getProgramaImagen(p: Programa): string {
     width: 60%;
     height: 60%;
     object-fit: contain;
-    filter: brightness(0) invert(1);
+  }
+  /* Logos con URL (img_logo): mostrar en color. Sin logo se muestra la sigla en el .logo-box */
+  .logo-box.has-logo {
+    background-color: #f1f5f9;
+  }
+  .logo-box.has-logo img {
+    filter: none;
   }
 
   .content {

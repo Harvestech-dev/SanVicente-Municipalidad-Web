@@ -5,7 +5,7 @@
     {
       "_orden": 1,
       "boolean_featured": true,
-      "img_logo": "/images/programas/san-vicente-emprende.png",
+      "img_logo": "",
       "txt_titulo": "San Vicente Emprende",
       "txt_subtitulo": "Apoyo estratégico a emprendedores locales mediante capacitaciones, mentorías y acceso a financiamiento para proyectos innovadores.",
       "lista_descripcion":[
@@ -21,7 +21,7 @@
         {
           "txt_label": "Imagen de fondo",
           "_type": "image",
-          "txt_url": "/images/programas/san-vicente-emprende.png"},
+          "txt_url": ""},
           {
           "txt_label": "Ir a la plataforma",
           "_type": "url",
@@ -48,7 +48,7 @@
     {
       "_orden": 2,
       "boolean_featured": false,
-      "img_logo": "/images/programas/san-vicente-emprende.png",
+      "img_logo": "",
       "txt_titulo": "San Vicente Emprende",
       "txt_subtitulo": "Programa de desarrollo de emprendedores organizado y sistematizado",
       "lista_descripcion":[
@@ -86,7 +86,7 @@
     },{
       "_orden": 3,
       "boolean_featured": true,
-      "img_logo": "/images/programas/san-vicente-emprende.png",
+      "img_logo": "",
       "txt_titulo":"San Vicente Joven",
       "txt_subtitulo":"Programa de desarrollo de jóvenes",
       "lista_descripcion":[

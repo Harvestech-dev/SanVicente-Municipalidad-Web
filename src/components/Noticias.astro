@@ -1,5 +1,6 @@
 ---
 import dataNoticias from "../data/noticias.json";
+import { normalizePageUrl } from "../lib/normalize-page-url";
 
 const { data: cmsData } = Astro.props;
 const source = (cmsData as Record<string, unknown>) ?? dataNoticias;
@@ -9,8 +10,8 @@ const btn = source.btn_boton as { txt_label?: string; label_texto?: string; link
 const titulo = (source.txt_titulo ?? dataNoticiasObj.txt_titulo ?? "Noticias") as string;
 const subtitulo = (source.txt_subtitulo ?? dataNoticiasObj.txt_subtitulo ?? "Enterate de las últimas novedades de nuestra ciudad") as string;
 const textoVerTodo = (source.txt_ver_todo ?? dataNoticiasObj.txt_ver_todo ?? btn?.txt_label ?? btn?.label_texto ?? "Ver todas las noticias") as string;
-const urlVerTodoRaw = (source.link_ver_todo ?? dataNoticiasObj.link_ver_todo ?? btn?.link_url ?? btn?.src_destino ?? "/noticias") as string;
-const urlVerTodo = urlVerTodoRaw.startsWith("/") ? urlVerTodoRaw : `/${urlVerTodoRaw}`;
+const urlVerTodoRaw = normalizePageUrl(source.link_ver_todo ?? dataNoticiasObj.link_ver_todo ?? btn?.link_url ?? btn?.src_destino ?? "/noticias");
+const urlVerTodo = urlVerTodoRaw.startsWith("/") ? urlVerTodoRaw : urlVerTodoRaw ? `/${urlVerTodoRaw}` : "/noticias";
 
 interface Noticia {
   _slug?: string;

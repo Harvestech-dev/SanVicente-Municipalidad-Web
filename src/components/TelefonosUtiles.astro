@@ -1,5 +1,6 @@
 ---
 import { SocialIcon } from "./SocialIcon";
+import { normalizePageUrl } from "../lib/normalize-page-url";
 
 interface Contacto {
   icon_contacto?: string;
@@ -29,8 +30,10 @@ function getPrimerContacto(t: Telefono): {
     (c) => c.link_destino && c.link_destino.trim() !== "",
   );
   if (conLink) {
+    const dest = conLink.link_destino!;
+    const href = dest.startsWith("/") ? normalizePageUrl(dest) : dest;
     return {
-      href: conLink.link_destino!,
+      href: href || dest,
       valor: conLink.txt_valor ?? "",
       icon: conLink.icon_contacto,
     };
@@ -70,11 +73,11 @@ const textoVerTodo = (source.txt_ver_todo ??
   btn?.txt_label ??
   btn?.label_texto ??
   "") as string;
-const urlVerTodoRaw = (source.link_ver_todo ??
+const urlVerTodoRaw = normalizePageUrl(source.link_ver_todo ??
   btn?.link_destino ??
   btn?.link_url ??
   btn?.src_destino ??
-  "") as string;
+  "");
 const urlVerTodo =
   urlVerTodoRaw && urlVerTodoRaw.startsWith("/")
     ? urlVerTodoRaw

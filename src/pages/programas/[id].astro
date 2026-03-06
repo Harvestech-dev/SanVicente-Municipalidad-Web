@@ -33,13 +33,13 @@ if (!program) {
 
 const tema = sitio._estilo;
 
-/** Una sola imagen para el detalle: img_imagen, o primera de gallery_imagenes, o img_logo. */
+/** Una sola imagen para el detalle: img_imagen, o primera de gallery_imagenes/gallery_imagen, o img_logo. */
 function getImagenPrincipal(p: Programa): { src: string; alt: string } | null {
   const raw = p as Record<string, unknown>;
   const imgImagen = raw.img_imagen ?? p.img_imagen;
   if (typeof imgImagen === "string" && imgImagen.trim() !== "")
     return { src: imgImagen.trim(), alt: p.txt_titulo ?? "Programa" };
-  const gal = raw.gallery_imagenes ?? p.gallery_imagenes;
+  const gal = raw.gallery_imagenes ?? raw.gallery_imagen ?? p.gallery_imagenes;
   const arr = Array.isArray(gal) ? gal : [];
   const first = arr[0] as Record<string, unknown> | undefined;
   if (first) {

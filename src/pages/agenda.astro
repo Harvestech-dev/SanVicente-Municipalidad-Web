@@ -115,6 +115,7 @@ const tema = sitioData._estilo;
                         </svg>
                         <span>{event.txt_fecha}</span>
                       </div>
+                      {String(event.txt_horario ?? "").trim() && (
                       <div class="info-item">
                         <svg
                           class="icon"
@@ -130,21 +131,12 @@ const tema = sitioData._estilo;
                         </svg>
                         <span>{event.txt_horario}</span>
                       </div>
-                      <div class="info-item">
-                        <svg
-                          class="icon"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <>
-                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </>
-                        </svg>
+                      )}
+                      {String(event.txt_ubicacion ?? "").trim() && (
+                      <div class="info-item info-item-ubicacion">
                         <span>{event.txt_ubicacion}</span>
                       </div>
+                      )}
                     </div>
                   </div>
 
@@ -454,7 +446,6 @@ const tema = sitioData._estilo;
     height: 18px;
     color: var(--primary);
   }
-
   .actions {
     margin-top: auto;
     padding-top: 1.5rem;

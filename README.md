@@ -41,6 +41,16 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
+## Deploy en Netlify
+
+Las **noticias y eventos** se cargan desde la API Vecino **en tiempo de build** (no en el navegador). Para que aparezcan en el sitio desplegado:
+
+1. En Netlify: **Site settings** → **Environment variables**.
+2. Definir **`PUBLIC_API_VECINO_URL`** con la URL base de la API (ej. `https://api-sanvicente.vecino.digital`).
+3. Definir **`PUBLIC_API_URL`** si se usa el CMS (componentes del inicio).
+
+Si `PUBLIC_API_VECINO_URL` no está definida en el build de Netlify, las noticias y la agenda quedarán vacías. La API debe ser accesible desde los servidores de Netlify (sin restricción por IP).
+
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

@@ -1,6 +1,7 @@
 ---
 import data from "../data/accesos-rapidos.json";
 import datosSitio from "../data/sitio.json";
+import { normalizePageUrl } from "../lib/normalize-page-url";
 
 interface Enlace {
   _orden?: number;
@@ -46,7 +47,7 @@ const iconMap: Record<string, string> = {
       {
         enlaces.map((link: Enlace) => (
           <a
-            href={link.link_url}
+            href={link.link_url.startsWith("/") ? normalizePageUrl(link.link_url) : link.link_url}
             class="card"
             target={link.boolean_externo ? "_blank" : "_self"}
             rel={link.boolean_externo ? "noopener noreferrer" : ""}

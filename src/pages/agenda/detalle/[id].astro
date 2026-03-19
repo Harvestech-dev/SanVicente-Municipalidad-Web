@@ -1,0 +1,20 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import AgendaDetailClient from "../../../components/agenda/AgendaDetailClient";
+import sitioData from "../../../data/sitio.json";
+import { fetchEventosAdaptados } from "../../../lib/api-vecino";
+
+export async function getStaticPaths() {
+  const eventos = await fetchEventosAdaptados();
+  return (eventos ?? [])
+    .map((e) => Number(e?._orden))
+    .filter((id) => Number.isFinite(id) && id > 0)
+    .map((id) => ({ params: { id: String(id) } }));
+}
+
+const id = Astro.params.id ?? null;
+---
+
+<Layout title={`Evento | ${sitioData.txt_nombreCorto}`}>
+  <AgendaDetailClient client:load eventId={id} />
+</Layout>

@@ -1,0 +1,13 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ProgramasDetailClient from "../../components/programas/ProgramasDetailClient";
+import sitio from "../../data/sitio.json";
+
+// Nota: en output static, Astro.url.searchParams no es confiable en runtime por request.
+// El slug real se toma en el componente cliente desde window.location.search.
+const slug = null;
+---
+
+<Layout title={`Programa | ${sitio.txt_nombreCorto}`}>
+  <ProgramasDetailClient client:load slug={slug} />
+</Layout>

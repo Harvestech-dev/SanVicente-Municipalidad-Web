@@ -51,7 +51,7 @@ const otrasNoticias = noticiaDestacada ? listaNoticias.filter((n) => n._slug !==
       noticiaDestacada && hayNoticias && (
         <article class="destacada-card">
           {/* CAMBIO: id por slug */}
-          <a href={`/Noticias/${noticiaDestacada._slug}`} class="destacada-link">
+          <a href={`/Noticias/detalle/${encodeURIComponent(noticiaDestacada._slug ?? "")}`} class="destacada-link">
             <div class="destacada-img">
               <img
                 src={noticiaDestacada.img_principal}
@@ -78,7 +78,7 @@ const otrasNoticias = noticiaDestacada ? listaNoticias.filter((n) => n._slug !==
         otrasNoticias.map((noticia) => (
           <article class="noticia-card">
             {/* CAMBIO: id por slug */}
-            <a href={`/Noticias/${noticia._slug}`}>
+            <a href={`/Noticias/detalle/${encodeURIComponent(noticia._slug ?? "")}`}>
               <div class="card-img">
                 <img src={noticia.img_principal} alt={noticia.txt_titulo} />
                 <span class="tag-categoria">{noticia.txt_categoria}</span>

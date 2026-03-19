@@ -6,7 +6,6 @@
 import type { CMSComponent } from "./types";
 import bannerData from "../../data/banner.json";
 import accesosData from "../../data/accesos-rapidos.json";
-import programasData from "../../data/programas.json";
 import agendaData from "../../data/agenda-cultural.json";
 import noticiasData from "../../data/noticias.json";
 
@@ -36,13 +35,14 @@ function makeComponent(
 
 /**
  * Devuelve componentes en formato CMS usando JSON locales.
+ * Programas se obtienen solo desde la API (sin fallback a JSON).
  * Orden: HeroCarousel, Banner, AccesosRapidos, Programas, AgendaCultural, Noticias, TelefonosUtiles
  */
 export function getLocalComponentsAsCMS(): CMSComponent[] {
   return [
     makeComponent("banner_hero", "Banner", bannerData as Record<string, unknown>, 2),
     makeComponent("accesos_rapidos", "Accesos Rápidos", accesosData as Record<string, unknown>, 3),
-    makeComponent("programas_section", "Programas", programasData as Record<string, unknown>, 4),
+    makeComponent("programas_section", "Programas", { txt_titulo: "Programas", lista_programas: [] }, 4),
     makeComponent("agenda_cultural", "Agenda Cultural", agendaData as Record<string, unknown>, 5),
     makeComponent("noticias", "Noticias", noticiasData as Record<string, unknown>, 6),
   ];

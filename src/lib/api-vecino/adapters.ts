@@ -43,6 +43,9 @@ function slugify(text: string, id: number): string {
 export function adaptVecinoNewsToNoticia(item: VecinoNewsItem) {
   const categoria = item.categories?.[0]?.name ?? "General";
   const imagen = toAbsoluteImageUrl(item.images?.[0]?.url ?? null);
+  const gallery = (item.images ?? [])
+    .map((img) => toAbsoluteImageUrl(img.url ?? null))
+    .filter((url) => url.trim() !== "");
 
   return {
     _orden: item.id,
@@ -53,6 +56,7 @@ export function adaptVecinoNewsToNoticia(item: VecinoNewsItem) {
     txt_fecha: formatDate(item.published_from),
     txt_categoria: categoria,
     img_principal: imagen,
+    gallery_imagenes: gallery,
     boolean_destacada: item.is_important ?? false,
     link_mas_info: item.more_info ?? null,
   };

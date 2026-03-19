@@ -6,8 +6,30 @@ import { API_VECINO_CONFIG } from "./config";
 import type { VecinoNewsItem, VecinoEventItem, VecinoNeighborhood } from "./types";
 import { adaptVecinoNewsToNoticia } from "./adapters";
 import { adaptVecinoEventToEvento } from "./adapters";
+import { CACHE_TTLS, getCache, setCache } from "../cache/client-cache";
 
 const FETCH_TIMEOUT = 8000;
+const NOTICIAS_ADAPTADAS_CACHE_KEY = "noticias:list";
+const AGENDA_ADAPTADA_CACHE_KEY = "agenda:list";
+const vecinoPending = new Map<string, Promise<void>>();
+
+/** Inyectado en build desde ENVIRONMENT=development (ver astro.config). */
+declare const __VECINO_USE_LOCAL_JSON__: boolean;
+
+function isVecinoDevLocalMode(): boolean {
+  return __VECINO_USE_LOCAL_JSON__;
+}
+
+function baseUrlForPublicData(): string {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+  const site = import.meta.env.SITE;
+  if (site && String(site).trim() !== "") {
+    return String(site).replace(/\/$/, "");
+  }
+  return "http://localhost:4321";
+}
 
 async function fetchWithTimeout(url: string): Promise<Response> {
   const controller = new AbortController();
@@ -15,7 +37,6 @@ async function fetchWithTimeout(url: string): Promise<Response> {
   try {
     return await fetch(url, {
       signal: controller.signal,
-      headers: { "Content-Type": "application/json" },
     });
   } finally {
     clearTimeout(timeout);
@@ -28,10 +49,37 @@ async function fetchWithTimeout(url: string): Promise<Response> {
  * En build (p. ej. Netlify): definir PUBLIC_API_VECINO_URL para que las noticias se incluyan.
  */
 export async function fetchVecinoNews(): Promise<VecinoNewsItem[]> {
+  if (isVecinoDevLocalMode()) {
+    try {
+      const localUrl = `${baseUrlForPublicData()}/data/noticiasLocal.json`;
+      const res = await fetchWithTimeout(localUrl);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          if (typeof console !== "undefined") {
+            console.info(
+              "[API Vecino] Development: noticias desde /data/noticiasLocal.json"
+            );
+          }
+          return data.filter((n: VecinoNewsItem) => !n.deleted_at);
+        }
+      }
+    } catch {
+      /* seguir a API */
+    }
+    if (typeof console !== "undefined") {
+      console.warn(
+        "[API Vecino] Development: noticiasLocal.json no usable; se intenta la API"
+      );
+    }
+  }
+
   const base = API_VECINO_CONFIG.BASE_URL;
   if (!base) {
     if (typeof console !== "undefined") {
-      console.warn("[API Vecino] PUBLIC_API_VECINO_URL no definida: noticias no se cargarán en este build. Definir en Netlify: Site settings > Environment variables.");
+      console.warn(
+        "[API Vecino] PUBLIC_API_VECINO_URL no definida: noticias no se cargarán en este build. Definir en Netlify: Site settings > Environment variables."
+      );
     }
     return [];
   }
@@ -56,10 +104,37 @@ export async function fetchVecinoNews(): Promise<VecinoNewsItem[]> {
  * Retorna [] si no hay API configurada o falla.
  */
 export async function fetchVecinoEvents(): Promise<VecinoEventItem[]> {
+  if (isVecinoDevLocalMode()) {
+    try {
+      const localUrl = `${baseUrlForPublicData()}/data/agendaLocal.json`;
+      const res = await fetchWithTimeout(localUrl);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          if (typeof console !== "undefined") {
+            console.info(
+              "[API Vecino] Development: eventos desde /data/agendaLocal.json"
+            );
+          }
+          return data.filter((e: VecinoEventItem) => !e.deleted_at);
+        }
+      }
+    } catch {
+      /* seguir a API */
+    }
+    if (typeof console !== "undefined") {
+      console.warn(
+        "[API Vecino] Development: agendaLocal.json no usable; se intenta la API"
+      );
+    }
+  }
+
   const base = API_VECINO_CONFIG.BASE_URL;
   if (!base) {
     if (typeof console !== "undefined") {
-      console.warn("[API Vecino] PUBLIC_API_VECINO_URL no definida: eventos no se cargarán en este build.");
+      console.warn(
+        "[API Vecino] PUBLIC_API_VECINO_URL no definida: eventos no se cargarán en este build."
+      );
     }
     return [];
   }
@@ -83,18 +158,103 @@ export async function fetchVecinoEvents(): Promise<VecinoEventItem[]> {
  * Noticias adaptadas al formato interno (lista_noticias).
  */
 export async function fetchNoticiasAdaptadas() {
+  if (typeof window !== "undefined") {
+    const context = { isDevelopment: isVecinoDevLocalMode() };
+    const cached = getCache<ReturnType<typeof adaptVecinoNewsToNoticia>[]>(
+      NOTICIAS_ADAPTADAS_CACHE_KEY,
+      context
+    );
+    if (cached && cached.length > 0) {
+      void revalidateNoticiasAdaptadasInBackground();
+      return cached;
+    }
+  }
   const raw = await fetchVecinoNews();
-  return raw.map(adaptVecinoNewsToNoticia);
+  const adapted = raw.map(adaptVecinoNewsToNoticia);
+  if (typeof window !== "undefined") {
+    const context = { isDevelopment: isVecinoDevLocalMode() };
+    setCache(
+      NOTICIAS_ADAPTADAS_CACHE_KEY,
+      adapted,
+      context,
+      CACHE_TTLS.noticiasListMs
+    );
+  }
+  return adapted;
 }
 
 /**
  * Eventos adaptados al formato interno (lista_eventos).
  */
 export async function fetchEventosAdaptados() {
+  if (typeof window !== "undefined") {
+    const context = { isDevelopment: isVecinoDevLocalMode() };
+    const cached = getCache<ReturnType<typeof adaptVecinoEventToEvento>[]>(
+      AGENDA_ADAPTADA_CACHE_KEY,
+      context
+    );
+    if (cached && cached.length > 0) {
+      void revalidateEventosAdaptadosInBackground();
+      return cached;
+    }
+  }
   const raw = await fetchVecinoEvents();
-  return raw
+  const adapted = raw
     .map(adaptVecinoEventToEvento)
     .sort((a, b) => new Date(a._fechaISO).getTime() - new Date(b._fechaISO).getTime());
+  if (typeof window !== "undefined") {
+    const context = { isDevelopment: isVecinoDevLocalMode() };
+    setCache(
+      AGENDA_ADAPTADA_CACHE_KEY,
+      adapted,
+      context,
+      CACHE_TTLS.agendaListMs
+    );
+  }
+  return adapted;
+}
+
+async function revalidateNoticiasAdaptadasInBackground(): Promise<void> {
+  const key = "revalidate:noticias";
+  if (vecinoPending.has(key)) return;
+  const work = (async () => {
+    const raw = await fetchVecinoNews();
+    const adapted = raw.map(adaptVecinoNewsToNoticia);
+    const context = { isDevelopment: isVecinoDevLocalMode() };
+    setCache(
+      NOTICIAS_ADAPTADAS_CACHE_KEY,
+      adapted,
+      context,
+      CACHE_TTLS.noticiasListMs
+    );
+  })()
+    .catch(() => {
+      /* noop */
+    })
+    .finally(() => {
+      vecinoPending.delete(key);
+    });
+  vecinoPending.set(key, work);
+}
+
+async function revalidateEventosAdaptadosInBackground(): Promise<void> {
+  const key = "revalidate:agenda";
+  if (vecinoPending.has(key)) return;
+  const work = (async () => {
+    const raw = await fetchVecinoEvents();
+    const adapted = raw
+      .map(adaptVecinoEventToEvento)
+      .sort((a, b) => new Date(a._fechaISO).getTime() - new Date(b._fechaISO).getTime());
+    const context = { isDevelopment: isVecinoDevLocalMode() };
+    setCache(AGENDA_ADAPTADA_CACHE_KEY, adapted, context, CACHE_TTLS.agendaListMs);
+  })()
+    .catch(() => {
+      /* noop */
+    })
+    .finally(() => {
+      vecinoPending.delete(key);
+    });
+  vecinoPending.set(key, work);
 }
 
 /**

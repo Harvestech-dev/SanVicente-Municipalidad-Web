@@ -1,5 +1,4 @@
 ---
-import dataFallback from "../data/programas.json";
 import sitioData from "../data/sitio.json";
 import { getProgramSlug } from "../lib/programas-utils";
 import { normalizePageUrl } from "../lib/normalize-page-url";
@@ -22,9 +21,9 @@ interface Programa {
 }
 
 const { data: cmsData } = Astro.props;
-const source = (cmsData as Record<string, unknown>) ?? dataFallback;
+const source = (cmsData as Record<string, unknown>) ?? {};
 
-const programasRaw = (source.lista_programas ?? dataFallback.lista_programas ?? []) as Programa[];
+const programasRaw = (source.lista_programas ?? []) as Programa[];
 const programasSorted = [...programasRaw].sort((a, b) => {
   const aF = a.boolean_featured ? 1 : 0;
   const bF = b.boolean_featured ? 1 : 0;
@@ -32,8 +31,8 @@ const programasSorted = [...programasRaw].sort((a, b) => {
 });
 const programas = programasSorted.slice(0, 6);
 
-const titulo = (source.txt_titulo ?? dataFallback.txt_titulo ?? "Programas") as string;
-const subtitulo = (source.txt_subtitulo ?? dataFallback.txt_subtitulo ?? "") as string;
+const titulo = (source.txt_titulo ?? "Programas") as string;
+const subtitulo = (source.txt_subtitulo ?? "") as string;
 
 const btn = source.btn_boton as { txt_label?: string; link_url?: string; _icon?: string } | undefined;
 const textoVerTodo = (btn?.txt_label ?? "Ver todos los programas") as string;
@@ -76,7 +75,7 @@ function getProgramaImagen(p: Programa): string {
             <div class="programs-grid">
               {
                 programas.map((prog: Programa, i: number) => (
-                  <a href={`/programas/${getProgramSlug(prog, i)}`} class="program-card">
+                  <a href={`/programas/detalle?slug=${encodeURIComponent(getProgramSlug(prog, i))}`} class="program-card">
                     <div class={`logo-box ${getProgramaImagen(prog) ? "has-logo" : ""}`}>
                       {getProgramaImagen(prog) ? (
                         <img src={getProgramaImagen(prog)} alt={getProgramaNombre(prog)} loading="lazy" />

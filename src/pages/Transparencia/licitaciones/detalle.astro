@@ -1,0 +1,345 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import LicitacionDetailClient from "../../../components/licitaciones/LicitacionDetailClient";
+
+// En build static, el id real se resuelve en cliente desde path/query.
+const id = null;
+---
+
+<Layout title="Detalle | Licitaciones">
+  <LicitacionDetailClient client:load id={id} />
+</Layout>
+
+<style is:global>
+  .licitaciones-detail .licitaciones-container {
+    min-height: 100vh;
+    background-color: var(--color-fondo-claro);
+  }
+  .licitaciones-detail .content-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .licitaciones-detail .hero-licitaciones {
+    background-color: var(--color-primario);
+    color: white;
+    padding: 3rem 0 4rem;
+    text-align: center;
+  }
+  .licitaciones-detail .hero-licitaciones .breadcrumb {
+    font-size: 0.85rem;
+    opacity: 0.95;
+    margin-bottom: 1rem;
+  }
+  .licitaciones-detail .hero-licitaciones .breadcrumb a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .licitaciones-detail .hero-licitaciones .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .licitaciones-detail .hero-licitaciones .meta-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .licitaciones-detail .hero-licitaciones .id-tag,
+  .licitaciones-detail .hero-licitaciones .expediente-tag {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.9rem;
+    opacity: 0.95;
+  }
+  .licitaciones-detail .hero-licitaciones .status-badge,
+  .licitaciones-detail .hero-licitaciones .type-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .licitaciones-detail .hero-licitaciones .type-badge {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+  }
+  .licitaciones-detail .status-upcoming {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+  .licitaciones-detail .status-open {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .licitaciones-detail .status-evaluation {
+    background: #ffedd5;
+    color: #c2410c;
+  }
+  .licitaciones-detail .status-closed {
+    background: #f1f5f9;
+    color: #475569;
+  }
+  .licitaciones-detail .status-awarded {
+    background: #e0e7ff;
+    color: #3730a3;
+  }
+  .licitaciones-detail .status-deserted {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .licitaciones-detail .status-cancelled,
+  .licitaciones-detail .status-suspended {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+  .licitaciones-detail .hero-licitaciones h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  .licitaciones-detail .hero-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  .licitaciones-detail .detail-section {
+    padding: 3rem 0 4rem;
+  }
+  .licitaciones-detail .detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    grid-template-rows: auto auto auto auto;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  .licitaciones-detail .detail-layout .block-objeto {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .licitaciones-detail .detail-sidebar-sticky {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: calc(72px + 0.75rem);
+    align-self: start;
+  }
+  .licitaciones-detail .detail-layout .block-datos {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .licitaciones-detail .detail-layout .block-adjudicacion {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  .licitaciones-detail .detail-layout .block-footer {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  .licitaciones-detail .detail-block {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .licitaciones-detail .detail-block h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-texto);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .licitaciones-detail .object-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #475569;
+    margin: 0;
+  }
+  .licitaciones-detail .detail-grid,
+  .licitaciones-detail .winner-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem 2rem;
+    margin: 0;
+  }
+  .licitaciones-detail .detail-grid .data-item-full,
+  .licitaciones-detail .winner-grid .data-item-full {
+    grid-column: 1 / -1;
+  }
+  .licitaciones-detail .data-item .label,
+  .licitaciones-detail .data-item dt.label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .licitaciones-detail .data-item .value,
+  .licitaciones-detail .data-item dd.value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #334155;
+    margin: 0;
+  }
+  .licitaciones-detail .data-item .value a {
+    color: var(--color-primario);
+    text-decoration: none;
+  }
+  .licitaciones-detail .data-item .value a:hover {
+    text-decoration: underline;
+  }
+  .licitaciones-detail .budget-value {
+    font-weight: 700;
+    color: var(--color-primario);
+  }
+  .licitaciones-detail .sidebar-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .licitaciones-detail .sidebar-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-texto);
+    margin-bottom: 1rem;
+  }
+  .licitaciones-detail .budget-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+  .licitaciones-detail .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .licitaciones-detail .btn-outline-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+    border: 1.5px solid var(--color-primario);
+    color: var(--color-primario);
+  }
+  .licitaciones-detail .btn-outline-sm:hover {
+    background: var(--color-primario);
+    color: white;
+  }
+  .licitaciones-detail .attachment-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .licitaciones-detail .attachment-type-icon {
+    flex-shrink: 0;
+  }
+  .licitaciones-detail .attachment-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .licitaciones-detail .no-docs {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin: 0;
+  }
+  .licitaciones-detail .detail-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  .licitaciones-detail .detail-back-share-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .licitaciones-detail .btn-back {
+    color: var(--color-primario);
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s;
+  }
+  .licitaciones-detail .btn-back:hover {
+    transform: translateX(-4px);
+  }
+  .licitaciones-detail .detail-share-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primario);
+    font-weight: 700;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .licitaciones-detail .detail-share-link:hover {
+    transform: translateX(4px);
+  }
+  .licitaciones-detail .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px dashed #e2e8f0;
+  }
+  .licitaciones-detail .empty-state p {
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  @media (max-width: 900px) {
+    .licitaciones-detail .detail-layout {
+      grid-template-columns: 1fr;
+      grid-template-rows: unset;
+    }
+    .licitaciones-detail .detail-sidebar-sticky {
+      grid-column: 1;
+      grid-row: auto;
+      position: static;
+    }
+    .licitaciones-detail .detail-layout .block-objeto,
+    .licitaciones-detail .detail-layout .block-presupuesto,
+    .licitaciones-detail .detail-layout .block-documentos,
+    .licitaciones-detail .detail-layout .block-datos,
+    .licitaciones-detail .detail-layout .block-adjudicacion,
+    .licitaciones-detail .detail-layout .block-footer {
+      grid-column: 1;
+      grid-row: auto;
+      position: static;
+    }
+  }
+  @media (max-width: 600px) {
+    .licitaciones-detail .hero-licitaciones h1 {
+      font-size: 1.75rem;
+    }
+    .licitaciones-detail .detail-back-share-row {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+  }
+</style>

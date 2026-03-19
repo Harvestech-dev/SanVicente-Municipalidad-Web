@@ -1,0 +1,361 @@
+/* Programas page - usa --color-primario del Layout */
+.programas-page.main-content {
+  min-height: 100vh;
+  background-color: var(--color-fondo-claro, #f8fafc);
+}
+.programas-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.programas-page .hero-page {
+  background-color: var(--color-primario);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+}
+.programas-page .hero-page h1 {
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+.programas-page .hero-page p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 650px;
+  margin: 0 auto;
+}
+.programas-page .filters-bar {
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1.5rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.programas-page .filters-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.programas-page .search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+.programas-page .search-wrapper .search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-primario);
+  pointer-events: none;
+}
+.programas-page .search-input {
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+  min-height: 40px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+.programas-page .search-input:focus {
+  outline: none;
+  border-color: var(--color-primario);
+}
+.programas-page .categories-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.programas-page .btn-cat {
+  padding: 0.5rem 1rem;
+  border-radius: 99px;
+  border: 1px solid #e2e8f0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.programas-page .btn-cat:hover {
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+.programas-page .btn-cat.active {
+  background: var(--color-primario);
+  color: white;
+  border-color: var(--color-primario);
+}
+.programas-page .featured-section {
+  padding: 3rem 0;
+}
+.programas-page .featured-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid var(--color-primario);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.3s ease;
+}
+.programas-page .featured-card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+.programas-page .featured-image {
+  position: relative;
+  min-height: 320px;
+  background: #1f2937;
+}
+.programas-page .featured-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.programas-page .featured-image img.program-card-logo-corner {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  padding: 4px;
+  z-index: 2;
+}
+.programas-page .featured-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #374151 0%, #111827 100%);
+}
+.programas-page .logo-placeholder {
+  max-width: 120px;
+  max-height: 120px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.programas-page .sigla-placeholder {
+  font-size: 3rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+}
+.programas-page .badge-destacada {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--color-primario);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+.programas-page .featured-info {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.programas-page .featured-info h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-primario);
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+.programas-page .featured-info p {
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.programas-page .featured-footer .read-more {
+  font-weight: 600;
+  color: var(--color-primario);
+}
+.programas-page .programs-list-section {
+  padding: 4rem 0;
+}
+.programas-page .no-results-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-secundario, #1e293b);
+  font-size: 1.1rem;
+}
+.programas-page .programs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+.programas-page .program-card {
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  display: block;
+}
+.programas-page .program-card:hover {
+  border-color: var(--color-primario);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+}
+.programas-page .program-card:has(.card-badge) {
+  border-color: var(--color-primario);
+  border-width: 1px;
+}
+.programas-page .program-card:has(.card-badge) .card-content h3 {
+  color: var(--color-primario);
+}
+.programas-page .card-image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #1f2937;
+}
+.programas-page .card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.programas-page .card-image img.program-card-logo-corner {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  z-index: 2;
+}
+.programas-page .card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #374151 0%, #111827 100%);
+}
+.programas-page .card-logo {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.programas-page .card-sigla {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+}
+.programas-page .card-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: var(--color-primario);
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.programas-page .card-content {
+  padding: 1.5rem;
+}
+.programas-page .card-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+.programas-page .card-content p {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+.programas-page .card-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primario);
+}
+.programas-page .program-card:hover .card-link {
+  text-decoration: underline;
+}
+.programas-page .pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+.programas-page .pagination button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.programas-page .pagination button:hover {
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+.programas-page .pagination button.active {
+  background: var(--color-primario);
+  color: white;
+  border-color: var(--color-primario);
+}
+.programas-page .section-disclaimer {
+  padding: 4rem 0;
+}
+.programas-page .disclaimer-content {
+  text-align: center;
+  color: #64748b;
+  font-size: 1.1rem;
+}
+@media (max-width: 768px) {
+  .programas-page .featured-card {
+    grid-template-columns: 1fr;
+  }
+  .programas-page .featured-image {
+    min-height: 240px;
+  }
+  .programas-page .featured-info {
+    padding: 2rem;
+  }
+  .programas-page .filters-flex {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .programas-page .search-input {
+    max-width: none;
+  }
+}

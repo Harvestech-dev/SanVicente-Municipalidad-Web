@@ -1,0 +1,11 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import AgendaDetailClient from "../../components/agenda/AgendaDetailClient";
+import sitioData from "../../data/sitio.json";
+
+const id = Astro.url.searchParams.get("id");
+---
+
+<Layout title={`Evento | ${sitioData.txt_nombreCorto}`}>
+  <AgendaDetailClient client:load eventId={id} />
+</Layout>

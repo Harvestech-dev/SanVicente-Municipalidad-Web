@@ -1,0 +1,261 @@
+/* Página Gobierno (CMS cliente) */
+.gobierno-cms-root .gobierno-container {
+  background-color: var(--color-fondo-claro);
+  min-height: 100vh;
+}
+.gobierno-cms-root .container {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 1.5rem);
+}
+.gobierno-cms-root .hero-section {
+  background-color: var(--color-primario);
+  color: var(--color-texto-claro);
+  padding: 4rem 0;
+  text-align: center;
+}
+.gobierno-cms-root .hero-section h1 {
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+.gobierno-cms-root .hero-section p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.gobierno-cms-root .autoridad-section {
+  margin-top: -4rem;
+  padding-bottom: clamp(3rem, 6vw, 4rem);
+  position: relative;
+  z-index: 10;
+}
+.gobierno-cms-root .intendente-card {
+  background: var(--color-texto-claro);
+  border: 1px solid var(--color-primario);
+  border-radius: 1rem;
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: 0 15px 35px color-mix(in srgb, var(--color-primario), transparent 85%);
+}
+.gobierno-cms-root .intendente-img img {
+  width: clamp(150px, 30vw, 200px);
+  height: clamp(150px, 30vw, 200px);
+  border-radius: 9999px;
+  object-fit: cover;
+  padding: 5px;
+  border: 2px solid var(--color-primario);
+  background: white;
+}
+.gobierno-cms-root .badge {
+  display: inline-block;
+  background: var(--color-primario);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.gobierno-cms-root .intendente-info h2 {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  margin: 0;
+  color: #1a1a1a;
+}
+.gobierno-cms-root .role {
+  color: var(--color-primario);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+.gobierno-cms-root .gestion {
+  border-top: 1px solid color-mix(in srgb, var(--color-primario), transparent 90%);
+  padding-top: 1rem;
+}
+.gobierno-cms-root .gabinete-section,
+.gobierno-cms-root .organigrama-section {
+  margin-bottom: 4rem;
+}
+.gobierno-cms-root .funcionarios-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.gobierno-cms-root .funcionario-card {
+  background: var(--color-texto-claro);
+  border: 1px solid color-mix(in srgb, var(--color-texto), transparent 70%);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 0 1 340px;
+  text-align: center;
+}
+.gobierno-cms-root .funcionario-card:hover {
+  border-color: var(--color-primario);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+.gobierno-cms-root .funcionario-card img {
+  width: 72px;
+  height: 72px;
+  border-radius: 9999px;
+  object-fit: cover;
+  background: #eee;
+}
+.gobierno-cms-root .funcionario-img {
+  border: 2px solid var(--color-primario);
+  background: white;
+}
+.gobierno-cms-root .funcionario-details h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.25rem 0;
+}
+.gobierno-cms-root .section-title {
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 1.875rem);
+  font-weight: 700;
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+  color: var(--color-texto);
+  margin-top: 4rem;
+}
+.gobierno-cms-root .section-subtitle {
+  text-align: center;
+  color: color-mix(in srgb, var(--color-texto), transparent 25%);
+  font-size: 0.95rem;
+  max-width: 560px;
+  margin: -1rem auto 2rem;
+}
+.gobierno-cms-root .organigrama-intro {
+  text-align: center;
+  color: color-mix(in srgb, var(--color-texto), transparent 25%);
+  font-size: 0.95rem;
+  max-width: 560px;
+  margin: -1rem auto 2rem;
+}
+.gobierno-cms-root .organigrama-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.gobierno-cms-root .organigrama-card {
+  flex: 1 1 320px;
+  max-width: 420px;
+  background: var(--color-texto-claro);
+  border: 1px solid color-mix(in srgb, var(--color-primario), transparent 60%);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.gobierno-cms-root .organigrama-card-title {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-primario);
+  background: color-mix(in srgb, var(--color-primario), transparent 96%);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primario), transparent 85%);
+}
+.gobierno-cms-root .organigrama-card-body {
+  padding: 1rem 1.25rem;
+}
+.gobierno-cms-root .organigrama-level {
+  border: 1px solid color-mix(in srgb, var(--color-texto), transparent 80%);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  background: var(--color-texto-claro);
+}
+.gobierno-cms-root .organigrama-summary {
+  list-style: none;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+.gobierno-cms-root .organigrama-summary::-webkit-details-marker {
+  display: none;
+}
+.gobierno-cms-root .organigrama-summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 6px solid var(--color-primario);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  flex-shrink: 0;
+}
+.gobierno-cms-root .organigrama-level[open] > .organigrama-summary::before {
+  transform: rotate(90deg);
+}
+.gobierno-cms-root .organigrama-children {
+  padding: 0 1rem 1rem 1.5rem;
+  margin-left: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-left: 2px solid color-mix(in srgb, var(--color-primario), transparent 85%);
+}
+.gobierno-cms-root .organigrama-areas-secretaria {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.gobierno-cms-root .organigrama-areas-secretaria-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primario, #0f172a);
+}
+
+.gobierno-cms-root .organigrama-areas {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+.gobierno-cms-root .organigrama-areas li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+}
+.gobierno-cms-root .organigrama-areas-4 li {
+  font-size: 0.85rem;
+  margin-left: 1.5rem;
+}
+.gobierno-cms-root .bullet {
+  width: 6px;
+  height: 6px;
+  background: color-mix(in srgb, var(--color-texto), transparent 60%);
+  border-radius: 999px;
+}
+.gobierno-cms-root .gobierno-cms-loading {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+}
+@media (max-width: 640px) {
+  .gobierno-cms-root .intendente-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  .gobierno-cms-root .funcionario-card {
+    flex: 1 1 100%;
+  }
+  .gobierno-cms-root .organigrama-card {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+}

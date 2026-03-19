@@ -1,100 +1,45 @@
 ---
 import sitioData from "../data/sitio.json";
-import { SocialIcon } from "./SocialIcon";
 
 const {
   nombre = sitioData.txt_nombre,
   nombreCorto = sitioData.txt_nombreCorto,
-  contacto: contactoProp = {},
-  listaRedes = [],
-  listaOficinas = [],
   footer = sitioData.footer,
 } = Astro.props;
 
 const tema = sitioData._estilo;
 const añoActual = new Date().getFullYear();
-
-const edificioDefault = (listaOficinas as Array<{ _boolean_isDefault?: boolean; lista_contacto?: unknown[]; lista_contactos?: unknown[] }>).find(
-  (o) => o._boolean_isDefault
-);
-const contactosDefault = (edificioDefault?.lista_contacto ?? edificioDefault?.lista_contactos ?? []) as Array<{ icon_contacto?: string; txt_valor?: string; link_destino?: string }>;
-
-const getContacto = (icon: string) => contactosDefault.find((c: { icon_contacto?: string }) => c.icon_contacto === icon);
-const contactoUbicacion = getContacto("FaMapMarkerAlt");
-const contactoTelefono = getContacto("FaPhone");
-const contactoEmail = getContacto("FaEnvelope");
-const contactoHorario = getContacto("FaClock");
-
-const c = contactoProp as { txt_direccion?: string; txt_telefono?: string; txt_email?: string; txt_horario?: string };
-const contacto = {
-  txt_direccion: contactoUbicacion?.txt_valor ?? c.txt_direccion ?? "",
-  link_direccion: contactoUbicacion?.link_destino || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contactoUbicacion?.txt_valor ?? c.txt_direccion ?? "")}`,
-  txt_telefono: contactoTelefono?.txt_valor ?? c.txt_telefono ?? "",
-  link_telefono: contactoTelefono?.link_destino || `tel:${(contactoTelefono?.txt_valor ?? c.txt_telefono ?? "").replace(/\D/g, "")}`,
-  txt_email: contactoEmail?.txt_valor ?? c.txt_email ?? "",
-  link_email: contactoEmail?.link_destino || `mailto:${contactoEmail?.txt_valor ?? c.txt_email ?? ""}`,
-  txt_horario: contactoHorario?.txt_valor ?? c.txt_horario ?? "",
-};
 ---
 
 <footer class="footer">
   <div class="container">
     <div class="footer-top">
       <div class="col-brand">
-        <h2 class="footer-logo">{nombre}</h2>
+        <a href="/" class="footer-logo-link" aria-label={nombre}>
+          <img
+            src="/bandera_svc_blanco_iz.png"
+            alt={nombre}
+            class="footer-logo-img"
+            width="400"
+            loading="lazy"
+          />
+        </a>
         <p class="footer-desc">
           Trabajando cada día para construir la ciudad que soñamos. Gestión
           transparente, innovación y compromiso con cada vecino.
         </p>
-        <div class="social-grid">
-          {
-            listaRedes?.filter((r: { link_destino?: string }) => r.link_destino).map(
-              (redItem: { icon_contacto?: string; link_destino?: string; txt_label?: string }) => (
-                <a
-                  href={redItem.link_destino}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="social-icon"
-                  aria-label={redItem.txt_label ?? ""}
-                >
-                  <SocialIcon iconName={redItem.icon_contacto ?? "FaLink"} size={20} />
-                </a>
-              ),
-            )
-          }
+        <div id="cms-footer-redes-root" class="social-grid" aria-live="polite">
+          <span class="footer-cms-placeholder">Cargando redes…</span>
         </div>
       </div>
 
       <div class="col-links">
         <h3 class="footer-title">Contactos</h3>
-        <ul class="contact-list">
-          <li>
-            <span class="contact-icon"><SocialIcon value="ubicacion" size={18} /></span>
-            <a
-              href={contacto.link_direccion}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="contact-link">{contacto.txt_direccion}</a
-            >
-          </li>
-          <li>
-            <span class="contact-icon"><SocialIcon value="telefono" size={18} /></span>
-            <a
-              href={contacto.link_telefono}
-              class="contact-link">{contacto.txt_telefono}</a
-            >
-          </li>
-          <li>
-            <span class="contact-icon"><SocialIcon value="mail" size={18} /></span>
-            <a href={contacto.link_email} class="contact-link"
-              >{contacto.txt_email}</a
-            >
-          </li>
-          <li>
-            <span class="contact-icon"><SocialIcon value="horario" size={18} /></span>
-            <span>{contacto.txt_horario}</span>
-          </li>
-        </ul>
+        <div id="cms-footer-contact-root" aria-live="polite">
+          <ul class="contact-list">
+            <li><span class="footer-cms-placeholder">Cargando…</span></li>
+          </ul>
+        </div>
       </div>
 
       <div class="col-action">
@@ -135,11 +80,79 @@ const contacto = {
     fondoFooter: "#0f172a",
   }}
 >
+  .footer-cms-placeholder {
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+  :global(.footer-cms-muted) {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0;
+  }
   .footer {
     background-color: var(--fondoFooter);
     color: #f1f5f9;
     padding: 5rem 0 2rem;
     font-family: "Inter", system-ui, sans-serif;
+  }
+
+  /**
+   * IMPORTANTE:
+   * El contenido dentro de `#cms-footer-*` se renderiza con React (hidratación),
+   * por lo que no hereda el scope CSS de Astro. Estos estilos van en :global
+   * para conservar colores/hover originales del footer.
+   */
+  :global(#cms-footer-contact-root a),
+  :global(#cms-footer-redes-root a) {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :global(#cms-footer-redes-root .social-icon) {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  :global(#cms-footer-redes-root .social-icon:hover) {
+    background: var(--primario);
+    color: white;
+    border-color: transparent;
+  }
+
+  :global(#cms-footer-contact-root .contact-list) {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  :global(#cms-footer-contact-root .contact-list li) {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    align-items: flex-start;
+  }
+  :global(#cms-footer-contact-root .contact-icon) {
+    color: var(--primario);
+    flex-shrink: 0;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+  }
+  :global(#cms-footer-contact-root .contact-link) {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  :global(#cms-footer-contact-root .contact-link:hover) {
+    color: var(--primario);
   }
 
   .container {
@@ -156,15 +169,28 @@ const contacto = {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .footer-logo {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #fff;
+  .footer-logo-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 1.5rem;
-    letter-spacing: -0.02em;
-    background: linear-gradient(to right, var(--primario), #fff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+    width: 100%;
+  }
+  .footer-logo-img {
+    width: min(150px, 100%);
+    height: auto;
+    max-width: 270px;
+
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  @media (max-width: 480px) {
+    .footer-logo-img {
+      width: min(240px, 100%);
+      max-width: 240px;
+    }
   }
 
   .footer-desc {
@@ -177,6 +203,7 @@ const contacto = {
   .social-grid {
     display: flex;
     gap: 0.75rem;
+    flex-wrap: wrap;
   }
 
   .social-icon {
@@ -239,7 +266,6 @@ const contacto = {
     align-items: center;
   }
 
-  /* Estilos para los nuevos links de contacto */
   .contact-link {
     color: inherit;
     text-decoration: none;
@@ -302,7 +328,6 @@ const contacto = {
     color: var(--primario);
   }
 
-  /* Estilo Harvestech */
   .dev-credit a {
     color: #cbd5e1;
     text-decoration: none;

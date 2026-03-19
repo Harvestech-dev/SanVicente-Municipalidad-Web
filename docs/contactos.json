@@ -1,0 +1,472 @@
+[
+    {
+        "txt_titulo": "Edificio Municipal principal",
+        "txt_subtitulo": "Sede central de atención",
+        "_id": "muni_nueva",
+        "_orden": 1,
+        "_boolean_isDefault": true,
+        "_icon": "FaBuilding",
+        "lista_contacto": [
+            {
+                "icon_contacto": "FaMapMarkerAlt",
+                "txt_label": "Ubicación",
+                "link_destino": "https://maps.app.goo.gl/1Yaa5uvoMF1US6og7",
+                "txt_valor": "Bv. Sarmiento 160"
+            },
+            {
+                "icon_contacto": "FaPhone",
+                "txt_label": "Teléfono",
+                "link_destino": "tel:03492470622",
+                "txt_valor": "(3492) 470622"
+            },
+            {
+                "icon_contacto": "FaPhone",
+                "txt_label": "Teléfono",
+                "link_destino": "tel:3492470322",
+                "txt_valor": "(3492) 470322"
+            },
+            {
+                "icon_contacto": "FaEnvelope",
+                "txt_label": "Email",
+                "link_destino": "mailto:contacto@sanvicente.gob",
+                "txt_valor": "sanvicente@sanvicente.com.ar"
+            },
+            {
+                "icon_contacto": "FaClock",
+                "txt_label": "Horario",
+                "link_destino": "",
+                "txt_valor": "Lunes a Viernes 7:00 - 13:00"
+            }
+        ],
+        "lista_dependencias": [
+            {
+                "_id": "intendencia",
+                "txt_titulo": "Intendencia",
+                "_orden": 1,
+                "_icon": "FaUserTie",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:intendencia@sanvicente.com.ar",
+                        "txt_valor": "intendencia@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "_id": "gestion",
+                "txt_titulo": "Secretaría de gestión",
+                "_orden": 2,
+                "_icon": "FaBuilding",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:gestion@sanvicente.com.ar",
+                        "txt_valor": "gestion@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Subsecretaría de Hábitat y Medio Ambiente",
+                "_id": "habitat",
+                "_orden": 1,
+                "_icon": "FaTree",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:habitat@sanvicente.com.ar",
+                        "txt_valor": "habitat@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Subsecretaría de Obras y Servicios Públicos",
+                "_id": "obras",
+                "_orden": 2,
+                "_icon": "FaBuilding",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:obras@sanvicente.com.ar",
+                        "txt_valor": "obras@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Subsecretaría de Salud, Desarrollo Social y equidad",
+                "_id": "salud",
+                "_orden": 3,
+                "_icon": "FaHeart",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:salud@sanvicente.com.ar",
+                        "txt_valor": "salud@sanvicente.com.ar"
+                    },
+                    {
+                        "icon_contacto": "FaWhatsapp",
+                        "txt_label": "WhatsApp",
+                        "link_destino": "https://wa.me/5493492576952",
+                        "txt_valor": "(3492) 576 952"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Subsecretaría de Hacienda",
+                "_id": "hacienda",
+                "_orden": 4,
+                "_icon": "FaMoneyBill",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:hacienda@sanvicente.com.ar",
+                        "txt_valor": "hacienda@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Secretaría de Innovación y Desarrollo",
+                "_id": "innovacion",
+                "_orden": 5,
+                "_icon": "FaRocket",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:innovacion@sanvicente.com.ar",
+                        "txt_valor": "innovacion@sanvicente.com.ar"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "txt_titulo": "Edificio Municipal secundario",
+        "txt_subtitulo": "Oficinas administrativas",
+        "_id": "muni_vieja",
+        "_orden": 2,
+        "_boolean_isDefault": false,
+        "_icon": "FaBuilding",
+        "lista_contacto": [
+            {
+                "icon_contacto": "FaMapMarkerAlt",
+                "txt_label": "Ubicación",
+                "link_destino": "https://maps.app.goo.gl/Kcy9582pGadeBgnZA",
+                "txt_valor": "Buenos Aires 96"
+            },
+            {
+                "icon_contacto": "FaPhone",
+                "txt_label": "Teléfono",
+                "link_destino": "tel:03492471253",
+                "txt_valor": "(03492) 471253"
+            },
+            {
+                "icon_contacto": "FaEnvelope",
+                "txt_label": "Email",
+                "link_destino": "mailto:contacto@sanvicente.gob",
+                "txt_valor": "contacto@sanvicente.gob"
+            },
+            {
+                "icon_contacto": "FaClock",
+                "txt_label": "Horario",
+                "link_destino": "",
+                "txt_valor": "Lunes a Viernes 8:00 - 14:00"
+            }
+        ],
+        "lista_dependencias": [
+            {
+                "txt_titulo": "Juzgado de faltas",
+                "_id": "juzgado",
+                "_orden": 1,
+                "_icon": "FaBalanceScale",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:juzgado@sanvicente.com.ar",
+                        "txt_valor": "juzgado@sanvicente.com.ar"
+                    },
+                    {
+                        "icon_contacto": "FaPhone",
+                        "txt_label": "Teléfono",
+                        "link_destino": "tel:470892",
+                        "txt_valor": "(03492) 470892"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Licencias de conducir",
+                "_id": "licencias",
+                "_orden": 2,
+                "_icon": "FaIdCard",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:licencias@sanvicente.com.ar",
+                        "txt_valor": "licencias@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Boca de expendio IAPOS",
+                "_id": "boca",
+                "_orden": 3,
+                "_icon": "FaInfo",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:boca@sanvicente.com.ar",
+                        "txt_valor": "boca@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "ASSAL",
+                "_id": "assal",
+                "_orden": 4,
+                "_icon": "FaHandshake",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:assal@sanvicente.com.ar",
+                        "txt_valor": "assal@sanvicente.com.ar"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "txt_titulo": "Casa de la Cultura",
+        "_id": "cultura",
+        "_orden": 6,
+        "_icon": "FaBook",
+        "lista_contacto": [
+            {
+                "icon_contacto": "FaMapMarkerAlt",
+                "txt_label": "Ubicación",
+                "link_destino": "https://maps.app.goo.gl/X2F9eW9BSsrhXvALA",
+                "txt_valor": "Libertad 175"
+            },
+            {
+                "icon_contacto": "FaClock",
+                "txt_label": "Horario",
+                "link_destino": "",
+                "txt_valor": "Lunes a Viernes 8:00 - 14:00"
+            }
+        ],
+        "lista_dependencias": [
+            {
+                "txt_titulo": "Subsecretaría de Cultura",
+                "_id": "cultura",
+                "_orden": 1,
+                "_icon": "FaBook",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:cultura@sanvicente.com.ar",
+                        "txt_valor": "cultura@sanvicente.com.ar"
+                    },
+                    {
+                        "icon_contacto": "FaWhatsapp",
+                        "txt_label": "WhatsApp",
+                        "link_destino": "https://wa.me/5493492270800",
+                        "txt_valor": "(3492) 270800"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Biblioteca Popular “Mariano Moreno”",
+                "_id": "biblioteca",
+                "_orden": 1,
+                "_icon": "FaBookOpen",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:biblioteca@sanvicente.com.ar",
+                        "txt_valor": "biblioteca@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Museo y Archivo Histórico Regional “Edna P. de Welschen”",
+                "_id": "museo",
+                "_orden": 2,
+                "_icon": "FaArchway",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:museo@sanvicente.com.ar",
+                        "txt_valor": "museo@sanvicente.com.ar"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "txt_titulo": "Casa de la Producción",
+        "_id": "produccion",
+        "_orden": 7,
+        "_icon": "FaWarehouse",
+        "lista_contacto": [
+            {
+                "icon_contacto": "FaMapMarkerAlt",
+                "txt_label": "Ubicación",
+                "link_destino": "https://maps.google.com/?q=Emilio+Senor+302+San+Vicente",
+                "txt_valor": "Emilio Senor 302"
+            },
+            {
+                "icon_contacto": "FaPhone",
+                "txt_label": "Teléfono",
+                "link_destino": "tel:034924567800",
+                "txt_valor": "(03492) 456-7800"
+            }
+        ],
+        "lista_dependencias": [
+            {
+                "txt_titulo": "Subsecretaría de la Producción",
+                "_id": "produccion",
+                "_orden": 1,
+                "_icon": "FaBuilding",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:produccion@sanvicente.com.ar",
+                        "txt_valor": "produccion@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Punto Digital",
+                "_id": "punto",
+                "_orden": 2,
+                "_icon": "FaMapMarkerAlt",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:punto@sanvicente.com.ar",
+                        "txt_valor": "punto@sanvicente.com.ar"
+                    },
+                    {
+                        "icon_contacto": "FaPhone",
+                        "txt_label": "Teléfono",
+                        "link_destino": "tel:3492470222",
+                        "txt_valor": "(3492) 470222"
+                    },
+                    {
+                        "icon_contacto": "FaWhatsapp",
+                        "txt_label": "WhatsApp",
+                        "link_destino": "https://wa.me/5493492242368",
+                        "txt_valor": "(3492) 242368"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "UTID UNL",
+                "_id": "utid",
+                "_orden": 3,
+                "_icon": "FaUniversity",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:utid@sanvicente.com.ar",
+                        "txt_valor": "utid@sanvicente.com.ar"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Centro de Contratistas de Máquinas Agrícolas",
+                "_id": "contratistas",
+                "_orden": 4,
+                "_icon": "FaTractor",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaEnvelope",
+                        "txt_label": "Email",
+                        "link_destino": "mailto:contratistas@sanvicente.com.ar",
+                        "txt_valor": "contratistas@sanvicente.com.ar"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "txt_titulo": "Terminal de Ómnibus",
+        "txt_subtitulo": "Terminal de colectivos interurbanos",
+        "_id": "terminal_omnibus",
+        "_orden": 3,
+        "_boolean_isDefault": false,
+        "_icon": "FaBusAlt",
+        "lista_contacto": [
+            {
+                "icon_contacto": "FaMapMarkerAlt",
+                "txt_label": "Ubicación",
+                "link_destino": "https://maps.app.goo.gl/XXXXXX",
+                "txt_valor": "Dirección Terminal de Ómnibus"
+            },
+            {
+                "icon_contacto": "FaPhone",
+                "txt_label": "Teléfono",
+                "link_destino": "tel:03492000000",
+                "txt_valor": "(03492) 000000"
+            }
+        ],
+        "lista_dependencias": [
+            {
+                "txt_titulo": "Kiosco/Pasajes",
+                "_id": "kiosco_pasajes",
+                "_orden": 2,
+                "_icon": "FaTicketAlt",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaPhone",
+                        "txt_label": "Teléfono",
+                        "link_destino": "tel:03492000001",
+                        "txt_valor": "(03492) 000001"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Atención Ciudadana",
+                "_id": "atencion_ciudadana",
+                "_orden": 1,
+                "_icon": "FaUserFriends",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaWhatsapp",
+                        "txt_label": "WhatsApp",
+                        "link_destino": "https://wa.me/5493492304058",
+                        "txt_valor": "(3492) 304058"
+                    }
+                ]
+            },
+            {
+                "txt_titulo": "Comedor",
+                "_id": "comedor",
+                "_orden": 3,
+                "_icon": "FaUtensils",
+                "lista_contacto": [
+                    {
+                        "icon_contacto": "FaPhone",
+                        "txt_label": "Teléfono",
+                        "link_destino": "tel:03492000002",
+                        "txt_valor": "(03492) 000002"
+                    }
+                ]
+            }
+        ]
+    }
+]

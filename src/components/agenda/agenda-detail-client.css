@@ -1,0 +1,186 @@
+.agenda-detail-page {
+  min-height: 60vh;
+  padding-top: 1rem;
+  padding-bottom: 3rem;
+  background: #f8fafc;
+}
+
+.agenda-detail-narrow {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.agenda-detail-narrow-wide {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.agenda-detail-loading,
+.agenda-detail-empty {
+  text-align: center;
+  padding: 3rem 0;
+  color: #64748b;
+}
+
+.detail-breadcrumb {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
+.detail-breadcrumb a {
+  color: var(--color-primario);
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.detail-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.agenda-detail-title {
+  font-size: clamp(1.6rem, 3.2vw, 2rem);
+  font-weight: 900;
+  color: var(--color-secundario);
+  margin: 0 0 0.75rem;
+  line-height: 1.15;
+}
+
+.agenda-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.agenda-detail-meta .dot {
+  opacity: 0.5;
+}
+
+.agenda-detail-figure-wrap {
+  margin: 1.5rem 0 2rem;
+}
+
+.agenda-detail-figure {
+  margin: 0 auto;
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+.agenda-detail-figure--media .agenda-detail-media-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+.agenda-detail-figure--media:hover .agenda-detail-media-actions {
+  opacity: 1;
+}
+.agenda-detail-media-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.agenda-detail-media-btn:hover {
+  background: var(--color-primario, #0f172a);
+}
+
+.agenda-detail-figure img {
+  width: auto;
+  max-width: 100%;
+  max-height: 420px;
+  height: auto;
+  display: block;
+  background: transparent;
+}
+
+.agenda-detail-body {
+  padding-bottom: 2rem;
+}
+
+.agenda-detail-line {
+  margin: 0 0 1rem;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.agenda-detail-desc {
+  color: #0f172a;
+  line-height: 1.75;
+  font-size: 1.05rem;
+}
+
+.agenda-detail-desc p {
+  margin: 0 0 1rem;
+}
+
+.agenda-detail-footer {
+  margin-top: 2rem;
+}
+
+.detail-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-primario);
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.detail-back-link:hover {
+  transform: translateX(-5px);
+}
+
+.detail-back-share-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.detail-share-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-primario);
+  font-weight: 700;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.detail-share-link:hover {
+  transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+  .detail-back-share-row {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}

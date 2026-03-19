@@ -2,7 +2,7 @@
 import sitioData from "../data/sitio.json";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { fetchCMSComponents, getRedesFromComponents, getContactAreasFromComponents } from "../lib/cms/fetch-cms";
+import CmsLayoutHydrator from "../components/cms/CmsLayoutHydrator";
 
 const tema = sitioData._estilo;
 
@@ -11,17 +11,18 @@ interface Props {
   description?: string;
 }
 
-const { 
-  title = sitioData.txt_nombre, 
-  description = sitioData.txt_descripcion 
+const {
+  title = sitioData.txt_nombre,
+  description = sitioData.txt_descripcion,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, sitioData.link_url);
 
-// Redes y oficinas desde API. Sin fallback a JSON.
-const cmsComponents = await fetchCMSComponents();
-const listaRedes = getRedesFromComponents(cmsComponents);
-const listaOficinas = getContactAreasFromComponents(cmsComponents);
+const isDevelopment =
+  String(import.meta.env.ENVIRONMENT ?? import.meta.env.ENVIROMENT ?? "").toLowerCase() ===
+  "development";
+const clientSlug =
+  String(import.meta.env.CLIENT_SLUG ?? import.meta.env.PUBLIC_CLIENT_SLUG ?? "").trim();
 ---
 
 <!doctype html>
@@ -101,8 +102,9 @@ const listaOficinas = getContactAreasFromComponents(cmsComponents);
     </style>
   </head>
   <body>
-    <Header listaRedes={listaRedes} />
+    <Header listaRedes={[]} />
     <slot />
-    <Footer listaRedes={listaRedes} listaOficinas={listaOficinas} />
+    <Footer />
+    <CmsLayoutHydrator client:load clientSlug={clientSlug} isDevelopment={isDevelopment} />
   </body>
 </html>

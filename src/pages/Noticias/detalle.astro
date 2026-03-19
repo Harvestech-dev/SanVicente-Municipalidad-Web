@@ -1,0 +1,12 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import NoticiaDetailClient from "../../components/noticias/NoticiaDetailClient";
+import sitioData from "../../data/sitio.json";
+
+const slug = Astro.url.searchParams.get("slug");
+---
+
+<Layout title={`Noticias | ${sitioData.txt_nombreCorto}`}>
+  <NoticiaDetailClient client:load slug={slug} />
+</Layout>
+

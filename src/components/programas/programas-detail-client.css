@@ -53,7 +53,7 @@
   line-height: 1.4;
 }
 .programas-detail .gallery-section {
-  padding: 2rem 0 3rem;
+  padding: 1.25rem 0 1.75rem;
   background: transparent;
 }
 .programas-detail .gallery-container {
@@ -99,7 +99,7 @@
   padding: 0 1.5rem;
 }
 .programas-detail .article-body {
-  padding-top: 4rem;
+  padding-top: 2.25rem;
   font-size: 1.05rem;
   line-height: 1.8;
   color: #334155;
@@ -206,13 +206,13 @@
 
 @media (max-width: 768px) {
   .programas-detail .detail-back-share-row {
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    flex-wrap: nowrap;
+    justify-content: space-between;
   }
 }
 @media (max-width: 768px) {
   .programas-detail .gallery-section {
-    padding: 2rem 0 3rem;
+    padding: 0.9rem 0 1.25rem;
   }
   .programas-detail .detail-image-carousel__figure {
     border-radius: 0;

@@ -1,0 +1,34 @@
+{
+    "txt_nombre": "Departamento de obras civiles",
+    "Lista_areas": [
+      {
+        "txt_nombre": "Área de infraestructura vial e hidráulica"
+      },
+      {
+        "txt_nombre": "Area de infraestructura sanitaria"
+      }
+    ]
+  },
+  {
+    "txt_nombre": "Departamento de servicios públicos",
+    "Lista_areas": [
+      {
+        "txt_nombre": "Área residuos sólidos urbanos"
+      },
+      {
+        "txt_nombre": "Área mantenimiento y conservación de espacios y edificios públicos"
+      },
+      {
+        "txt_nombre": "Área alumbrado público e instalaciones eléctricas"
+      },
+      {
+        "txt_nombre": "Área taller de rreparación"
+      },
+      {
+        "txt_nombre": "Área automotor y vehículos pesados"
+      },
+      {
+        "txt_nombre": "Área servicios varios"
+      }
+    ]
+  }

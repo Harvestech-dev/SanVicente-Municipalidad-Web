@@ -25,7 +25,7 @@ import LicitacionesPageClient from "../../components/licitaciones/LicitacionesPa
   .licitaciones-container .hero-licitaciones {
     background-color: var(--color-primario);
     color: white;
-    padding: 4rem 0;
+    padding: 3rem 0;
     text-align: center;
   }
   .licitaciones-container .hero-licitaciones h1 {
@@ -89,13 +89,17 @@ import LicitacionesPageClient from "../../components/licitaciones/LicitacionesPa
     border-radius: 99px;
     border: 1px solid #e2e8f0;
     background: transparent;
+    color: #0f172a;
+    -webkit-text-fill-color: #0f172a;
     cursor: pointer;
     font-size: 0.875rem;
+    font-weight: 600;
     transition: all 0.2s;
   }
   .licitaciones-container .btn-cat.active {
     background: var(--color-primario);
     color: white;
+    -webkit-text-fill-color: white;
     border-color: var(--color-primario);
   }
   .licitaciones-container .list-section {
@@ -290,6 +294,9 @@ import LicitacionesPageClient from "../../components/licitaciones/LicitacionesPa
     border-color: var(--color-primario);
   }
   @media (max-width: 768px) {
+    .licitaciones-container .hero-licitaciones {
+      padding: 2.25rem 0;
+    }
     .licitaciones-container .licitacion-card {
       flex-direction: column;
       padding: 1.5rem;

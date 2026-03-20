@@ -11,7 +11,7 @@
 .gobierno-cms-root .hero-section {
   background-color: var(--color-primario);
   color: var(--color-texto-claro);
-  padding: 4rem 0;
+  padding: 3rem 0;
   text-align: center;
 }
 .gobierno-cms-root .hero-section h1 {
@@ -80,11 +80,16 @@
 .gobierno-cms-root .organigrama-section {
   margin-bottom: 4rem;
 }
+.gobierno-cms-root .gabinete-section {
+  padding-inline: clamp(1rem, 4vw, 1.5rem);
+}
 .gobierno-cms-root .funcionarios-flex {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
   justify-content: center;
+  max-width: 1200px;
+  margin-inline: auto;
 }
 .gobierno-cms-root .funcionario-card {
   background: var(--color-texto-claro);
@@ -247,6 +252,9 @@
   color: #64748b;
 }
 @media (max-width: 640px) {
+  .gobierno-cms-root .hero-section {
+    padding: 2.25rem 0;
+  }
   .gobierno-cms-root .intendente-card {
     flex-direction: column;
     text-align: center;

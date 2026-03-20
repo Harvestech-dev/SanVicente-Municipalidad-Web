@@ -260,7 +260,7 @@
 }
 
 #cms-inicio-root .agenda-section {
-  padding: 5rem 1.5rem;
+  padding: 3rem 1.5rem 5rem;
   background-color: var(--color-fondo-claro);
 }
 #cms-inicio-root .agenda-section .container {
@@ -413,11 +413,13 @@
 }
 #cms-inicio-root .agenda-section .full-width {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   justify-content: center;
 }
 
 #cms-inicio-root .noticias-section {
-  padding: 4rem 1rem;
+  padding: 2.75rem 1rem 4rem;
   background-color: var(--color-fondo-claro);
 }
 #cms-inicio-root .noticias-section .container {
@@ -498,9 +500,116 @@
   text-decoration: none;
   font-weight: 700;
 }
+#cms-inicio-root .noticias-section .action-container {
+  margin-top: 2.25rem;
+  display: flex;
+  justify-content: center;
+}
 @media (max-width: 768px) {
+  #cms-inicio-root .banner-wrapper {
+    margin: 1rem auto 1.25rem;
+  }
+  #cms-inicio-root .featured-programs {
+    padding: 2.5rem 1rem 3rem;
+  }
+  #cms-inicio-root .agenda-section {
+    padding: 2rem 1rem 2.5rem;
+  }
+  #cms-inicio-root .noticias-section {
+    padding: 2rem 1rem 2.5rem;
+  }
+  #cms-inicio-root .useful-phones {
+    padding: 2.5rem 1rem 3rem;
+  }
+  #cms-inicio-root .featured-programs .btn-ver-todos,
+  #cms-inicio-root .noticias-section .btn-ver-todo,
+  #cms-inicio-root .agenda-section .btn-outline.full-width,
+  #cms-inicio-root .useful-phones .btn-more {
+    display: flex;
+    width: 100%;
+    max-width: 320px;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    justify-content: center;
+    margin-inline: auto;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+  }
   #cms-inicio-root .noticias-section .destacada-link {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Home promo carousel: prioriza imagen completa sin recorte */
+#cms-inicio-root .home-promo-carousel .promo-carousel__media {
+  background: #0b1320;
+}
+#cms-inicio-root .home-promo-carousel .promo-carousel__media img {
+  object-fit: contain;
+}
+#cms-inicio-root .home-promo-carousel .promo-carousel__cta,
+#cms-inicio-root .home-promo-carousel .promo-carousel__cta--bodega,
+#cms-inicio-root .home-promo-carousel .promo-carousel__cta--destileria {
+  background: var(--color-primario);
+  border: 1px solid var(--color-primario);
+  border-radius: 14px;
+}
+
+@media (max-width: 768px) {
+  #cms-inicio-root .home-promo-carousel.promo-carousel {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__track {
+    position: relative;
+    inset: auto;
+    height: auto;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__slide {
+    position: relative;
+    inset: auto;
+    display: none;
+    transition: none;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__slide[aria-hidden="false"] {
+    display: block;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__link {
+    height: auto;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__media {
+    position: relative;
+    inset: auto;
+    background: transparent;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__media img {
+    width: 100%;
+    height: auto;
+    max-height: 360px;
+    object-fit: contain;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__dots {
+    bottom: 0.55rem;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__text-layer {
+    inset: auto 0 0 0;
+    height: auto;
+    min-height: 0;
+    justify-content: flex-end;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0.85rem 1rem 1rem;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__subtitle,
+  #cms-inicio-root .home-promo-carousel .promo-carousel__detail {
+    display: none;
+  }
+  #cms-inicio-root .home-promo-carousel .promo-carousel__cta {
+    margin-top: 0.65rem;
+    min-height: 36px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 10px;
   }
 }
 
@@ -566,13 +675,17 @@
 #cms-inicio-root .useful-phones .btn-more {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 0.85rem 2rem;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  min-width: 220px;
+  padding: 0.75rem 1rem;
   background: white;
   border: 1px solid var(--color-primario);
   border-radius: 14px;
   color: var(--color-primario);
   font-weight: 700;
+  font-size: 0.95rem;
   text-decoration: none;
 }
 #cms-inicio-root .useful-phones .footer-action {

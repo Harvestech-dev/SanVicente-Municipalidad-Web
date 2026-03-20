@@ -698,11 +698,6 @@ export default function CmsInicioClient({
                     <h2>{(d.txt_titulo as string) || "Noticias"}</h2>
                     <p>{(d.txt_subtitulo as string) || ""}</p>
                   </div>
-                  {hay && (
-                    <a href={urlVerTodo} className="btn-ver-todo desktop-only">
-                      {textoVerTodo}
-                    </a>
-                  )}
                 </div>
                 {destacada && (
                   <article className="destacada-card">
@@ -738,6 +733,16 @@ export default function CmsInicioClient({
                       <p key={i}>{p.txt_parrafo}</p>
                     ))}
                 </div>
+                {hay && (
+                  <div className="action-container">
+                    <a href={urlVerTodo} className="btn-ver-todo">
+                      {textoVerTodo}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
+                    </a>
+                  </div>
+                )}
               </div>
             </section>
           );

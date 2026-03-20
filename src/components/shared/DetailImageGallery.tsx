@@ -177,6 +177,8 @@ export function DetailImageThumbnailsRow({
             role="listitem"
             href={item.src}
             download={fileName}
+            target="_blank"
+            rel="noopener noreferrer"
             className="detail-image-thumbs__tile"
             aria-label={`Descargar imagen ${idx}`}
             title={`Descargar imagen ${idx}`}

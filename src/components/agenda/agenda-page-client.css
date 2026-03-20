@@ -78,6 +78,8 @@
   border-radius: 99px;
   border: 1px solid #e2e8f0;
   background: transparent;
+  color: #0f172a;
+  -webkit-text-fill-color: #0f172a;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
@@ -90,6 +92,7 @@
 .btn-cat.active {
   background: var(--color-primario);
   color: white;
+  -webkit-text-fill-color: white;
   border-color: var(--color-primario);
 }
 

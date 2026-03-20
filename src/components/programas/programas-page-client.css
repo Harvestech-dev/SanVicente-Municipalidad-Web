@@ -81,6 +81,8 @@
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.2s;
+  color: #0f172a;
+  -webkit-text-fill-color: #0f172a;
 }
 .programas-page .btn-cat:hover {
   border-color: var(--color-primario);
@@ -89,10 +91,11 @@
 .programas-page .btn-cat.active {
   background: var(--color-primario);
   color: white;
+  -webkit-text-fill-color: white;
   border-color: var(--color-primario);
 }
 .programas-page .featured-section {
-  padding: 3rem 0;
+  padding: 2rem 0;
 }
 .programas-page .featured-card {
   display: grid;
@@ -189,7 +192,7 @@
   color: var(--color-primario);
 }
 .programas-page .programs-list-section {
-  padding: 4rem 0;
+  padding: 2.5rem 0;
 }
 .programas-page .no-results-message {
   text-align: center;
@@ -342,6 +345,12 @@
   font-size: 1.1rem;
 }
 @media (max-width: 768px) {
+  .programas-page .featured-section {
+    padding: 1.5rem 0;
+  }
+  .programas-page .programs-list-section {
+    padding: 2rem 0;
+  }
   .programas-page .featured-card {
     grid-template-columns: 1fr;
   }

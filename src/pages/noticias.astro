@@ -492,13 +492,17 @@ const VECINO_DEV_LOCAL =
     border-radius: 99px;
     border: 1px solid #e2e8f0;
     background: transparent;
+    color: #0f172a;
+    -webkit-text-fill-color: #0f172a;
     cursor: pointer;
     font-size: 0.875rem;
+    font-weight: 600;
     transition: all 0.2s;
   }
   .page-noticias .btn-cat.active {
     background: var(--primary);
     color: white;
+    -webkit-text-fill-color: white;
     border-color: var(--primary);
   }
 
@@ -555,7 +559,7 @@ const VECINO_DEV_LOCAL =
     margin-bottom: 1rem;
   }
   .page-noticias .featured-info h2 {
-    font-size: 2.25rem;
+    font-size: clamp(1.25rem, 4.4vw, 1.7rem);
     font-weight: 800;
     margin-bottom: 1rem;
     line-height: 1.2;

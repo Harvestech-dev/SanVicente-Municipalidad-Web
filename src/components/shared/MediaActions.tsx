@@ -28,6 +28,8 @@ export function MediaActions({
           className={buttonClassName}
           href={downloadHref}
           download={downloadFileName}
+          target="_blank"
+          rel="noopener noreferrer"
           title="Descargar imagen"
           aria-label="Descargar imagen"
         >

@@ -25,6 +25,18 @@ interface Props {
   isDevelopment: boolean;
 }
 
+function getComponentPayload(component?: CMSComponent): Record<string, unknown> {
+  const content = component?.content;
+  if (content && typeof content === "object" && !Array.isArray(content)) {
+    return content as Record<string, unknown>;
+  }
+  const data = component?.data;
+  if (data && typeof data === "object" && !Array.isArray(data)) {
+    return data as Record<string, unknown>;
+  }
+  return {};
+}
+
 export default function ContactoPageClient({ clientSlug, isDevelopment }: Props) {
   const [loading, setLoading] = useState(true);
   const [contactComponents, setContactComponents] = useState<CMSComponent[]>([]);
@@ -101,34 +113,37 @@ export default function ContactoPageClient({ clientSlug, isDevelopment }: Props)
   );
   const apiRedes = contactComponents.find((c) => c.type === "redes_sociales");
 
+  const heroPayload = getComponentPayload(apiCabecera);
   const hero = {
-    txt_titulo: (apiCabecera?.data?.txt_titulo as string) ?? "Contacto",
-    txt_descripcion: (apiCabecera?.data?.txt_descripcion as string) ?? "Estamos para ayudarte.",
+    txt_titulo: (heroPayload.txt_titulo as string) ?? "",
+    txt_descripcion: (heroPayload.txt_descripcion as string) ?? "",
   };
 
-  const btnBanner = apiBanner?.data?.btn_boton as { txt_label?: string; link_destino?: string } | undefined;
+  const bannerPayload = getComponentPayload(apiBanner);
+  const btnBanner = bannerPayload.btn_boton as
+    | { txt_label?: string; link_destino?: string; link_url?: string }
+    | undefined;
   const bannerDigital = {
-    txt_titulo: (apiBanner?.data?.txt_titulo as string) ?? "¿Tenés un reclamo o sugerencia?",
-    txt_subtitulo:
-      (apiBanner?.data?.txt_subtitulo as string) ?? "Usá Vecino Digital para seguimiento de tu solicitud",
-    txt_boton: btnBanner?.txt_label ?? "Ir a Vecino Digital",
-    link_url: btnBanner?.link_destino ?? "https://sanvicente.vecino.digital",
+    txt_titulo: (bannerPayload.txt_titulo as string) ?? "",
+    txt_subtitulo: (bannerPayload.txt_subtitulo as string) ?? "",
+    txt_badge: (bannerPayload.txt_badge as string) ?? "",
+    txt_boton: btnBanner?.txt_label ?? "",
+    link_url: btnBanner?.link_url ?? btnBanner?.link_destino ?? "",
   };
+  const hasBannerContent = Boolean(bannerDigital.txt_titulo || bannerDigital.txt_subtitulo || bannerDigital.txt_badge);
+  const hasBannerButton = Boolean(bannerDigital.link_url && bannerDigital.txt_boton);
 
-  const areasData = (apiContactAreas?.data ?? {}) as Record<string, unknown>;
+  const areasData = getComponentPayload(apiContactAreas);
   const edificios = (areasData.lista_oficinas ?? []) as Edificio[];
-  const sectionTitle =
-    (areasData.txt_title as string) ?? (areasData.txt_titulo as string) ?? "Organización y Contacto";
-  const sectionSubtitle =
-    (areasData.txt_subtitle as string) ??
-    (areasData.txt_subtitulo as string) ??
-    "Edificios, secretarías y áreas de la Municipalidad.";
+  const sectionTitle = ((areasData.txt_title as string) ?? (areasData.txt_titulo as string) ?? "").trim();
+  const sectionSubtitle = ((areasData.txt_subtitle as string) ?? (areasData.txt_subtitulo as string) ?? "").trim();
 
-  const telefonosUtiles = (apiTelefonos?.data ?? {}) as Record<string, unknown>;
+  const telefonosUtiles = getComponentPayload(apiTelefonos);
   const listaTelefonos = (telefonosUtiles.lista_telefonos ??
     telefonosUtiles.lista_contacto ??
     []) as TelefonoItem[];
-  const listaRedes = (apiRedes?.data?.lista_contacto ?? []) as Array<{
+  const redesData = getComponentPayload(apiRedes);
+  const listaRedes = (redesData.lista_contacto ?? []) as Array<{
     icon_contacto?: string;
     link_destino?: string;
     txt_label?: string;
@@ -138,30 +153,32 @@ export default function ContactoPageClient({ clientSlug, isDevelopment }: Props)
 
   return (
     <main className="contact-page">
-      <section className="hero-contact">
-        <div className="container">
-          <h1>{hero.txt_titulo}</h1>
-          <p>{hero.txt_descripcion}</p>
-          <div className="hero-social-grid">
-            {listaRedes
-              .filter((r) => r.link_destino)
-              .map((redItem, i) => (
-                <a
-                  key={i}
-                  href={redItem.link_destino}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hero-social-icon"
-                  aria-label={redItem.txt_label ?? ""}
-                >
-                  <SocialIcon iconName={redItem.icon_contacto ?? "FaLink"} size={22} />
-                </a>
-              ))}
+      {(hero.txt_titulo || hero.txt_descripcion || listaRedes.length > 0) && (
+        <section className="hero-contact">
+          <div className="container">
+            {hero.txt_titulo && <h1>{hero.txt_titulo}</h1>}
+            {hero.txt_descripcion && <p>{hero.txt_descripcion}</p>}
+            <div className="hero-social-grid">
+              {listaRedes
+                .filter((r) => r.link_destino)
+                .map((redItem, i) => (
+                  <a
+                    key={i}
+                    href={redItem.link_destino}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hero-social-icon"
+                    aria-label={redItem.txt_label ?? ""}
+                  >
+                    <SocialIcon iconName={redItem.icon_contacto ?? "FaLink"} size={22} />
+                  </a>
+                ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {apiBanner && (
+      {apiBanner && (hasBannerContent || hasBannerButton) && (
         <div
           ref={tipRef}
           id="vecino-digital-tip"
@@ -174,16 +191,18 @@ export default function ContactoPageClient({ clientSlug, isDevelopment }: Props)
           </button>
           <div className="digital-card digital-card-floating">
             <div className="digital-content">
-              <div className="digital-badge">Contactanos</div>
-              <h3>{bannerDigital.txt_titulo}</h3>
-              <p>{bannerDigital.txt_subtitulo}</p>
+              {bannerDigital.txt_badge && <div className="digital-badge">{bannerDigital.txt_badge}</div>}
+              {bannerDigital.txt_titulo && <h3>{bannerDigital.txt_titulo}</h3>}
+              {bannerDigital.txt_subtitulo && <p>{bannerDigital.txt_subtitulo}</p>}
             </div>
-            <a href={bannerDigital.link_url} target="_blank" className="btn-digital-new" rel="noopener noreferrer">
-              <span>{bannerDigital.txt_boton}</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="m9 18 6-6-6-6" />
-              </svg>
-            </a>
+            {hasBannerButton && (
+              <a href={bannerDigital.link_url} target="_blank" className="btn-digital-new" rel="noopener noreferrer">
+                <span>{bannerDigital.txt_boton}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </a>
+            )}
           </div>
         </div>
       )}
@@ -195,8 +214,8 @@ export default function ContactoPageClient({ clientSlug, isDevelopment }: Props)
       {edificios.length > 0 && (
         <section className="section-offices">
           <div className="container">
-            <h2 className="section-title">{sectionTitle}</h2>
-            <p className="section-desc section-desc-centered">{sectionSubtitle}</p>
+            {sectionTitle && <h2 className="section-title">{sectionTitle}</h2>}
+            {sectionSubtitle && <p className="section-desc section-desc-centered">{sectionSubtitle}</p>}
             <div className="edificios-list">
               {[...edificios]
                 .sort((a, b) => (a._orden ?? 0) - (b._orden ?? 0))
@@ -211,12 +230,12 @@ export default function ContactoPageClient({ clientSlug, isDevelopment }: Props)
       {apiTelefonos && listaTelefonos.length > 0 && (
         <section className="section-phones">
           <div className="container">
-            <h2 className="section-subtitle section-subtitle-centered">
-              {(telefonosUtiles.txt_titulo as string) ?? "Teléfonos útiles"}
-            </h2>
-            <p className="section-desc section-desc-centered">
-              {(telefonosUtiles.txt_subtitulo as string) ?? "Contactos importantes para situaciones urgentes"}
-            </p>
+            {((telefonosUtiles.txt_titulo as string) ?? "").trim() && (
+              <h2 className="section-subtitle section-subtitle-centered">{(telefonosUtiles.txt_titulo as string) ?? ""}</h2>
+            )}
+            {((telefonosUtiles.txt_subtitulo as string) ?? "").trim() && (
+              <p className="section-desc section-desc-centered">{(telefonosUtiles.txt_subtitulo as string) ?? ""}</p>
+            )}
             <div className="phones-grid">
               {[...listaTelefonos]
                 .sort((a, b) => (a._orden ?? 0) - (b._orden ?? 0))

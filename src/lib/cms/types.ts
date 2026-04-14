@@ -9,7 +9,7 @@ export interface CMSComponent {
   type: string;
   page: string;
   data: Record<string, unknown>;
-  content?: string;
+  content?: unknown;
   status: "published" | "draft" | "archived";
   isActive: boolean;
   isVisible: boolean;

@@ -73,6 +73,15 @@ export default function AgendaPageClient() {
       });
   }, [eventos, currentCategory, searchQuery]);
 
+  const eventoDestacado = filteredWithIdx[0]?.event ?? null;
+  const eventoDestacadoIdx = filteredWithIdx[0]?.idx ?? 0;
+  const eventoDestacadoId = eventoDestacado ? Number(eventoDestacado._orden) : 0;
+  const eventoDestacadoHref =
+    eventoDestacado && Number.isFinite(eventoDestacadoId) && eventoDestacadoId > 0
+      ? `/agenda/detalle/${eventoDestacadoId}`
+      : null;
+  const restoEventos = filteredWithIdx.slice(1);
+
   const hayEventos = eventos.length > 0;
 
 
@@ -156,8 +165,57 @@ export default function AgendaPageClient() {
 
           <section className="agenda-grid-section">
             <div className="container">
+
+              {eventoDestacado && (
+                eventoDestacadoHref ? (
+                  <a href={eventoDestacadoHref} className="evento-destacado-card" id={`evento-${eventoDestacadoId}`}>
+                    <div className="evento-dest-img">
+                      <img src={eventoDestacado.img_principal ?? ""} alt={eventoDestacado.txt_titulo ?? ""} loading="eager" />
+                      {eventoDestacado.txt_categoria && <span className="category-badge">{eventoDestacado.txt_categoria}</span>}
+                    </div>
+                    <div className="evento-dest-content">
+                      <h2>{eventoDestacado.txt_titulo}</h2>
+                      <div className="info-list">
+                        <div className="info-item"><span>{eventoDestacado.txt_fecha}</span></div>
+                        {String(eventoDestacado.txt_horario ?? "").trim() && (
+                          <div className="info-item"><span>{eventoDestacado.txt_horario}</span></div>
+                        )}
+                        {String(eventoDestacado.txt_ubicacion ?? "").trim() && (
+                          <div className="info-item"><span>{eventoDestacado.txt_ubicacion}</span></div>
+                        )}
+                        {String(eventoDestacado.txt_descripcion ?? "").trim() && (
+                          <p className="evento-dest-desc">{eventoDestacado.txt_descripcion}</p>
+                        )}
+                      </div>
+                    </div>
+                  </a>
+                ) : (
+                  <div className="evento-destacado-card" id={`evento-${eventoDestacadoIdx}`}>
+                    <div className="evento-dest-img">
+                      <img src={eventoDestacado.img_principal ?? ""} alt={eventoDestacado.txt_titulo ?? ""} loading="eager" />
+                      {eventoDestacado.txt_categoria && <span className="category-badge">{eventoDestacado.txt_categoria}</span>}
+                    </div>
+                    <div className="evento-dest-content">
+                      <h2>{eventoDestacado.txt_titulo}</h2>
+                      <div className="info-list">
+                        <div className="info-item"><span>{eventoDestacado.txt_fecha}</span></div>
+                        {String(eventoDestacado.txt_horario ?? "").trim() && (
+                          <div className="info-item"><span>{eventoDestacado.txt_horario}</span></div>
+                        )}
+                        {String(eventoDestacado.txt_ubicacion ?? "").trim() && (
+                          <div className="info-item"><span>{eventoDestacado.txt_ubicacion}</span></div>
+                        )}
+                        {String(eventoDestacado.txt_descripcion ?? "").trim() && (
+                          <p className="evento-dest-desc">{eventoDestacado.txt_descripcion}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+
               <div className="events-grid" id="eventsGrid">
-                {filteredWithIdx.map(({ event, idx }) => {
+                {restoEventos.map(({ event, idx }) => {
                   const eventId = Number(event._orden);
                   const hasDetailId =
                     Number.isFinite(eventId) && eventId > 0;
@@ -173,38 +231,21 @@ export default function AgendaPageClient() {
                       }
                     >
                       {detailHref ? (
-                        <a
-                          href={detailHref}
-                          className="event-card-detail-link"
-                        >
+                        <a href={detailHref} className="event-card-detail-link">
                           <div className="image-container">
-                            <img
-                              src={event.img_principal ?? ""}
-                              alt={event.txt_titulo ?? ""}
-                              loading="lazy"
-                            />
-                            {event.txt_categoria && (
-                              <span className="category-badge">
-                                {event.txt_categoria}
-                              </span>
-                            )}
+                            <img src={event.img_principal ?? ""} alt={event.txt_titulo ?? ""} loading="lazy" />
+                            {event.txt_categoria && <span className="category-badge">{event.txt_categoria}</span>}
                           </div>
                           <div className="event-card-link-body">
                             <div className="text-group">
                               <h3>{event.txt_titulo}</h3>
                               <div className="info-list">
-                                <div className="info-item">
-                                  <span>{event.txt_fecha}</span>
-                                </div>
+                                <div className="info-item"><span>{event.txt_fecha}</span></div>
                                 {String(event.txt_horario ?? "").trim() && (
-                                  <div className="info-item">
-                                    <span>{event.txt_horario}</span>
-                                  </div>
+                                  <div className="info-item"><span>{event.txt_horario}</span></div>
                                 )}
                                 {String(event.txt_ubicacion ?? "").trim() && (
-                                  <div className="info-item info-item-ubicacion">
-                                    <span>{event.txt_ubicacion}</span>
-                                  </div>
+                                  <div className="info-item info-item-ubicacion"><span>{event.txt_ubicacion}</span></div>
                                 )}
                               </div>
                             </div>
@@ -213,33 +254,19 @@ export default function AgendaPageClient() {
                       ) : (
                         <>
                           <div className="image-container">
-                            <img
-                              src={event.img_principal ?? ""}
-                              alt={event.txt_titulo ?? ""}
-                              loading="lazy"
-                            />
-                            {event.txt_categoria && (
-                              <span className="category-badge">
-                                {event.txt_categoria}
-                              </span>
-                            )}
+                            <img src={event.img_principal ?? ""} alt={event.txt_titulo ?? ""} loading="lazy" />
+                            {event.txt_categoria && <span className="category-badge">{event.txt_categoria}</span>}
                           </div>
                           <div className="event-card-link-body">
                             <div className="text-group">
                               <h3>{event.txt_titulo}</h3>
                               <div className="info-list">
-                                <div className="info-item">
-                                  <span>{event.txt_fecha}</span>
-                                </div>
+                                <div className="info-item"><span>{event.txt_fecha}</span></div>
                                 {String(event.txt_horario ?? "").trim() && (
-                                  <div className="info-item">
-                                    <span>{event.txt_horario}</span>
-                                  </div>
+                                  <div className="info-item"><span>{event.txt_horario}</span></div>
                                 )}
                                 {String(event.txt_ubicacion ?? "").trim() && (
-                                  <div className="info-item info-item-ubicacion">
-                                    <span>{event.txt_ubicacion}</span>
-                                  </div>
+                                  <div className="info-item info-item-ubicacion"><span>{event.txt_ubicacion}</span></div>
                                 )}
                               </div>
                             </div>

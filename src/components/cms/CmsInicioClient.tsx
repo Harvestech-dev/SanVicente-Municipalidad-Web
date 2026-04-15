@@ -592,21 +592,25 @@ export default function CmsInicioClient({
             txt_ubicacion?: string;
             txt_categoria?: string;
             img_principal?: string;
+            txt_descripcion?: string;
+            boolean_destacada?: boolean;
           }>;
-          const proximos = [...lista]
-            .sort(
-              (a, b) =>
-                new Date(a._fechaISO ?? a.txt_fecha ?? "").getTime() -
-                new Date(b._fechaISO ?? b.txt_fecha ?? "").getTime()
-            )
-            .slice(0, 4);
+          const ordenados = [...lista].sort(
+            (a, b) =>
+              new Date(a._fechaISO ?? a.txt_fecha ?? "").getTime() -
+              new Date(b._fechaISO ?? b.txt_fecha ?? "").getTime()
+          );
+          const eventoDestacado = ordenados.find((e) => e.boolean_destacada);
+          const gridEvents = eventoDestacado
+            ? ordenados.filter((e) => e !== eventoDestacado).slice(0, 3)
+            : ordenados.slice(0, 4);
           const title = (d.txt_titulo as string) || "Agenda Cultural";
           const subtitle = (d.txt_subtitulo as string) || "";
           const viewAllText = (d.txt_ver_todo as string) || "Ver toda la agenda";
           const viewAllHref = normalizePageUrl((d.link_ver_todo as string) || "/agenda") || "/agenda";
           const disclamer = (d.lista_disclamer_sin_eventos ?? []) as Array<{ txt_parrafo?: string }>;
           const ocultar = d.boolean_ocultar_si_no_hay_eventos === true;
-          const hay = proximos.length > 0;
+          const hay = ordenados.length > 0;
           if (!hay && ocultar) return null;
           return (
             <section key={key} id="agenda" className="agenda-section">
@@ -625,50 +629,94 @@ export default function CmsInicioClient({
                     </a>
                   )}
                 </div>
-                <div className="events-grid">
-                  {hay ? (
-                    proximos.map((ev, i) => {
-                      const eventId = ev._orden ?? i;
-                      return (
-                      <a
-                        key={i}
-                        href={`/agenda/detalle/${eventId}`}
-                        className="event-card"
-                        aria-label={`Ver detalle: ${ev.txt_titulo ?? "evento"}`}
-                      >
-                        <div className="image-container">
-                          <img src={ev.img_principal} alt={ev.txt_titulo ?? ""} loading="lazy" />
-                          <span className="category-badge">{ev.txt_categoria}</span>
-                        </div>
-                        <div className="content">
-                          <h3>{ev.txt_titulo}</h3>
-                          <div className="info-list">
-                            <div className="info-item">
-                              <span>{ev.txt_fecha}</span>
-                            </div>
-                            {String(ev.txt_horario ?? "").trim() && (
-                              <div className="info-item">
-                                <span>{ev.txt_horario}</span>
-                              </div>
-                            )}
-                            {String(ev.txt_ubicacion ?? "").trim() && (
-                              <div className="info-item">
-                                <span>{ev.txt_ubicacion}</span>
-                              </div>
-                            )}
+                {hay ? (
+                  <>
+                    {eventoDestacado && (
+                      <article className="agenda-destacada-card">
+                        <a
+                          href={`/agenda/detalle/${eventoDestacado._orden ?? 0}`}
+                          className="agenda-destacada-link"
+                          aria-label={`Ver detalle: ${eventoDestacado.txt_titulo ?? "evento"}`}
+                        >
+                          <div className="agenda-destacada-img">
+                            {eventoDestacado.img_principal ? (
+                              <img
+                                src={eventoDestacado.img_principal}
+                                alt={eventoDestacado.txt_titulo ?? ""}
+                                loading="eager"
+                              />
+                            ) : null}
+                            {String(eventoDestacado.txt_categoria ?? "").trim() ? (
+                              <span className="category-badge">{eventoDestacado.txt_categoria}</span>
+                            ) : null}
                           </div>
-                        </div>
-                      </a>
-                      );
-                    })
-                  ) : (
-                    disclamer.map((p, i) => (
+                          <div className="agenda-destacada-content">
+                            <h3>{eventoDestacado.txt_titulo}</h3>
+                            {String(eventoDestacado.txt_descripcion ?? "").trim() ? (
+                              <p className="agenda-destacada-extract">{eventoDestacado.txt_descripcion}</p>
+                            ) : null}
+                            <div className="agenda-destacada-meta">
+                              {String(eventoDestacado.txt_fecha ?? "").trim() ? (
+                                <span className="agenda-destacada-fecha">{eventoDestacado.txt_fecha}</span>
+                              ) : null}
+                              {String(eventoDestacado.txt_horario ?? "").trim() ? (
+                                <span className="agenda-destacada-hora">{eventoDestacado.txt_horario}</span>
+                              ) : null}
+                            </div>
+                          </div>
+                        </a>
+                      </article>
+                    )}
+                    {gridEvents.length > 0 ? (
+                    <div className="events-grid">
+                      {gridEvents.map((ev, i) => {
+                        const eventId = ev._orden ?? i;
+                        return (
+                          <a
+                            key={ev._orden ?? `ev-${i}`}
+                            href={`/agenda/detalle/${eventId}`}
+                            className="event-card"
+                            aria-label={`Ver detalle: ${ev.txt_titulo ?? "evento"}`}
+                          >
+                            <div className="image-container">
+                              <img src={ev.img_principal} alt={ev.txt_titulo ?? ""} loading="lazy" />
+                              {String(ev.txt_categoria ?? "").trim() ? (
+                                <span className="category-badge">{ev.txt_categoria}</span>
+                              ) : null}
+                            </div>
+                            <div className="content">
+                              <h3>{ev.txt_titulo}</h3>
+                              <div className="info-list">
+                                <div className="info-item">
+                                  <span>{ev.txt_fecha}</span>
+                                </div>
+                                {String(ev.txt_horario ?? "").trim() ? (
+                                  <div className="info-item">
+                                    <span>{ev.txt_horario}</span>
+                                  </div>
+                                ) : null}
+                                {String(ev.txt_ubicacion ?? "").trim() ? (
+                                  <div className="info-item">
+                                    <span>{ev.txt_ubicacion}</span>
+                                  </div>
+                                ) : null}
+                              </div>
+                            </div>
+                          </a>
+                        );
+                      })}
+                    </div>
+                    ) : null}
+                  </>
+                ) : (
+                  <div className="events-grid">
+                    {disclamer.map((p, i) => (
                       <div key={i} className="agenda-empty">
                         <p>{p.txt_parrafo}</p>
                       </div>
-                    ))
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
                 {hay && (
                   <div className="mobile-only mt-8">
                     <a href={viewAllHref} className="btn-outline full-width">

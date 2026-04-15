@@ -27,6 +27,21 @@ function formatDate(iso: string): string {
   }
 }
 
+/** Última línea con marcador de lugar (p. ej. "📍 Salón Sarmiento") desde el cuerpo del evento. */
+function extractUbicacionHintFromBody(body: string): string {
+  const lines = body
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const line = lines[i];
+    if (/[📍📌]|ubicaci[oó]n/i.test(line)) {
+      return line.replace(/^[📍📌]\s*/u, "").trim();
+    }
+  }
+  return "";
+}
+
 function slugify(text: string, id: number): string {
   const base = text
     .toLowerCase()
@@ -68,16 +83,19 @@ export function adaptVecinoNewsToNoticia(item: VecinoNewsItem) {
 export function adaptVecinoEventToEvento(item: VecinoEventItem) {
   const categoria = item.categories?.[0]?.name ?? "Evento";
   const imagen = toAbsoluteImageUrl(item.images?.[0]?.url ?? null);
+  const body = item.body ?? "";
+  const ubicacionHint = extractUbicacionHintFromBody(body);
 
   return {
     _orden: item.id,
     txt_titulo: item.name,
     txt_fecha: formatDate(item.active_from ?? item.published_from),
     _fechaISO: (item.active_from ?? item.published_from).slice(0, 10),
-    txt_horario: "", // API no provee horario
-    txt_ubicacion: item.body || "Consultar",
+    txt_horario: "", // API no provee horario dedicado; el detalle está en txt_descripcion
+    txt_ubicacion: ubicacionHint,
     txt_categoria: categoria,
     img_principal: imagen,
-    txt_descripcion: item.body ?? "",
+    txt_descripcion: body,
+    boolean_destacada: item.is_important ?? false,
   };
 }

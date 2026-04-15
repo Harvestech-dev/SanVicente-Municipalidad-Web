@@ -167,11 +167,12 @@ const otrasNoticias = noticiaDestacada ? listaNoticias.filter((n) => n._slug !==
   .destacada-img {
     position: relative;
     height: 350px;
+    background: #111;
   }
   .destacada-img img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
   .tag-destacado {
     position: absolute;

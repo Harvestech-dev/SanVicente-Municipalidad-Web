@@ -114,6 +114,9 @@
 .programas-page .featured-image {
   position: relative;
   min-height: 320px;
+  background: #f1f5f9;
+}
+.programas-page .featured-image:has(> img:first-child) {
   background: #1f2937;
 }
 .programas-page .featured-image img {
@@ -138,21 +141,27 @@
 .programas-page .featured-placeholder {
   width: 100%;
   height: 100%;
+  min-height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #374151 0%, #111827 100%);
+  background: #f1f5f9;
 }
-.programas-page .logo-placeholder {
-  max-width: 120px;
-  max-height: 120px;
+.programas-page .program-muni-fallback {
   object-fit: contain;
-  filter: brightness(0) invert(1);
+  object-position: center;
 }
-.programas-page .sigla-placeholder {
-  font-size: 3rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.9);
+.programas-page .program-muni-fallback--featured {
+  width: auto;
+  height: auto;
+  max-width: min(200px, 45%);
+  max-height: min(160px, 40%);
+}
+.programas-page .program-muni-fallback--card {
+  width: auto;
+  height: auto;
+  max-width: min(120px, 55%);
+  max-height: min(96px, 55%);
 }
 .programas-page .badge-destacada {
   position: absolute;
@@ -229,6 +238,9 @@
 .programas-page .card-image {
   position: relative;
   aspect-ratio: 16 / 10;
+  background: #f1f5f9;
+}
+.programas-page .card-image:has(> img:first-child) {
   background: #1f2937;
 }
 .programas-page .card-image img {
@@ -256,18 +268,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #374151 0%, #111827 100%);
-}
-.programas-page .card-logo {
-  max-width: 80px;
-  max-height: 80px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-}
-.programas-page .card-sigla {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.9);
+  background: #f1f5f9;
 }
 .programas-page .card-badge {
   position: absolute;

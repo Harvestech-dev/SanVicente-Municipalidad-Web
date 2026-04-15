@@ -99,6 +99,76 @@
 .agenda-grid-section {
   padding: 4rem 0;
 }
+
+/* Evento destacado - horizontal */
+.evento-destacado-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--color-primario);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.3s ease;
+}
+.evento-destacado-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.12);
+}
+.evento-dest-img {
+  position: relative;
+  background: #f1f5f9;
+  min-height: 340px;
+}
+.evento-dest-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.evento-dest-img .category-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1;
+}
+.evento-dest-content {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.evento-dest-content h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-secundario);
+  line-height: 1.2;
+  margin: 0;
+}
+.evento-dest-desc {
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+@media (max-width: 768px) {
+  .evento-destacado-card {
+    grid-template-columns: 1fr;
+  }
+  .evento-dest-img {
+    min-height: 280px;
+  }
+  .evento-dest-content {
+    padding: 1.5rem;
+  }
+  .evento-dest-content h2 {
+    font-size: 1.3rem;
+  }
+}
+
 .events-grid {
   display: grid;
   gap: 2rem;

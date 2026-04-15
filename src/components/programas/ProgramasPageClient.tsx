@@ -24,6 +24,8 @@ interface Programa {
 }
 
 const ITEMS_PER_PAGE = 6;
+/** Misma imagen por defecto que en la home (`CmsInicioClient` getProgramaHomeVisual). */
+const MUNI_ISOLOGO = "/Isologo_muni.png";
 
 function getPrimeraImagen(p: Programa): string {
   const raw = p as Record<string, unknown>;
@@ -280,11 +282,12 @@ export default function ProgramasPageClient() {
                     })()}
                     {!getPrimeraImagen(programaDestacado) ? (
                       <div className="featured-placeholder">
-                        <span className="sigla-placeholder">
-                          {(programaDestacado.txt_titulo ?? "P")
-                            .slice(0, 2)
-                            .toUpperCase()}
-                        </span>
+                        <img
+                          src={MUNI_ISOLOGO}
+                          alt=""
+                          className="program-muni-fallback program-muni-fallback--featured"
+                          loading="eager"
+                        />
                       </div>
                     ) : null}
                     {programaDestacado.boolean_featured && (
@@ -355,11 +358,12 @@ export default function ProgramasPageClient() {
                             })()}
                             {!getPrimeraImagen(prog) ? (
                               <div className="card-placeholder">
-                                <span className="card-sigla">
-                                  {(prog.txt_titulo ?? "P")
-                                    .slice(0, 2)
-                                    .toUpperCase()}
-                                </span>
+                                <img
+                                  src={MUNI_ISOLOGO}
+                                  alt=""
+                                  className="program-muni-fallback program-muni-fallback--card"
+                                  loading="lazy"
+                                />
                               </div>
                             ) : null}
                             {prog.boolean_featured && (

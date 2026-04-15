@@ -391,6 +391,7 @@ export default function CmsInicioClient({
         if (cms.type === "hero_carousel" || cms.type === "hero_carrousel") {
           const listaSlides = (d.lista_slides ?? []) as Array<{
             txt_titulo?: string;
+            txt_subtitulo?: string;
             txt_descripcion?: string;
             img_principal?: string;
             txt_categoria?: string;
@@ -402,25 +403,38 @@ export default function CmsInicioClient({
             <section key={key} className="hero-carrousel" aria-label="Galería de novedades">
               <div className="slides-container">
                 {listaSlides.map((s, index) => {
-                  const link = s.btn_boton?.link_destino ?? s.link_destino ?? "#";
-                  const btnLabel = s.btn_boton?.txt_label ?? "Leer más";
+                  const categoria = String(s.txt_categoria ?? "").trim();
+                  const titulo = String(s.txt_titulo ?? "").trim();
+                  const subtitulo = String(s.txt_subtitulo ?? s.txt_descripcion ?? "").trim();
+                  const btnLabel = String(s.btn_boton?.txt_label ?? "").trim();
+                  const linkDestino = String(s.btn_boton?.link_destino ?? s.link_destino ?? "").trim();
+                  const showButton = Boolean(btnLabel && linkDestino);
+                  const hasOverlay =
+                    Boolean(categoria) || Boolean(titulo) || Boolean(subtitulo);
+                  const hasSlideContent =
+                    Boolean(categoria) || Boolean(titulo) || Boolean(subtitulo) || showButton;
+                  const altImg = titulo || categoria || "";
                   return (
                     <div key={index} className={`slide ${index === 0 ? "active" : ""}`}>
-                      <img src={s.img_principal} alt={s.txt_titulo} className="slide-bg" />
-                      <div className="slide-overlay" />
-                      <div className="hero-container slide-content">
-                        <div className="text-wrapper">
-                          <span className="badge">{s.txt_categoria}</span>
-                          <h2 className="titulo">{s.txt_titulo}</h2>
-                          <p className="descripcion">{s.txt_descripcion}</p>
-                          <a href={link} className="btn-primary">
-                            {btnLabel}
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                              <path d="m9 18 6-6-6-6" />
-                            </svg>
-                          </a>
+                      <img src={s.img_principal} alt={altImg} className="slide-bg" />
+                      {hasOverlay && <div className="slide-overlay" />}
+                      {hasSlideContent && (
+                        <div className="hero-container slide-content">
+                          <div className="text-wrapper">
+                            {categoria && <span className="badge">{categoria}</span>}
+                            {titulo && <h2 className="titulo">{titulo}</h2>}
+                            {subtitulo && <p className="descripcion">{subtitulo}</p>}
+                            {showButton && (
+                              <a href={linkDestino} className="btn-primary">
+                                {btnLabel}
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                  <path d="m9 18 6-6-6-6" />
+                                </svg>
+                              </a>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   );
                 })}

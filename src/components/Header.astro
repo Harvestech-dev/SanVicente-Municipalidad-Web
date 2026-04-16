@@ -18,12 +18,29 @@ const navItems = [
     ],
   },
   {
-    label: "Licitaciones",
-    href: "/Transparencia/licitaciones",
+    label: "Transparencia",
+    href: "/Transparencia",
+    submenu: [
+      {
+        label: "Normativa",
+        href: "https://sanvicentegestion.com.ar/normativa",
+        target: "_blank",
+      },
+      {
+        label: "Licitaciones",
+        href: "/Transparencia/licitaciones",
+      },
+    ],
   },
   { label: "Programas", href: "/programas" },
-  { label: "Noticias", href: "/noticias" },
-  { label: "Agenda", href: "/agenda" },
+  {
+    label: "Actualidad",
+    href: "/actualidad",
+    submenu: [
+      { label: "Noticias", href: "/noticias" },
+      { label: "Agenda", href: "/agenda" },
+    ],
+  },
   // { label: "Recolección", href: "/recolecciones" }, // Oculto por el momento
   { label: "Contacto", href: "/contacto" },
 ];

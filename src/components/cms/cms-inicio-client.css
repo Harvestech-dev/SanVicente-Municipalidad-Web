@@ -268,10 +268,7 @@
   margin: 0 auto;
 }
 #cms-inicio-root .agenda-section .header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 #cms-inicio-root .agenda-section .agenda-destacada-card {
   background: white;
@@ -330,6 +327,11 @@
   align-items: center;
   font-size: 0.95rem;
   color: #64748b;
+}
+#cms-inicio-root .agenda-section .title-group {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
 }
 #cms-inicio-root .agenda-section .title-group h2 {
   font-size: clamp(1.8rem, 5vw, 2.25rem);
@@ -455,24 +457,9 @@
   font-weight: 700;
   background: white;
 }
-#cms-inicio-root .agenda-section .desktop-only {
-  display: none;
-}
-@media (min-width: 768px) {
-  #cms-inicio-root .agenda-section .desktop-only {
-    display: inline-flex;
-  }
-  #cms-inicio-root .agenda-section .mobile-only {
-    display: none;
-  }
-}
-#cms-inicio-root .agenda-section .mt-8 {
-  margin-top: 2rem;
-}
-#cms-inicio-root .agenda-section .full-width {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
+#cms-inicio-root .agenda-section .agenda-action-container {
+  margin-top: 3rem;
+  display: flex;
   justify-content: center;
 }
 
@@ -485,10 +472,12 @@
   margin: 0 auto;
 }
 #cms-inicio-root .noticias-section .header-noticias {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
+}
+#cms-inicio-root .noticias-section .header-noticias .title-group {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
 }
 #cms-inicio-root .noticias-section .header-noticias h2 {
   font-size: 2.5rem;

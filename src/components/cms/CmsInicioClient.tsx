@@ -713,6 +713,9 @@ export default function CmsInicioClient({
                   <div className="agenda-action-container">
                     <a href={viewAllHref} className="btn-outline">
                       {viewAllText}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
                     </a>
                   </div>
                 )}
@@ -867,6 +870,9 @@ export default function CmsInicioClient({
                   <div className="footer-action">
                     <a href={urlVerTodo} className="btn-more">
                       {textoVerTodo}
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
                     </a>
                   </div>
                 )}

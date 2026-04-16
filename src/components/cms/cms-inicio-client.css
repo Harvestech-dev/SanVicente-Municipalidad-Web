@@ -448,16 +448,16 @@
 #cms-inicio-root .agenda-section .btn-outline {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.85rem 2rem;
-  min-height: 48px;
-  border: 1px solid var(--color-primario);
+  background: white;
   color: var(--color-primario);
-  text-decoration: none;
+  border: 1px solid var(--color-primario);
   border-radius: 14px;
+  text-decoration: none;
   font-weight: 700;
   font-size: 0.95rem;
-  background: white;
 }
 #cms-inicio-root .agenda-section .agenda-action-container {
   margin-top: 3rem;
@@ -577,7 +577,7 @@
   }
   #cms-inicio-root .featured-programs .btn-ver-todos,
   #cms-inicio-root .noticias-section .btn-ver-todo,
-  #cms-inicio-root .agenda-section .btn-outline.full-width,
+  #cms-inicio-root .agenda-section .btn-outline,
   #cms-inicio-root .useful-phones .btn-more {
     display: flex;
     width: 100%;

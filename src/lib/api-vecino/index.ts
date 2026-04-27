@@ -8,6 +8,8 @@ export { API_VECINO_CONFIG } from "./config";
 export { adaptVecinoNewsToNoticia, adaptVecinoEventToEvento } from "./adapters";
 export {
   fetchVecinoNews,
+  fetchVecinoNewsById,
+  fetchNoticiaBySlug,
   fetchVecinoEvents,
   fetchNoticiasAdaptadas,
   fetchEventosAdaptados,

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaShareAlt } from "react-icons/fa";
-import { fetchNoticiasAdaptadas } from "../../lib/api-vecino";
+import { fetchNoticiaBySlug } from "../../lib/api-vecino";
 import {
   DetailImageCarousel,
   DetailImageThumbnailsRow,
@@ -51,11 +51,10 @@ export default function NoticiaDetailClient({ slug }: { slug: string | null }) {
     setNotFound(false);
     setNoticia(null);
 
-    fetchNoticiasAdaptadas()
-      .then((lista) => {
+    fetchNoticiaBySlug(safeSlug)
+      .then((found) => {
         if (cancelled) return;
-        const found = (lista as Noticia[]).find((n) => n._slug === safeSlug) ?? null;
-        setNoticia(found);
+        setNoticia(found as Noticia | null);
         setNotFound(!found);
       })
       .catch(() => {

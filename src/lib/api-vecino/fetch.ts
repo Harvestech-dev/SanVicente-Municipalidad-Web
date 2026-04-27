@@ -155,6 +155,44 @@ export async function fetchVecinoEvents(): Promise<VecinoEventItem[]> {
 }
 
 /**
+ * Obtiene una noticia por ID desde API Vecino.
+ * Retorna null si no existe o falla.
+ */
+export async function fetchVecinoNewsById(id: number): Promise<VecinoNewsItem | null> {
+  if (isVecinoDevLocalMode()) {
+    const items = await fetchVecinoNews();
+    return items.find((n) => n.id === id) ?? null;
+  }
+
+  const base = API_VECINO_CONFIG.BASE_URL;
+  if (!base) return null;
+
+  const url = `${base}${API_VECINO_CONFIG.ENDPOINTS.NEWS_DETAIL(id)}`;
+  try {
+    const res = await fetchWithTimeout(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data || typeof data !== "object" || !("id" in data)) return null;
+    return data as VecinoNewsItem;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Noticia individual adaptada al formato interno.
+ * Extrae el ID del slug (formato: {nombre-slugificado}-{id}).
+ */
+export async function fetchNoticiaBySlug(slug: string) {
+  const parts = slug.split("-");
+  const id = parseInt(parts[parts.length - 1] ?? "", 10);
+  if (!id || isNaN(id)) return null;
+  const raw = await fetchVecinoNewsById(id);
+  if (!raw) return null;
+  return adaptVecinoNewsToNoticia(raw);
+}
+
+/**
  * Noticias adaptadas al formato interno (lista_noticias).
  */
 export async function fetchNoticiasAdaptadas() {

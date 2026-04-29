@@ -1,26 +1,10 @@
 ---
 import Layout from "../../../../layouts/Layout.astro";
 import LicitacionDetailClient from "../../../../components/licitaciones/LicitacionDetailClient";
-import { fetchBiddings } from "../../../../lib/api-licitaciones";
 
-export async function getStaticPaths() {
-  try {
-    const { items } = await fetchBiddings({
-      limit: 100,
-      status: "all",
-      sort_by: "publication_date",
-      sort_order: "desc",
-    });
-    return (items ?? []).map((lic) => ({
-      params: { id: String(lic.id) },
-      props: { id: String(lic.id) },
-    }));
-  } catch {
-    return [];
-  }
-}
+export const prerender = false;
 
-const { id } = Astro.props as { id: string };
+const id = Astro.params.id ?? "";
 ---
 
 <Layout title="Detalle | Licitaciones">

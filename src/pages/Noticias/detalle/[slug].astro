@@ -2,15 +2,8 @@
 import Layout from "../../../layouts/Layout.astro";
 import NoticiaDetailClient from "../../../components/noticias/NoticiaDetailClient";
 import sitioData from "../../../data/sitio.json";
-import { fetchNoticiasAdaptadas } from "../../../lib/api-vecino";
 
-export async function getStaticPaths() {
-  const noticias = await fetchNoticiasAdaptadas();
-  return (noticias ?? [])
-    .map((n) => String(n?._slug ?? "").trim())
-    .filter((slug) => slug !== "")
-    .map((slug) => ({ params: { slug } }));
-}
+export const prerender = false;
 
 const slug = Astro.params.slug ?? null;
 ---

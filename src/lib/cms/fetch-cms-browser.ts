@@ -105,13 +105,6 @@ async function fetchAndPersistCMS(
       const json = (await res.json()) as CMSComponentsResponse;
       if (!res.ok || !json.success || !json.data?.components) return [];
       const data = json.data.components.filter((c) => c.isActive && c.isVisible);
-      if (typeof console !== "undefined") {
-        console.log("[CMS] Componentes obtenidos:", {
-          url,
-          total: data.length,
-          components: data,
-        });
-      }
       cmsDataCache.set(cacheKey, { data, ts: Date.now() });
       setCache(CMS_BROWSER_CACHE_KEY, data, context, CACHE_TTLS.cmsComponentsMs);
       return data;

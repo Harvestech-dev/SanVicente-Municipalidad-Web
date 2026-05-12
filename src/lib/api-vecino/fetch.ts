@@ -56,31 +56,16 @@ export async function fetchVecinoNews(): Promise<VecinoNewsItem[]> {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
-          if (typeof console !== "undefined") {
-            console.info(
-              "[API Vecino] Development: noticias desde /data/noticiasLocal.json"
-            );
-          }
           return data.filter((n: VecinoNewsItem) => !n.deleted_at);
         }
       }
     } catch {
       /* seguir a API */
     }
-    if (typeof console !== "undefined") {
-      console.warn(
-        "[API Vecino] Development: noticiasLocal.json no usable; se intenta la API"
-      );
-    }
   }
 
   const base = API_VECINO_CONFIG.BASE_URL;
   if (!base) {
-    if (typeof console !== "undefined") {
-      console.warn(
-        "[API Vecino] PUBLIC_API_VECINO_URL no definida: noticias no se cargarán en este build. Definir en Netlify: Site settings > Environment variables."
-      );
-    }
     return [];
   }
 
@@ -111,31 +96,16 @@ export async function fetchVecinoEvents(): Promise<VecinoEventItem[]> {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
-          if (typeof console !== "undefined") {
-            console.info(
-              "[API Vecino] Development: eventos desde /data/agendaLocal.json"
-            );
-          }
           return data.filter((e: VecinoEventItem) => !e.deleted_at);
         }
       }
     } catch {
       /* seguir a API */
     }
-    if (typeof console !== "undefined") {
-      console.warn(
-        "[API Vecino] Development: agendaLocal.json no usable; se intenta la API"
-      );
-    }
   }
 
   const base = API_VECINO_CONFIG.BASE_URL;
   if (!base) {
-    if (typeof console !== "undefined") {
-      console.warn(
-        "[API Vecino] PUBLIC_API_VECINO_URL no definida: eventos no se cargarán en este build."
-      );
-    }
     return [];
   }
 

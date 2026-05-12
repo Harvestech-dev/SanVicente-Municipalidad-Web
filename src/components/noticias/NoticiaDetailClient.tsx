@@ -76,6 +76,15 @@ export default function NoticiaDetailClient({ slug }: { slug: string | null }) {
     };
   }, [safeSlug]);
 
+  const cuerpoHtml = useMemo(() => {
+    const raw = noticia?.txt_cuerpo ?? "";
+    if (!raw.trim()) return "";
+    if (raw.includes("<")) {
+      return linkifyUrlsInHtml(raw);
+    }
+    return plainTextWithNewlinesToParagraphHtml(raw);
+  }, [noticia?.txt_cuerpo]);
+
   if (loading) {
     return (
       <main className="noticia-detail article-page">
@@ -113,15 +122,6 @@ export default function NoticiaDetailClient({ slug }: { slug: string | null }) {
     src,
     alt: `${title} — imagen ${i + 1}`,
   }));
-
-  const cuerpoHtml = useMemo(() => {
-    const raw = noticia.txt_cuerpo ?? "";
-    if (!raw.trim()) return "";
-    if (raw.includes("<")) {
-      return linkifyUrlsInHtml(raw);
-    }
-    return plainTextWithNewlinesToParagraphHtml(raw);
-  }, [noticia.txt_cuerpo]);
 
   const onShare = async () => {
     if (typeof window === "undefined") return;

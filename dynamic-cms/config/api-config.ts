@@ -11,9 +11,6 @@ export const API_CONFIG = {
     if (isProduction) {
       const prodApiUrl = process.env.NEXT_PUBLIC_API_URL;
       if (!prodApiUrl || prodApiUrl.includes("localhost")) {
-        console.warn(
-          "⚠️ NEXT_PUBLIC_API_URL con localhost en producción, usando fallback"
-        );
         return "https://micms.website/api/public/v1";
       }
       return prodApiUrl;

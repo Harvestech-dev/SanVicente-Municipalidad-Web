@@ -41,9 +41,6 @@ export async function fetchBiddings(
 ): Promise<{ items: BiddingItem[]; pagination: BiddingsPagination }> {
   const base = API_LICITACIONES_CONFIG.BASE_URL;
   if (!base) {
-    if (import.meta.env.DEV) {
-      console.log("[api-licitaciones] PUBLIC_API_URL no configurada, no se realiza la petición.");
-    }
     return { items: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } };
   }
 
@@ -55,28 +52,14 @@ export async function fetchBiddings(
   if (params?.limit != null) url.searchParams.set("limit", String(params.limit));
 
   const urlString = url.toString();
-  if (import.meta.env.DEV) {
-    console.log("[api-licitaciones] URL:", urlString);
-  }
 
   try {
     const res = await fetchWithTimeout(urlString);
     if (!res.ok) {
-      if (import.meta.env.DEV) {
-        console.log("[api-licitaciones] Respuesta:", res.status, res.statusText);
-      }
       return { items: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } };
     }
 
     const json = (await res.json()) as BiddingsResponse;
-    if (import.meta.env.DEV) {
-      console.log("[api-licitaciones] Respuesta:", {
-        success: json.success,
-        hasData: !!json.data,
-        itemsCount: json.data?.items?.length ?? 0,
-        pagination: json.data?.pagination,
-      });
-    }
     if (!json.success || !json.data) {
       return { items: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } };
     }
@@ -85,10 +68,7 @@ export async function fetchBiddings(
       items: json.data.items,
       pagination: json.data.pagination ?? { page: 1, limit: 10, total: 0, totalPages: 0 },
     };
-  } catch (err) {
-    if (import.meta.env.DEV) {
-      console.log("[api-licitaciones] Error:", err);
-    }
+  } catch {
     return { items: [], pagination: { page: 1, limit: 10, total: 0, totalPages: 0 } };
   }
 }
@@ -103,17 +83,11 @@ export async function fetchBiddingById(id: string): Promise<BiddingItem | null> 
   if (!base || !id) return null;
 
   const urlString = `${base.replace(/\/$/, "")}${API_LICITACIONES_CONFIG.ENDPOINTS.BIDDING_DETAIL(id)}`;
-  if (import.meta.env.DEV) {
-    console.log("[api-licitaciones] Detalle URL:", urlString);
-  }
 
   try {
     const res = await fetchWithTimeout(urlString);
     if (!res.ok) return null;
     const json = (await res.json()) as BiddingDetailResponse;
-    if (import.meta.env.DEV) {
-      console.log("[api-licitaciones] Detalle respuesta:", { success: json.success, hasData: !!json.data });
-    }
     return json.success && json.data ? json.data : null;
   } catch {
     return null;

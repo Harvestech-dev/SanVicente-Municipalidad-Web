@@ -75,6 +75,22 @@ export default function AgendaDetailClient({ eventId }: { eventId: string | null
     };
   }, [idNum]);
 
+  const descripcion =
+    (ev?.txt_descripcion && String(ev.txt_descripcion).trim()) ||
+    (ev?.txt_ubicacion &&
+    String(ev.txt_ubicacion).trim() &&
+    ev.txt_ubicacion !== "Consultar"
+      ? ev.txt_ubicacion
+      : "");
+
+  const descripcionHtml = useMemo(() => {
+    if (!descripcion.trim()) return "";
+    if (descripcion.includes("<")) {
+      return linkifyUrlsInHtml(descripcion);
+    }
+    return plainTextWithNewlinesToParagraphHtml(descripcion);
+  }, [descripcion]);
+
   if (loading) {
     return (
       <main className="agenda-detail-page">
@@ -99,20 +115,6 @@ export default function AgendaDetailClient({ eventId }: { eventId: string | null
       </main>
     );
   }
-
-  const descripcion =
-    (ev.txt_descripcion && String(ev.txt_descripcion).trim()) ||
-    (ev.txt_ubicacion && String(ev.txt_ubicacion).trim() && ev.txt_ubicacion !== "Consultar"
-      ? ev.txt_ubicacion
-      : "");
-
-  const descripcionHtml = useMemo(() => {
-    if (!descripcion.trim()) return "";
-    if (descripcion.includes("<")) {
-      return linkifyUrlsInHtml(descripcion);
-    }
-    return plainTextWithNewlinesToParagraphHtml(descripcion);
-  }, [descripcion]);
 
   const onShare = async () => {
     if (typeof window === "undefined") return;

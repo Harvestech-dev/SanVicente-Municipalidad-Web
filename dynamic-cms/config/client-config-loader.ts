@@ -6,7 +6,6 @@ import { getDefaultConfig } from "./default-config";
 async function _getClientConfigInternal(hostname: string): Promise<ClientConfig> {
   const cleanHostname = hostname.split(":")[0];
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const isDev = process.env.NODE_ENV === "development";
 
   if (apiUrl) {
     let baseUrl: string;
@@ -38,13 +37,8 @@ async function _getClientConfigInternal(hostname: string): Promise<ClientConfig>
         const validation = safeValidateClientConfig(data);
         if (validation.success && validation.data) return validation.data;
       }
-    } catch (error) {
-      if (isDev) {
-        console.warn(
-          "[ClientConfig] Error loading from API:",
-          error instanceof Error ? error.message : error
-        );
-      }
+    } catch {
+      /* ignorar; se usa getDefaultConfig */
     }
   }
 
@@ -101,8 +95,8 @@ export async function loadClientConfigFromAPI(
       const validation = safeValidateClientConfig(data);
       if (validation.success && validation.data) return validation.data;
     }
-  } catch (error) {
-    console.error("[ClientConfig] Failed to load from API (client):", error);
+  } catch {
+    /* sin config remota */
   }
   return null;
 }

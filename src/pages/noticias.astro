@@ -192,13 +192,10 @@ const VECINO_DEV_LOCAL =
           const data = await res.json();
           if (Array.isArray(data)) {
             items = data.filter((n) => !n.deleted_at);
-            if (items.length > 0) {
-              console.info("[Noticias] Development: datos desde /data/noticiasLocal.json");
-            }
           }
         }
-      } catch (e) {
-        console.warn("[Noticias] noticiasLocal.json:", e);
+      } catch {
+        /* ignorar y seguir a API */
       }
     }
     if (items.length === 0 && apiBase) {
@@ -207,8 +204,8 @@ const VECINO_DEV_LOCAL =
         if (!res.ok) throw new Error("Respuesta no OK");
         const data = await res.json();
         items = Array.isArray(data) ? data.filter((n) => !n.deleted_at) : [];
-      } catch (e) {
-        console.error("[API Vecino] Error al obtener noticias:", e);
+      } catch {
+        /* sin noticias remotas */
       }
     }
     return items;
@@ -229,11 +226,6 @@ const VECINO_DEV_LOCAL =
 
     try {
       if (items.length === 0) {
-        if (!vecinoDevLocal && !apiBase) {
-          console.warn(
-            "[API Vecino] PUBLIC_API_VECINO_URL no definida: no se cargarán noticias."
-          );
-        }
         if (noNewsSection) noNewsSection.style.display = "block";
         return;
       }
@@ -404,8 +396,7 @@ const VECINO_DEV_LOCAL =
       updateDisplay();
 
       // Nota: se quitó el botón de compartir sobre imágenes (UX).
-    } catch (e) {
-      console.error("[Noticias] Error al renderizar:", e);
+    } catch {
       if (noNewsSection) noNewsSection.style.display = "block";
     }
   }

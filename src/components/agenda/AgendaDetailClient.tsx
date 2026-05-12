@@ -2,11 +2,16 @@
  * Detalle de un evento (API Vecino) por id numérico (?id=).
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaShareAlt } from "react-icons/fa";
 import { fetchEventosAdaptados } from "../../lib/api-vecino";
+import {
+  linkifyUrlsInHtml,
+  plainTextWithNewlinesToParagraphHtml,
+} from "../../lib/textWithLinks";
 import { DetailSkeleton } from "../shared/DetailSkeleton";
 import { MediaActions } from "../shared/MediaActions";
+import TextWithLinks from "../shared/TextWithLinks";
 import "./agenda-detail-client.css";
 
 type Evento = {
@@ -101,6 +106,14 @@ export default function AgendaDetailClient({ eventId }: { eventId: string | null
       ? ev.txt_ubicacion
       : "");
 
+  const descripcionHtml = useMemo(() => {
+    if (!descripcion.trim()) return "";
+    if (descripcion.includes("<")) {
+      return linkifyUrlsInHtml(descripcion);
+    }
+    return plainTextWithNewlinesToParagraphHtml(descripcion);
+  }, [descripcion]);
+
   const onShare = async () => {
     if (typeof window === "undefined") return;
     const shareData = {
@@ -167,23 +180,21 @@ export default function AgendaDetailClient({ eventId }: { eventId: string | null
           <div className="agenda-detail-narrow">
             {String(ev.txt_horario ?? "").trim() && (
               <p className="agenda-detail-line">
-                <strong>Horario:</strong> {ev.txt_horario}
+                <strong>Horario:</strong>{" "}
+                <TextWithLinks text={String(ev.txt_horario)} />
               </p>
             )}
             {String(ev.txt_ubicacion ?? "").trim() &&
               ev.txt_ubicacion !== descripcion && (
                 <p className="agenda-detail-line">
-                  <strong>Lugar / info:</strong> {ev.txt_ubicacion}
+                  <strong>Lugar / info:</strong>{" "}
+                  <TextWithLinks text={String(ev.txt_ubicacion)} />
                 </p>
               )}
             {descripcion && (
               <div
                 className="agenda-detail-desc"
-                dangerouslySetInnerHTML={{
-                  __html: descripcion.includes("<")
-                    ? descripcion
-                    : `<p>${descripcion.replace(/\n/g, "</p><p>")}</p>`,
-                }}
+                dangerouslySetInnerHTML={{ __html: descripcionHtml }}
               />
             )}
             <div className="agenda-detail-footer">

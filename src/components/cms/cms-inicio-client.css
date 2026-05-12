@@ -271,17 +271,32 @@
   margin-bottom: 2.5rem;
 }
 #cms-inicio-root .agenda-section .agenda-destacada-card {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
   background: white;
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 3rem;
   border: 1px solid var(--color-primario);
 }
-#cms-inicio-root .agenda-section .agenda-destacada-link {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
+#cms-inicio-root .agenda-section .agenda-destacada-img-link {
+  display: block;
   text-decoration: none;
   color: inherit;
+}
+#cms-inicio-root .agenda-section .agenda-destacada-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+#cms-inicio-root .agenda-section .agenda-destacada-title-link:hover h3 {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+#cms-inicio-root .agenda-section .agenda-destacada-extract a,
+#cms-inicio-root .agenda-section .event-card-ubicacion a {
+  color: var(--color-primario);
+  font-weight: 700;
+  word-break: break-word;
 }
 #cms-inicio-root .agenda-section .agenda-destacada-img {
   position: relative;
@@ -368,18 +383,30 @@
   max-height: 420px;
   transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
-#cms-inicio-root .agenda-section a.event-card {
+#cms-inicio-root .agenda-section article.event-card {
   text-decoration: none;
   color: inherit;
-  cursor: pointer;
 }
-#cms-inicio-root .agenda-section a.event-card:hover {
+#cms-inicio-root .agenda-section article.event-card:hover {
   border-color: rgba(0, 0, 0, 0.12);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
 }
-#cms-inicio-root .agenda-section a.event-card:focus-visible {
+#cms-inicio-root .agenda-section .event-card-detail-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+#cms-inicio-root .agenda-section .event-card-detail-link:focus-visible {
   outline: 2px solid var(--color-primario);
   outline-offset: 2px;
+}
+#cms-inicio-root .agenda-section .event-card-ubicacion {
+  padding: 0 1.5rem 1rem;
+  margin-top: -0.25rem;
 }
 #cms-inicio-root .agenda-section .image-container {
   position: relative;
@@ -592,7 +619,7 @@
   #cms-inicio-root .noticias-section .destacada-link {
     grid-template-columns: 1fr;
   }
-  #cms-inicio-root .agenda-section .agenda-destacada-link {
+  #cms-inicio-root .agenda-section .agenda-destacada-card {
     grid-template-columns: 1fr;
   }
   #cms-inicio-root .agenda-section .agenda-destacada-img {

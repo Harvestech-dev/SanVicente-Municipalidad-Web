@@ -110,12 +110,31 @@
   border: 1px solid var(--color-primario);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   margin-bottom: 2.5rem;
-  text-decoration: none;
   color: inherit;
   transition: box-shadow 0.3s ease;
 }
 .evento-destacado-card:hover {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.12);
+}
+.evento-dest-img--link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  outline-offset: 2px;
+}
+.evento-dest-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+.evento-dest-title-link:hover h2 {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.evento-dest-content .info-item a,
+.evento-dest-desc a {
+  color: var(--color-primario);
+  font-weight: 700;
+  word-break: break-word;
 }
 .evento-dest-img {
   position: relative;
@@ -205,6 +224,15 @@
 .event-card-detail-link:focus-visible {
   outline: 2px solid var(--color-primario);
   outline-offset: 2px;
+}
+.event-card-ubicacion {
+  padding: 0 1.5rem 1.25rem;
+  margin-top: -0.35rem;
+}
+.event-card-ubicacion .info-item-ubicacion span a {
+  color: var(--color-primario);
+  font-weight: 700;
+  word-break: break-word;
 }
 .event-card-link-body {
   padding: 1.5rem;

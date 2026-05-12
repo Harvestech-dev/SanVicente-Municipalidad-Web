@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import agendaData from "../../data/agenda-cultural.json";
 import { fetchEventosAdaptados } from "../../lib/api-vecino";
+import TextWithLinks from "../shared/TextWithLinks";
 import "./agenda-page-client.css";
 
 type Evento = {
@@ -167,51 +168,80 @@ export default function AgendaPageClient() {
             <div className="container">
 
               {eventoDestacado && (
-                eventoDestacadoHref ? (
-                  <a href={eventoDestacadoHref} className="evento-destacado-card" id={`evento-${eventoDestacadoId}`}>
+                <article
+                  className="evento-destacado-card"
+                  id={
+                    eventoDestacadoHref
+                      ? `evento-${eventoDestacadoId}`
+                      : `evento-${eventoDestacadoIdx}`
+                  }
+                >
+                  {eventoDestacadoHref ? (
+                    <a
+                      href={eventoDestacadoHref}
+                      className="evento-dest-img evento-dest-img--link"
+                      aria-label={`Ver detalle: ${eventoDestacado.txt_titulo ?? "evento"}`}
+                    >
+                      <img
+                        src={eventoDestacado.img_principal ?? ""}
+                        alt={eventoDestacado.txt_titulo ?? ""}
+                        loading="eager"
+                      />
+                      {eventoDestacado.txt_categoria && (
+                        <span className="category-badge">{eventoDestacado.txt_categoria}</span>
+                      )}
+                    </a>
+                  ) : (
                     <div className="evento-dest-img">
-                      <img src={eventoDestacado.img_principal ?? ""} alt={eventoDestacado.txt_titulo ?? ""} loading="eager" />
-                      {eventoDestacado.txt_categoria && <span className="category-badge">{eventoDestacado.txt_categoria}</span>}
+                      <img
+                        src={eventoDestacado.img_principal ?? ""}
+                        alt={eventoDestacado.txt_titulo ?? ""}
+                        loading="eager"
+                      />
+                      {eventoDestacado.txt_categoria && (
+                        <span className="category-badge">{eventoDestacado.txt_categoria}</span>
+                      )}
                     </div>
-                    <div className="evento-dest-content">
+                  )}
+                  <div className="evento-dest-content">
+                    {eventoDestacadoHref ? (
+                      <a
+                        href={eventoDestacadoHref}
+                        className="evento-dest-title-link"
+                      >
+                        <h2>{eventoDestacado.txt_titulo}</h2>
+                      </a>
+                    ) : (
                       <h2>{eventoDestacado.txt_titulo}</h2>
-                      <div className="info-list">
-                        <div className="info-item"><span>{eventoDestacado.txt_fecha}</span></div>
-                        {String(eventoDestacado.txt_horario ?? "").trim() && (
-                          <div className="info-item"><span>{eventoDestacado.txt_horario}</span></div>
-                        )}
-                        {String(eventoDestacado.txt_ubicacion ?? "").trim() && (
-                          <div className="info-item"><span>{eventoDestacado.txt_ubicacion}</span></div>
-                        )}
-                        {String(eventoDestacado.txt_descripcion ?? "").trim() && (
-                          <p className="evento-dest-desc">{eventoDestacado.txt_descripcion}</p>
-                        )}
+                    )}
+                    <div className="info-list">
+                      <div className="info-item">
+                        <span>{eventoDestacado.txt_fecha}</span>
                       </div>
+                      {String(eventoDestacado.txt_horario ?? "").trim() && (
+                        <div className="info-item">
+                          <span>{eventoDestacado.txt_horario}</span>
+                        </div>
+                      )}
                     </div>
-                  </a>
-                ) : (
-                  <div className="evento-destacado-card" id={`evento-${eventoDestacadoIdx}`}>
-                    <div className="evento-dest-img">
-                      <img src={eventoDestacado.img_principal ?? ""} alt={eventoDestacado.txt_titulo ?? ""} loading="eager" />
-                      {eventoDestacado.txt_categoria && <span className="category-badge">{eventoDestacado.txt_categoria}</span>}
-                    </div>
-                    <div className="evento-dest-content">
-                      <h2>{eventoDestacado.txt_titulo}</h2>
-                      <div className="info-list">
-                        <div className="info-item"><span>{eventoDestacado.txt_fecha}</span></div>
-                        {String(eventoDestacado.txt_horario ?? "").trim() && (
-                          <div className="info-item"><span>{eventoDestacado.txt_horario}</span></div>
-                        )}
-                        {String(eventoDestacado.txt_ubicacion ?? "").trim() && (
-                          <div className="info-item"><span>{eventoDestacado.txt_ubicacion}</span></div>
-                        )}
-                        {String(eventoDestacado.txt_descripcion ?? "").trim() && (
-                          <p className="evento-dest-desc">{eventoDestacado.txt_descripcion}</p>
-                        )}
+                    {String(eventoDestacado.txt_ubicacion ?? "").trim() && (
+                      <div className="info-item">
+                        <span>
+                          <TextWithLinks
+                            text={String(eventoDestacado.txt_ubicacion)}
+                          />
+                        </span>
                       </div>
-                    </div>
+                    )}
+                    {String(eventoDestacado.txt_descripcion ?? "").trim() && (
+                      <p className="evento-dest-desc">
+                        <TextWithLinks
+                          text={String(eventoDestacado.txt_descripcion)}
+                        />
+                      </p>
+                    )}
                   </div>
-                )
+                </article>
               )}
 
               <div className="events-grid" id="eventsGrid">
@@ -231,7 +261,11 @@ export default function AgendaPageClient() {
                       }
                     >
                       {detailHref ? (
-                        <a href={detailHref} className="event-card-detail-link">
+                        <a
+                          href={detailHref}
+                          className="event-card-detail-link"
+                          aria-label={`Ver detalle: ${event.txt_titulo ?? "evento"}`}
+                        >
                           <div className="image-container">
                             <img src={event.img_principal ?? ""} alt={event.txt_titulo ?? ""} loading="lazy" />
                             {event.txt_categoria && <span className="category-badge">{event.txt_categoria}</span>}
@@ -243,9 +277,6 @@ export default function AgendaPageClient() {
                                 <div className="info-item"><span>{event.txt_fecha}</span></div>
                                 {String(event.txt_horario ?? "").trim() && (
                                   <div className="info-item"><span>{event.txt_horario}</span></div>
-                                )}
-                                {String(event.txt_ubicacion ?? "").trim() && (
-                                  <div className="info-item info-item-ubicacion"><span>{event.txt_ubicacion}</span></div>
                                 )}
                               </div>
                             </div>
@@ -265,13 +296,19 @@ export default function AgendaPageClient() {
                                 {String(event.txt_horario ?? "").trim() && (
                                   <div className="info-item"><span>{event.txt_horario}</span></div>
                                 )}
-                                {String(event.txt_ubicacion ?? "").trim() && (
-                                  <div className="info-item info-item-ubicacion"><span>{event.txt_ubicacion}</span></div>
-                                )}
                               </div>
                             </div>
                           </div>
                         </>
+                      )}
+                      {String(event.txt_ubicacion ?? "").trim() && (
+                        <div className="event-card-ubicacion">
+                          <div className="info-item info-item-ubicacion">
+                            <span>
+                              <TextWithLinks text={String(event.txt_ubicacion)} />
+                            </span>
+                          </div>
+                        </div>
                       )}
                     </article>
                   );

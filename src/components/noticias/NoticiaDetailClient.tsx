@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { FaShareAlt } from "react-icons/fa";
 import { fetchNoticiaBySlug } from "../../lib/api-vecino";
 import {
+  linkifyUrlsInHtml,
+  plainTextWithNewlinesToParagraphHtml,
+} from "../../lib/textWithLinks";
+import {
   DetailImageCarousel,
   DetailImageThumbnailsRow,
 } from "../shared/DetailImageGallery";
@@ -110,6 +114,15 @@ export default function NoticiaDetailClient({ slug }: { slug: string | null }) {
     alt: `${title} — imagen ${i + 1}`,
   }));
 
+  const cuerpoHtml = useMemo(() => {
+    const raw = noticia.txt_cuerpo ?? "";
+    if (!raw.trim()) return "";
+    if (raw.includes("<")) {
+      return linkifyUrlsInHtml(raw);
+    }
+    return plainTextWithNewlinesToParagraphHtml(raw);
+  }, [noticia.txt_cuerpo]);
+
   const onShare = async () => {
     if (typeof window === "undefined") return;
     const shareData = {
@@ -163,7 +176,7 @@ export default function NoticiaDetailClient({ slug }: { slug: string | null }) {
 
         <div className="article-body">
           <div className="container-narrow">
-            <div className="content" dangerouslySetInnerHTML={{ __html: noticia.txt_cuerpo ?? "" }} />
+            <div className="content" dangerouslySetInnerHTML={{ __html: cuerpoHtml }} />
 
             <div className="article-footer">
               <div className="detail-back-share-row">

@@ -2,6 +2,7 @@
 import agendaData from "../data/agenda-cultural.json";
 import sitioData from "../data/sitio.json";
 import { normalizePageUrl } from "../lib/normalize-page-url";
+import { plainTextToHtmlWithLinks } from "../lib/textWithLinks";
 
 interface Evento {
   _orden?: number;
@@ -75,7 +76,7 @@ const tema = sitioData._estilo;
             {String(eventoDestacado.txt_ubicacion ?? "").trim() && (
               <div class="info-item">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span>{eventoDestacado.txt_ubicacion}</span>
+                <span set:html={plainTextToHtmlWithLinks(String(eventoDestacado.txt_ubicacion ?? ""))} />
               </div>
             )}
           </div>
@@ -133,7 +134,7 @@ const tema = sitioData._estilo;
                 )}
                 {String(event.txt_ubicacion ?? "").trim() && (
                 <div class="info-item info-item-ubicacion">
-                  <span>{event.txt_ubicacion}</span>
+                  <span set:html={plainTextToHtmlWithLinks(String(event.txt_ubicacion ?? ""))} />
                 </div>
                 )}
               </div>
@@ -341,6 +342,13 @@ const tema = sitioData._estilo;
     gap: 0.75rem;
     color: #475569;
     font-size: 0.9rem;
+  }
+  .info-item :global(a) {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-word;
   }
   .icon {
     width: 18px;

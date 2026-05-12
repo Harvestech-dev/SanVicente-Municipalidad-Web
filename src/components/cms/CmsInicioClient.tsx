@@ -10,6 +10,7 @@ import {
 } from "../../lib/programas-utils";
 import { normalizePageUrl } from "../../lib/normalize-page-url";
 import { fetchNoticiasAdaptadas, fetchEventosAdaptados } from "../../lib/api-vecino";
+import TextWithLinks from "../shared/TextWithLinks";
 import "./cms-inicio-client.css";
 import { PromoCarousel } from "../../../slider_banner_files/PromoCarousel";
 import type { PromoCarouselData, PromoCarouselSlide } from "../../../slider_banner_files/promo-carousel-types";
@@ -627,7 +628,7 @@ export default function CmsInicioClient({
                       <article className="agenda-destacada-card">
                         <a
                           href={`/agenda/detalle/${eventoDestacado._orden ?? 0}`}
-                          className="agenda-destacada-link"
+                          className="agenda-destacada-img-link"
                           aria-label={`Ver detalle: ${eventoDestacado.txt_titulo ?? "evento"}`}
                         >
                           <div className="agenda-destacada-img">
@@ -642,21 +643,30 @@ export default function CmsInicioClient({
                               <span className="category-badge">{eventoDestacado.txt_categoria}</span>
                             ) : null}
                           </div>
-                          <div className="agenda-destacada-content">
-                            <h3>{eventoDestacado.txt_titulo}</h3>
-                            {String(eventoDestacado.txt_descripcion ?? "").trim() ? (
-                              <p className="agenda-destacada-extract">{eventoDestacado.txt_descripcion}</p>
-                            ) : null}
-                            <div className="agenda-destacada-meta">
-                              {String(eventoDestacado.txt_fecha ?? "").trim() ? (
-                                <span className="agenda-destacada-fecha">{eventoDestacado.txt_fecha}</span>
-                              ) : null}
-                              {String(eventoDestacado.txt_horario ?? "").trim() ? (
-                                <span className="agenda-destacada-hora">{eventoDestacado.txt_horario}</span>
-                              ) : null}
-                            </div>
-                          </div>
                         </a>
+                        <div className="agenda-destacada-content">
+                          <a
+                            href={`/agenda/detalle/${eventoDestacado._orden ?? 0}`}
+                            className="agenda-destacada-title-link"
+                          >
+                            <h3>{eventoDestacado.txt_titulo}</h3>
+                          </a>
+                          {String(eventoDestacado.txt_descripcion ?? "").trim() ? (
+                            <p className="agenda-destacada-extract">
+                              <TextWithLinks
+                                text={String(eventoDestacado.txt_descripcion)}
+                              />
+                            </p>
+                          ) : null}
+                          <div className="agenda-destacada-meta">
+                            {String(eventoDestacado.txt_fecha ?? "").trim() ? (
+                              <span className="agenda-destacada-fecha">{eventoDestacado.txt_fecha}</span>
+                            ) : null}
+                            {String(eventoDestacado.txt_horario ?? "").trim() ? (
+                              <span className="agenda-destacada-hora">{eventoDestacado.txt_horario}</span>
+                            ) : null}
+                          </div>
+                        </div>
                       </article>
                     )}
                     {gridEvents.length > 0 ? (
@@ -664,37 +674,45 @@ export default function CmsInicioClient({
                       {gridEvents.map((ev, i) => {
                         const eventId = ev._orden ?? i;
                         return (
-                          <a
+                          <article
                             key={ev._orden ?? `ev-${i}`}
-                            href={`/agenda/detalle/${eventId}`}
                             className="event-card"
-                            aria-label={`Ver detalle: ${ev.txt_titulo ?? "evento"}`}
                           >
-                            <div className="image-container">
-                              <img src={ev.img_principal} alt={ev.txt_titulo ?? ""} loading="lazy" />
-                              {String(ev.txt_categoria ?? "").trim() ? (
-                                <span className="category-badge">{ev.txt_categoria}</span>
-                              ) : null}
-                            </div>
-                            <div className="content">
-                              <h3>{ev.txt_titulo}</h3>
-                              <div className="info-list">
-                                <div className="info-item">
-                                  <span>{ev.txt_fecha}</span>
-                                </div>
-                                {String(ev.txt_horario ?? "").trim() ? (
-                                  <div className="info-item">
-                                    <span>{ev.txt_horario}</span>
-                                  </div>
-                                ) : null}
-                                {String(ev.txt_ubicacion ?? "").trim() ? (
-                                  <div className="info-item">
-                                    <span>{ev.txt_ubicacion}</span>
-                                  </div>
+                            <a
+                              href={`/agenda/detalle/${eventId}`}
+                              className="event-card-detail-link"
+                              aria-label={`Ver detalle: ${ev.txt_titulo ?? "evento"}`}
+                            >
+                              <div className="image-container">
+                                <img src={ev.img_principal} alt={ev.txt_titulo ?? ""} loading="lazy" />
+                                {String(ev.txt_categoria ?? "").trim() ? (
+                                  <span className="category-badge">{ev.txt_categoria}</span>
                                 ) : null}
                               </div>
-                            </div>
-                          </a>
+                              <div className="content">
+                                <h3>{ev.txt_titulo}</h3>
+                                <div className="info-list">
+                                  <div className="info-item">
+                                    <span>{ev.txt_fecha}</span>
+                                  </div>
+                                  {String(ev.txt_horario ?? "").trim() ? (
+                                    <div className="info-item">
+                                      <span>{ev.txt_horario}</span>
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </a>
+                            {String(ev.txt_ubicacion ?? "").trim() ? (
+                              <div className="event-card-ubicacion">
+                                <div className="info-item">
+                                  <span>
+                                    <TextWithLinks text={String(ev.txt_ubicacion)} />
+                                  </span>
+                                </div>
+                              </div>
+                            ) : null}
+                          </article>
                         );
                       })}
                     </div>

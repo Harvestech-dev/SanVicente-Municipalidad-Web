@@ -125,6 +125,14 @@
   color: #334155;
   line-height: 1.6;
 }
+.agenda-detail-line a,
+.agenda-detail-desc a {
+  color: var(--color-primario);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
 
 .agenda-detail-desc {
   color: #0f172a;

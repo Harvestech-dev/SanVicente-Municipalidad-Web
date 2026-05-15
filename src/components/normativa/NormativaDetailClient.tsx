@@ -198,6 +198,52 @@ export default function NormativaDetailClient({ slug }: Props) {
 
       <section className="detail-section">
         <div className="content-wrapper detail-layout">
+          {/*
+            UI futura: bloque "resumen extendido" arriba del visor PDF.
+            Cuando la API agregue campos largos (description, abstract,
+            considerandos, votación, etc.) renderizarlos aca como
+            <section className="detail-block block-resumen"> antes del PDF.
+            Hoy solo title/summary cortos -> van en el hero.
+          */}
+
+          {item.file?.url && (
+            <section className="detail-block block-pdf" data-section="pdf">
+              <div className="pdf-header">
+                <h2>Vista del documento</h2>
+                <a
+                  href={item.file.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pdf-open-link"
+                >
+                  Abrir en pestaña nueva ↗
+                </a>
+              </div>
+              <div className="pdf-viewer-wrapper">
+                <object
+                  data={`${item.file.url}#view=FitH`}
+                  type="application/pdf"
+                  className="pdf-viewer"
+                  aria-label={`Vista PDF de ${item.title}`}
+                >
+                  <div className="pdf-fallback">
+                    <p>
+                      Tu navegador no puede mostrar el PDF embebido.
+                    </p>
+                    <a
+                      href={item.file.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-outline-sm"
+                    >
+                      Descargar PDF
+                    </a>
+                  </div>
+                </object>
+              </div>
+            </section>
+          )}
+
           {item.body && (
             <section
               className="detail-block block-body"
@@ -209,6 +255,62 @@ export default function NormativaDetailClient({ slug }: Props) {
           )}
 
           <div className="detail-sidebar-sticky">
+            <div className="sidebar-card block-datos">
+              <h3>Datos del documento</h3>
+              <dl className="sidebar-data-list">
+                <div className="data-item">
+                  <dt className="label">Tipo</dt>
+                  <dd className="value">{typeLabel}</dd>
+                </div>
+                <div className="data-item">
+                  <dt className="label">Número</dt>
+                  <dd className="value">{item.numberPadded}</dd>
+                </div>
+                <div className="data-item">
+                  <dt className="label">Año</dt>
+                  <dd className="value">{item.year}</dd>
+                </div>
+                {item.area && (
+                  <div className="data-item">
+                    <dt className="label">Área</dt>
+                    <dd className="value">{item.area}</dd>
+                  </div>
+                )}
+                {item.signedAt && (
+                  <div className="data-item">
+                    <dt className="label">Firma</dt>
+                    <dd className="value">{formatDate(item.signedAt)}</dd>
+                  </div>
+                )}
+                {item.publishedAt && (
+                  <div className="data-item">
+                    <dt className="label">Publicación</dt>
+                    <dd className="value">{formatDate(item.publishedAt)}</dd>
+                  </div>
+                )}
+                {item.file?.pages != null && item.file.pages > 0 && (
+                  <div className="data-item">
+                    <dt className="label">Páginas</dt>
+                    <dd className="value">{item.file.pages}</dd>
+                  </div>
+                )}
+                {item.tags && item.tags.length > 0 && (
+                  <div className="data-item">
+                    <dt className="label">Tags</dt>
+                    <dd className="value">
+                      <div className="card-tags">
+                        {item.tags.map((tag) => (
+                          <span key={tag} className="tag-chip">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+
             <div className="sidebar-card block-documentos">
               <h3>Documento</h3>
               <div className="button-group">
@@ -249,62 +351,6 @@ export default function NormativaDetailClient({ slug }: Props) {
               </div>
             </div>
           </div>
-
-          <section className="detail-block data-block block-datos">
-            <h2>Datos del documento</h2>
-            <dl className="data-grid detail-grid">
-              <div className="data-item">
-                <dt className="label">Tipo</dt>
-                <dd className="value">{typeLabel}</dd>
-              </div>
-              <div className="data-item">
-                <dt className="label">Número</dt>
-                <dd className="value">{item.numberPadded}</dd>
-              </div>
-              <div className="data-item">
-                <dt className="label">Año</dt>
-                <dd className="value">{item.year}</dd>
-              </div>
-              {item.area && (
-                <div className="data-item">
-                  <dt className="label">Área</dt>
-                  <dd className="value">{item.area}</dd>
-                </div>
-              )}
-              {item.signedAt && (
-                <div className="data-item">
-                  <dt className="label">Firma</dt>
-                  <dd className="value">{formatDate(item.signedAt)}</dd>
-                </div>
-              )}
-              {item.publishedAt && (
-                <div className="data-item">
-                  <dt className="label">Publicación</dt>
-                  <dd className="value">{formatDate(item.publishedAt)}</dd>
-                </div>
-              )}
-              {item.file?.pages != null && (
-                <div className="data-item">
-                  <dt className="label">Páginas</dt>
-                  <dd className="value">{item.file.pages}</dd>
-                </div>
-              )}
-              {item.tags && item.tags.length > 0 && (
-                <div className="data-item data-item-full">
-                  <dt className="label">Tags</dt>
-                  <dd className="value">
-                    <div className="card-tags">
-                      {item.tags.map((tag) => (
-                        <span key={tag} className="tag-chip">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </dd>
-                </div>
-              )}
-            </dl>
-          </section>
 
           {item.relatedLegislations && item.relatedLegislations.length > 0 && (
             <section className="detail-block block-relacionadas">

@@ -4,11 +4,12 @@
  * Paginación server-side.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   fetchLegislationsInBrowser,
   type FetchLegislationsParams,
 } from "../../lib/api-legislaciones/fetch-browser";
+import { isMockEnabled } from "../../lib/api-legislaciones/mock";
 import type {
   LegislationListItem,
   LegislationStatus,
@@ -41,7 +42,7 @@ const STATUS_CLASSES: Record<LegislationStatus, string> = {
   vetada: "status-vetada",
 };
 
-const ITEMS_PER_PAGE = 12;
+const PAGE_SIZE = 50;
 const SEARCH_DEBOUNCE_MS = 350;
 
 const MIN_YEAR = 2022;
@@ -75,18 +76,23 @@ function formatFileSize(bytes: number | undefined): string {
 
 export default function NormativaPageClient() {
   const apiBase = (import.meta.env.PUBLIC_API_URL as string) || "";
+  const mockActive = isMockEnabled();
 
   const [tipo, setTipo] = useState<LegislationType>("ordinance");
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [year, setYear] = useState<string>("");
   const [status, setStatus] = useState<string>("");
-  const [page, setPage] = useState(1);
 
   const [items, setItems] = useState<LegislationListItem[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const pageRef = useRef(1);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const hasNext = pagination?.hasNext ?? false;
 
   const years = useMemo(() => getYearRange(), []);
 
@@ -95,52 +101,70 @@ export default function NormativaPageClient() {
     return () => clearTimeout(id);
   }, [searchInput]);
 
-  useEffect(() => {
-    setPage(1);
-  }, [tipo, search, year, status]);
+  const loadPage = useCallback(
+    async (targetPage: number, replace: boolean) => {
+      if (!apiBase && !mockActive) {
+        setError("PUBLIC_API_URL no configurada");
+        setLoading(false);
+        return;
+      }
+      if (replace) {
+        setLoading(true);
+        setItems([]);
+      } else {
+        setLoadingMore(true);
+      }
+      setError(null);
 
-  useEffect(() => {
-    if (!apiBase) {
-      setError("PUBLIC_API_URL no configurada");
-      setLoading(false);
-      return;
-    }
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
+      const params: FetchLegislationsParams = {
+        type: tipo,
+        page: targetPage,
+        limit: PAGE_SIZE,
+        sortBy: "year",
+        sortOrder: "desc",
+      };
+      if (search) params.search = search;
+      if (year) params.year = Number(year);
+      if (status) params.status = status as LegislationStatus;
 
-    const params: FetchLegislationsParams = {
-      type: tipo,
-      page,
-      limit: ITEMS_PER_PAGE,
-      sortBy: "year",
-      sortOrder: "desc",
-    };
-    if (search) params.search = search;
-    if (year) params.year = Number(year);
-    if (status) params.status = status as LegislationStatus;
-
-    fetchLegislationsInBrowser(apiBase, params)
-      .then(({ items: data, pagination: pag }) => {
-        if (cancelled) return;
-        setItems(data);
+      try {
+        const { items: data, pagination: pag } =
+          await fetchLegislationsInBrowser(apiBase, params);
         setPagination(pag);
-      })
-      .catch(() => {
-        if (!cancelled) setError("Error al cargar normativa");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+        setItems((prev) => (replace ? data : [...prev, ...data]));
+        pageRef.current = targetPage;
+      } catch {
+        setError("Error al cargar normativa");
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
+      }
+    },
+    [apiBase, mockActive, tipo, search, year, status]
+  );
 
-    return () => {
-      cancelled = true;
-    };
-  }, [apiBase, tipo, search, year, status, page]);
+  useEffect(() => {
+    pageRef.current = 1;
+    loadPage(1, true);
+  }, [loadPage]);
+
+  useEffect(() => {
+    if (!hasNext || loadingMore || loading) return;
+    const node = sentinelRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          loadPage(pageRef.current + 1, false);
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasNext, loadingMore, loading, loadPage]);
 
   const activeTab = TYPE_TABS.find((t) => t.value === tipo)!;
-
-  const totalPages = pagination?.pages ?? 0;
   const total = pagination?.total ?? 0;
 
   const onResetFiltros = () => {
@@ -148,12 +172,11 @@ export default function NormativaPageClient() {
     setSearch("");
     setYear("");
     setStatus("");
-    setPage(1);
   };
 
   const hasActiveFilters = !!(searchInput || year || status);
 
-  if (!apiBase) {
+  if (!apiBase && !mockActive) {
     return (
       <div className="normativa-container">
         <section className="hero-normativa">
@@ -287,7 +310,7 @@ export default function NormativaPageClient() {
             <p className="results-count">
               {total === 0
                 ? `Sin resultados`
-                : `${total} ${total === 1 ? "documento" : "documentos"}`}
+                : `Mostrando ${items.length} de ${total} ${total === 1 ? "documento" : "documentos"}`}
             </p>
           </div>
         )}
@@ -327,60 +350,44 @@ export default function NormativaPageClient() {
 
           {!loading && !error && items.length > 0 && (
             <>
-              <ul className="normativa-list">
+              <ul className="normativa-list" role="list">
+                <li className="normativa-row header-row" aria-hidden>
+                  <span className="col-id">{activeTab.singular}</span>
+                  <span className="col-title">Título</span>
+                  <span className="col-status">Estado</span>
+                  <span className="col-date">Publicada</span>
+                  <span className="col-actions">Acciones</span>
+                </li>
                 {items.map((leg) => (
-                  <li key={leg._id} className="normativa-card">
-                    <div className="card-main">
-                      <div className="card-meta-row">
-                        <span className="card-number">
-                          {activeTab.singular} N° {leg.numberPadded}
-                        </span>
-                        <span className="card-year">/{leg.year}</span>
-                        <span
-                          className={`status-badge ${STATUS_CLASSES[leg.status] ?? ""}`}
-                        >
-                          {STATUS_LABELS[leg.status] ?? leg.status}
-                        </span>
-                      </div>
-                      <h3 className="card-title">
-                        <a
-                          href={`/Transparencia/normativa/${encodeURIComponent(leg.slug)}`}
-                          className="card-title-link"
-                        >
-                          {leg.title}
-                        </a>
-                      </h3>
-                      {leg.summary && <p className="card-summary">{leg.summary}</p>}
-                      <div className="card-info-row">
-                        {leg.area && (
-                          <span className="card-info-item">
-                            <span className="label">Área:</span> {leg.area}
-                          </span>
-                        )}
-                        {leg.publishedAt && (
-                          <span className="card-info-item">
-                            <span className="label">Publicada:</span>{" "}
-                            {formatDate(leg.publishedAt)}
-                          </span>
-                        )}
-                        {leg.file?.pages != null && (
-                          <span className="card-info-item">
-                            <span className="label">Páginas:</span>{" "}
-                            {leg.file.pages}
-                          </span>
-                        )}
-                      </div>
-                      {leg.tags && leg.tags.length > 0 && (
-                        <div className="card-tags">
-                          {leg.tags.map((tag) => (
-                            <span key={tag} className="tag-chip">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                  <li key={leg._id} className="normativa-row">
+                    <span className="col-id">
+                      <span className="card-type">{activeTab.singular}</span>
+                      <span className="card-number">N° {leg.numberPadded}</span>
+                      <span className="card-year">/{leg.year}</span>
+                    </span>
+                    <span className="col-title">
+                      <a
+                        href={`/Transparencia/normativa/${encodeURIComponent(leg.slug)}`}
+                        className="card-title-link"
+                        title={leg.title}
+                      >
+                        {leg.title}
+                      </a>
+                      {leg.area && (
+                        <span className="col-title-area">{leg.area}</span>
                       )}
-                    </div>
-                    <div className="card-actions">
+                    </span>
+                    <span className="col-status">
+                      <span
+                        className={`status-badge ${STATUS_CLASSES[leg.status] ?? ""}`}
+                      >
+                        {STATUS_LABELS[leg.status] ?? leg.status}
+                      </span>
+                    </span>
+                    <span className="col-date">
+                      {leg.publishedAt ? formatDate(leg.publishedAt) : "—"}
+                    </span>
+                    <span className="col-actions">
                       {leg.file?.url && (
                         <a
                           href={leg.file.url}
@@ -388,10 +395,15 @@ export default function NormativaPageClient() {
                           rel="noopener noreferrer"
                           className="btn-outline-sm"
                           aria-label={`Descargar PDF de ${leg.title}`}
+                          title={
+                            leg.file.size > 0
+                              ? `PDF (${formatFileSize(leg.file.size)})`
+                              : "PDF"
+                          }
                         >
                           <svg
-                            width={16}
-                            height={16}
+                            width={14}
+                            height={14}
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -404,21 +416,16 @@ export default function NormativaPageClient() {
                             <line x1={12} y1={15} x2={12} y2={3} />
                           </svg>
                           PDF
-                          {leg.file.size > 0 && (
-                            <span className="file-size">
-                              {formatFileSize(leg.file.size)}
-                            </span>
-                          )}
                         </a>
                       )}
                       <a
                         href={`/Transparencia/normativa/${encodeURIComponent(leg.slug)}`}
                         className="btn-primary-sm"
                       >
-                        Ver completo
+                        Ver
                         <svg
-                          width={16}
-                          height={16}
+                          width={14}
+                          height={14}
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -429,36 +436,21 @@ export default function NormativaPageClient() {
                           <path d="m9 18 6-6-6-6" />
                         </svg>
                       </a>
-                    </div>
+                    </span>
                   </li>
                 ))}
               </ul>
 
-              {totalPages > 1 && (
-                <nav
-                  className="pagination"
-                  aria-label="Paginación de resultados"
-                >
-                  <button
-                    type="button"
-                    className="page-btn"
-                    disabled={!pagination?.hasPrev}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  >
-                    ← Anterior
-                  </button>
-                  <span className="page-info">
-                    Página {page} de {totalPages}
-                  </span>
-                  <button
-                    type="button"
-                    className="page-btn"
-                    disabled={!pagination?.hasNext}
-                    onClick={() => setPage((p) => p + 1)}
-                  >
-                    Siguiente →
-                  </button>
-                </nav>
+              <div
+                ref={sentinelRef}
+                className="infinite-sentinel"
+                aria-hidden
+              />
+              {loadingMore && (
+                <div className="loading-more">Cargando más…</div>
+              )}
+              {!hasNext && items.length > 0 && (
+                <div className="end-of-list">— Fin del listado —</div>
               )}
             </>
           )}

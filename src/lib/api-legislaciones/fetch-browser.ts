@@ -14,6 +14,7 @@ import type {
   SortBy,
   SortOrder,
 } from "./types";
+import { getMockBySlug, getMockList, isMockEnabled } from "./mock";
 
 const FETCH_TIMEOUT = 10000;
 const DEFAULT_PAGINATION: Pagination = {
@@ -84,6 +85,12 @@ export async function fetchLegislationsInBrowser(
   apiBase: string,
   params?: FetchLegislationsParams
 ): Promise<{ items: LegislationListItem[]; pagination: Pagination }> {
+  if (isMockEnabled()) {
+    console.log("[legislaciones:MOCK] params", params);
+    const result = getMockList(params);
+    console.log("[legislaciones:MOCK] result", result);
+    return result;
+  }
   const base = (apiBase ?? "").trim();
   if (!base) {
     console.warn("[legislaciones] apiBase vacío");
@@ -119,6 +126,12 @@ export async function fetchLegislationBySlugInBrowser(
   apiBase: string,
   slug: string
 ): Promise<LegislationDetail | null> {
+  if (isMockEnabled()) {
+    console.log("[legislaciones:detalle:MOCK] slug", slug);
+    const item = getMockBySlug(slug);
+    console.log("[legislaciones:detalle:MOCK] result", item);
+    return item;
+  }
   const base = (apiBase ?? "").trim().replace(/\/$/, "");
   if (!base || !slug) {
     console.warn("[legislaciones:detalle] apiBase o slug vacío", { base, slug });

@@ -1,0 +1,394 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import NormativaPageClient from "../../components/normativa/NormativaPageClient";
+---
+
+<Layout title="Normativa | Municipalidad de San Vicente">
+  <NormativaPageClient client:load />
+</Layout>
+
+<style is:global>
+  .normativa-container {
+    min-height: 100vh;
+    background-color: var(--color-fondo-claro);
+  }
+  .normativa-container .content-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .normativa-container .grid-gap {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Hero */
+  .normativa-container .hero-normativa {
+    background-color: var(--color-primario);
+    color: white;
+    padding: 3.5rem 0;
+    text-align: center;
+  }
+  .normativa-container .hero-normativa .hero-icon {
+    background: rgba(255, 255, 255, 0.18);
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+  }
+  .normativa-container .hero-normativa h1 {
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    font-weight: 800;
+    margin: 0 0 0.75rem;
+    line-height: 1.15;
+  }
+  .normativa-container .hero-normativa p {
+    font-size: 1.1rem;
+    opacity: 0.92;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Tabs tipo */
+  .normativa-container .type-tabs-section {
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.25rem 0 0;
+  }
+  .normativa-container .type-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .normativa-container .type-tab {
+    background: transparent;
+    color: #475569;
+    -webkit-text-fill-color: #475569;
+    border: none;
+    padding: 0.85rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: -1px;
+  }
+  .normativa-container .type-tab:hover {
+    color: var(--color-primario);
+    -webkit-text-fill-color: var(--color-primario);
+  }
+  .normativa-container .type-tab.active {
+    color: var(--color-primario);
+    -webkit-text-fill-color: var(--color-primario);
+    border-bottom-color: var(--color-primario);
+  }
+
+  /* Filtros */
+  .normativa-container .filters-bar {
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.25rem 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .normativa-container .filters-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .normativa-container .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 240px;
+    max-width: 360px;
+  }
+  .normativa-container .search-wrapper .search-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--color-primario);
+    pointer-events: none;
+  }
+  .normativa-container .search-input {
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+    min-height: 40px;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+  }
+  .normativa-container .search-input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+  }
+  .normativa-container .selects-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .normativa-container .filter-select {
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 0.9rem;
+    color: #0f172a;
+    min-height: 40px;
+    cursor: pointer;
+  }
+  .normativa-container .filter-select:focus {
+    outline: none;
+    border-color: var(--color-primario);
+  }
+  .normativa-container .btn-ghost {
+    background: none;
+    border: none;
+    color: var(--color-primario);
+    -webkit-text-fill-color: var(--color-primario);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+  }
+  .normativa-container .btn-ghost:hover {
+    text-decoration: underline;
+  }
+  .normativa-container .results-count-row {
+    margin-top: 0.75rem;
+  }
+  .normativa-container .results-count {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  /* Listado tabla compacta */
+  .normativa-container .list-section {
+    padding: 1.5rem 0 4rem;
+  }
+  .normativa-container .normativa-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .normativa-container .normativa-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 120px 130px 170px;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s;
+    font-size: 0.875rem;
+  }
+  .normativa-container .normativa-row:last-child {
+    border-bottom: none;
+  }
+  .normativa-container .normativa-row:not(.header-row):hover {
+    background: #f8fafc;
+  }
+  .normativa-container .header-row {
+    background: #f1f5f9;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748b;
+    padding: 0.55rem 1rem;
+  }
+
+  .normativa-container .col-id {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    white-space: nowrap;
+    flex-wrap: wrap;
+  }
+  .normativa-container .card-type {
+    font-weight: 700;
+    color: var(--color-texto);
+    font-size: 0.82rem;
+  }
+  .normativa-container .card-number {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-weight: 700;
+    color: var(--color-primario);
+    font-size: 0.82rem;
+  }
+  .normativa-container .card-year {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color: #64748b;
+    font-size: 0.78rem;
+  }
+
+  .normativa-container .col-title {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .normativa-container .card-title-link {
+    color: var(--color-texto);
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    transition: color 0.15s;
+  }
+  .normativa-container .card-title-link:hover {
+    color: var(--color-primario);
+  }
+  .normativa-container .col-title-area {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin-top: 0.15rem;
+  }
+
+  .normativa-container .col-status .status-badge {
+    padding: 0.18rem 0.55rem;
+    border-radius: 99px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    display: inline-block;
+  }
+  .normativa-container .status-vigente {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  .normativa-container .status-modificada {
+    background: #ffedd5;
+    color: #c2410c;
+  }
+  .normativa-container .status-derogada {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+  .normativa-container .status-vetada {
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .normativa-container .col-date {
+    font-size: 0.82rem;
+    color: #64748b;
+    white-space: nowrap;
+  }
+
+  .normativa-container .col-actions {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: flex-end;
+  }
+  .normativa-container .btn-primary-sm,
+  .normativa-container .btn-outline-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.15s;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    min-height: 30px;
+    white-space: nowrap;
+  }
+  .normativa-container .btn-primary-sm {
+    background: var(--color-primario);
+    color: white;
+  }
+  .normativa-container .btn-primary-sm:hover {
+    background: var(--color-primario-hover);
+  }
+  .normativa-container .btn-outline-sm {
+    border-color: #cbd5e1;
+    background: white;
+    color: #475569;
+  }
+  .normativa-container .btn-outline-sm:hover {
+    border-color: var(--color-primario);
+    color: var(--color-primario);
+  }
+
+  /* Estado vacío + infinite scroll */
+  .normativa-container .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px dashed #e2e8f0;
+  }
+  .normativa-container .empty-state p {
+    color: #64748b;
+    margin-bottom: 0.5rem;
+  }
+  .normativa-container .infinite-sentinel {
+    height: 1px;
+  }
+  .normativa-container .loading-more,
+  .normativa-container .end-of-list {
+    text-align: center;
+    padding: 1.25rem;
+    color: #94a3b8;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    .normativa-container .hero-normativa {
+      padding: 2.25rem 0;
+    }
+    .normativa-container .filters-flex {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .normativa-container .search-wrapper {
+      max-width: none;
+    }
+    .normativa-container .selects-wrapper {
+      flex-wrap: wrap;
+    }
+    .normativa-container .filter-select {
+      flex: 1;
+      min-width: 140px;
+    }
+    .normativa-container .header-row,
+    .normativa-container .col-date {
+      display: none;
+    }
+    .normativa-container .normativa-row {
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+      padding: 0.85rem 1rem;
+    }
+    .normativa-container .col-id {
+      font-size: 0.78rem;
+    }
+    .normativa-container .col-actions {
+      justify-content: flex-start;
+    }
+  }
+</style>

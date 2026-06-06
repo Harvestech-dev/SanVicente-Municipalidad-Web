@@ -228,7 +228,7 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 .req-item.req-done{border-color:var(--success);background:var(--success-soft)}
 .req-hd{display:flex;align-items:flex-start;gap:10px;padding:10px 12px}
 .req-chk-icon{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;color:transparent;transition:background .2s,border-color .2s,color .2s}
-.req-done .req-chk-icon{background:var(--success);border-color:var(--success);color:white}
+.req-done .req-chk-icon{background:#fff;border-color:var(--success);color:var(--success)}
 .req-act{padding:8px 12px 10px;border-top:1px solid var(--color-border-tertiary);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .req-pending .req-act{display:none}
 .req-lotengo{background:var(--brand);color:white;border:none;border-radius:var(--border-radius-md);padding:8px 14px;font-size:12px;cursor:pointer;font-weight:500;display:flex;align-items:center;transition:opacity .12s}
@@ -1164,14 +1164,14 @@ async function paso2_nac_confirmarEdad(val,edad,fmt){
 /* ── ¿Tiene licencia? ── */
 async function paso3_tieneLC(){
   setProg(2);
-  await addBot(`¿Ya tenés o tuviste una licencia de conducir?`);
+  await addBot(`¿Ya <strong>tenés o tuviste</strong> una licencia de conducir?`);
   pickOne([
-    {icon:"✗",label:"No, nunca tuve licencia"},
     {icon:"✓",label:"Sí, tengo o tuve una licencia"},
+    {icon:"✗",label:"No, nunca tuve licencia"},
     {icon:"⚠",label:"La extravié"}
   ],(it,idx)=>{
-    if(idx===0){addUser("No, nunca tuve licencia");S.tipo="alta";S.licActuales=[];paso4_nuevasSubs();}
-    else if(idx===1){addUser("Sí, tengo o tuve una licencia");paso3b_licActuales();}
+    if(idx===0){addUser("Sí, tengo o tuve una licencia");paso3b_licActuales();}
+    else if(idx===1){addUser("No, nunca tuve licencia");S.tipo="alta";S.licActuales=[];paso4_nuevasSubs();}
     else{addUser("La extravié");paso3x_extravio();}
   },paso2_nac);
 }
@@ -1239,7 +1239,7 @@ async function paso3x_extravio_final(info){
 /* ── Selección de licencias actuales ── */
 async function paso3b_licActuales(){
   setProg(2);
-  await addBot(`Seleccioná las subclases de tu licencia actual.<br><span style="font-size:12px;color:var(--color-text-secondary)">Las encontrás impresas en el frente de tu carné.</span>`);
+  await addBot(`Seleccioná las <strong>clases</strong> de tu licencia actual.<br><span style="font-size:12px;color:var(--color-text-secondary)">Las encontrás impresas en el frente de tu carné.</span>`);
   showSubclasSelector(S.edad,S.licActuales,(selArr)=>{
     S.licActuales=selArr;
     const etq=selArr.join(", ");
@@ -1293,14 +1293,12 @@ function paso3c_aplicarEstado(estado,etiquetaUsuario){
       S.subclases=[...S.licActuales];
       S.esProf=S.subclases.some(c=>SUBS.find(s=>s.cod===c)?.prof);
       void (async()=>{
-        await addBot(`Tu licencia venció hace más de un año: corresponde un <span class="badge bw">Alta</span> con exámenes completos (${leyLink("Ley 13.133")}).`);
         paso5_requisitos();
       })();
     } else if(eraAmpliar&&S.subclases&&S.subclases.length){
       S.skipReselectSubs=true;
       S.esProf=S.subclases.some(c=>SUBS.find(s=>s.cod===c)?.prof);
       void (async()=>{
-        await addBot(`Tu licencia venció hace más de un año: corresponde un <span class="badge bw">Alta</span> con exámenes completos (${leyLink("Ley 13.133")}).`);
         paso5_requisitos();
       })();
     } else {
@@ -1782,7 +1780,7 @@ async function paso5b_preTurno(o){
     // Profesional → WhatsApp (gestión manual, sin turnero)
     const bTurno=document.createElement("button");bTurno.type="button";bTurno.className="cbtn-confirm on cbtn-turno";
     const msg=encodeURIComponent(`Hola, quiero tramitar subclases ${S.subclases.join(", ")}, solicito libre de multas y turno.`);
-    bTurno.textContent="💬 Solicitar turno por WhatsApp";
+    bTurno.innerHTML=`<span style="display:inline-flex;align-items:center;justify-content:center;gap:8px">${ic("calendar",16)}<span>Solicitar turno</span></span>`;
     bTurno.onclick=()=>{window.open(`https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${msg}`,"_blank","noopener,noreferrer");addUser("Solicitar turno profesional");setTimeout(()=>paso7_feedback(),250);};
     opts.appendChild(bTurno);
     appendResumenBtn(opts);
@@ -1862,7 +1860,7 @@ async function paso5_requisitos(){
   const nacFmt=fmtFechaDMY(S.nac);
   const subcDesc=S.selUsuario&&S.selUsuario.length?S.selUsuario.join(", "):S.subclases.join(", ");
 
-  await addBot(`<span class="badge bi">Documentación y resumen</span><br>Confirmá que tenés cada documento antes de ir al municipio. Después revisamos tus datos y te damos el turno.`);
+  await addBot(`<span class="badge bi">Documentación y resumen</span><br>Esta es la <strong>documentación que debes presentar</strong>. <strong>Confirmá</strong> que tenés cada documento antes de ir al municipio.`);
 
   setTimeout(()=>{
     clearOpts();
@@ -1874,19 +1872,19 @@ async function paso5_requisitos(){
     /* ── Sequential requirements ── */
     const REQS_BASE=[
       {
-        title:"DNI vigente",
-        desc:"Original y fotocopia. El domicilio debe figurar en San Vicente.",
+        title:"Original y fotocopia del DNI Vigente",
+        desc:"El domicilio debe figurar en San Vicente.",
         action:null
       },
       {
-        title:"Certificado CENAT",
+        title:"Certificado CENAT pagado",
         desc:"Certificado Nacional de Antecedentes de Tránsito. Se tramita y paga online. Recordá que debés concurrir con este certificado pagado el día del turno.",
         action:{label:"Obtener CENAT online",cls:"cs",href:"https://www.santafe.gov.ar/cenat/",blank:true}
       },
       {
         title:"Declaración Jurada de Salud",
-        desc:"Declarás bajo juramento tus aptitudes psicofísicas. Completala antes de ir al municipio.",
-        action:{label:"Descargar Declaración Jurada (PDF)",cls:"cr",href:"#",blank:false}
+        desc:"<strong>Descargá</strong> y <strong>completá</strong> con <strong>atención</strong> antes de ir al municipio.",
+        action:{label:"Descargar Declaración Jurada (PDF)",cls:"cs",href:"#",blank:false}
       }
     ];
     const reqLibre={
@@ -1964,7 +1962,7 @@ async function paso5_requisitos(){
     const costoTxt=vc.costo!=null?fmtPesos(vc.costo):"—";
     const filaCategoria=`<div class="sr"><span>Categoría</span><span>${S.esProf?"Profesional":"Común / particular"}</span></div>`;
     const filaVigencia=`<div class="sr"><span>Vigencia estimada</span><span>${vigTxt}</span></div>`;
-    const filaCosto=`<div class="sr"><span>Costo estimado</span><span>${costoTxt}</span></div>`;
+    const filaCosto=`<div class="sr"><span>Costo estimado</span><span>${costoTxt}${vc.costo!=null?" *":""}</span></div>`;
     sc.innerHTML=`
       <div class="sr"><span>DNI</span><span>${S.dni||"—"}</span></div>
       <div class="sr"><span>Localidad</span><span>${S.localidad||"—"}</span></div>
@@ -1982,7 +1980,7 @@ async function paso5_requisitos(){
     } else if(vc.vigencia!=null){
       const w=document.createElement("p");
       w.style.cssText="margin-top:8px;font-size:12px;color:var(--color-text-secondary);line-height:1.5";
-      w.textContent="Valores estimados: el municipio confirmará el monto definitivo al momento del pago.";
+      w.textContent="* Valores estimados: el municipio confirmará el monto definitivo al momento del pago. Cada municipio puede tener honorarios propios.";
       sumSec.appendChild(w);
     }
     dataSec.appendChild(sumSec);

@@ -1,0 +1,208 @@
+/* Panel de contactos — licencia (alineado a edificio-card / contacto del sitio) */
+
+.lic-contacto-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.lic-contacto-intro {
+  text-align: center;
+}
+
+.lic-contacto-intro h2 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--color-texto);
+  margin: 0 0 0.5rem;
+}
+
+.lic-contacto-intro p {
+  margin: 0 auto;
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: 720px;
+}
+
+.lic-contacto-panel {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+}
+
+/* San Vicente (col. izq., mismo ancho que comunas) + comunas 2×2 a la derecha */
+.lic-contacto-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, auto);
+  gap: 1rem;
+  align-items: start;
+}
+
+.lic-contacto-card--destacada {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Tarjeta unificada — misma jerarquía en las 5 */
+.lic-contacto-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: auto;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lic-contacto-card:not(.lic-contacto-card--destacada):hover {
+  border-color: var(--color-primario);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Centro San Vicente: borde activo siempre (edificio-default) */
+.lic-contacto-card--destacada {
+  border-color: var(--color-primario);
+  background: linear-gradient(135deg, rgba(194, 109, 14, 0.04), white);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.lic-contacto-card-header {
+  flex-shrink: 0;
+  padding: 1rem 1.15rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.lic-contacto-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-primario);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.lic-contacto-card-body {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0.85rem 1.15rem 1.15rem;
+}
+
+.lic-contacto-canales {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lic-contacto-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: #475569;
+  min-width: 0;
+  line-height: 1.4;
+}
+
+.lic-contact-icon {
+  color: var(--color-primario);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.lic-contacto-valor {
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.lic-contacto-link {
+  color: inherit;
+  text-decoration: none;
+  line-height: 1.4;
+  word-break: break-word;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.lic-contacto-link:hover {
+  color: var(--color-primario);
+}
+
+/* Tip ocupa slot 6 del grid — sin card, sólo texto + icono */
+.lic-contacto-tip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  align-self: center;
+}
+
+.lic-contacto-tip svg {
+  color: var(--color-primario);
+  flex-shrink: 0;
+}
+
+@media (min-width: 769px) {
+  /* Comunas en la misma fila: misma altura entre las dos */
+  .lic-contacto-cards-grid {
+    align-items: stretch;
+  }
+
+  .lic-contacto-card:not(.lic-contacto-card--destacada) {
+    height: 100%;
+  }
+}
+
+/* Tablet: 2 columnas, destacada arriba ocupa fila completa */
+@media (max-width: 1023px) and (min-width: 600px) {
+  .lic-contacto-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+  }
+
+  .lic-contacto-card--destacada {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .lic-contacto-tip {
+    grid-column: 1 / -1;
+    padding: 0.25rem 0;
+  }
+}
+
+@media (max-width: 599px) {
+  .lic-contacto-panel {
+    padding: 1rem;
+  }
+
+  .lic-contacto-cards-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .lic-contacto-card--destacada {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}

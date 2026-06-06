@@ -1,0 +1,287 @@
+---
+import guia from "../../data/licencia-guia.json";
+import IconMaquinaria from "./IconMaquinaria.astro";
+import "./licencia-guia.css";
+
+const { nav, subclases, requisitos, costos, documentacion } = guia;
+
+---
+
+<section class="guia-section" aria-labelledby="guia-titulo">
+  <div class="container guia-layout">
+    <div class="guia-intro">
+      <h2 id="guia-titulo">Guía de trámites</h2>
+      <p>
+        Consultá clases, requisitos, costos y preguntas frecuentes. Para un recorrido
+        personalizado con turno, usá el asistente.
+      </p>
+    </div>
+
+    <nav class="guia-nav" aria-label="Secciones de la guía">
+      {nav.map((item) => (
+        <a href={`#${item.id}`} data-guia-link={item.id}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="guia-content">
+      <article class="guia-block" id="subclases">
+        <h3>Clases y subclases</h3>
+        <p class="guia-lead">{subclases.lead}</p>
+        {
+          subclases.grupos.map((grupo) => (
+            <details class="subclase-grupo">
+              <summary class="subclase-head">
+                <span class="subclase-head-label">
+                  {grupo.icono === "maquinaria" ? (
+                    <span class="subclase-head-icon subclase-head-icon-svg" aria-hidden="true">
+                      <IconMaquinaria size={20} />
+                    </span>
+                  ) : (
+                    <span class="subclase-head-icon" aria-hidden="true">{grupo.icono}</span>
+                  )}
+                  {grupo.titulo}
+                </span>
+                <span class="subclase-count">{grupo.filas.length} subclase{grupo.filas.length === 1 ? "" : "s"}</span>
+              </summary>
+              <div class="subclase-body">
+                {grupo.filas.map((fila) => (
+                  <div class="subclase-row">
+                    <span class="subclase-cod">{fila.cod}</span>
+                    <div class="subclase-info">
+                      <div class="subclase-nombre">{fila.nombre}</div>
+                      <div class="subclase-desc">{fila.desc}</div>
+                    </div>
+                    <div class="subclase-pills">
+                      <span class="pill pill-edad">{fila.edad}</span>
+                      <span class={`pill ${fila.tipo === "prof" ? "pill-prof" : "pill-comun"}`}>
+                        {fila.tipo === "prof" ? "Profesional" : "Común"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </details>
+          ))
+        }
+      </article>
+
+      <article class="guia-block" id="requisitos">
+        <h3>Requisitos por trámite</h3>
+        <p class="guia-lead">{requisitos.lead}</p>
+        {
+          requisitos.tramites.map((t) => (
+            <div class={`req-guia ${t.variante === "warn" ? "warn" : ""}`}>
+              <div class="req-guia-titulo">
+                {t.icono} {t.titulo}
+              </div>
+              <p class="req-guia-lead">{t.lead}</p>
+              <ul>
+                {t.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </article>
+
+      <article class="guia-block" id="costos">
+        <h3>Costos y vigencia</h3>
+        <p class="guia-lead">{costos.lead}</p>
+
+        <h4>Vigencia por edad</h4>
+        <div class="tabla-wrap">
+          <table class="tabla-guia tabla-vigencia">
+            <thead>
+              <tr>
+                {costos.vigencia.headers.map((h) => <th>{h}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {
+                costos.vigencia.rows.map((row) => (
+                  <tr>
+                    {row.map((cell, i) => (
+                      <td
+                        class={i === 0 ? "cat" : undefined}
+                        data-label={costos.vigencia.headers[i]}
+                      >
+                        {cell === "—" ? <span class="cell-empty">No aplica</span> : cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Costos vigentes</h4>
+        <div class="tabla-wrap">
+          <table class="tabla-guia">
+            <thead>
+              <tr>
+                {costos.tarifas.headers.map((h) => <th>{h}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {
+                costos.tarifas.rows.map((row) => (
+                  <tr>
+                    <td class="cat">{row[0]}</td>
+                    <td>{row[1]}</td>
+                    <td class="monto">{row[2]}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+        <p class="guia-lead" style="margin-top: 1rem; margin-bottom: 0">{costos.nota}</p>
+      </article>
+
+      <article class="guia-block" id="documentacion">
+        <h3>Documentación y enlaces</h3>
+        <p class="guia-lead">{documentacion.lead}</p>
+
+        <ul class="enlaces-lista">
+          {
+            documentacion.enlaces.map((enlace) => (
+              <li class={enlace.destacado ? "enlace-li-destacado" : undefined}>
+                <a
+                  class:list={["enlace-item", enlace.destacado && "enlace-item--destacado"]}
+                  href={enlace.href}
+                  target={enlace.externo ? "_blank" : undefined}
+                  rel={enlace.externo ? "noopener noreferrer" : undefined}
+                >
+                  <span class="enlace-item-main">
+                    <span class="enlace-titulo">{enlace.titulo}</span>
+                    <span class="enlace-desc">{enlace.desc}</span>
+                  </span>
+                  {enlace.externo ? (
+                    <svg
+                      class="enlace-ext-icon"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M15 3h6v6" />
+                      <path d="M10 14 21 3" />
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    </svg>
+                  ) : (
+                    <svg
+                      class="enlace-ext-icon"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  )}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+    </div>
+  </div>
+
+  <button
+    class="guia-back-to-menu"
+    id="guiaBackToMenu"
+    type="button"
+    aria-label="Volver al menú de la guía"
+  >
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m18 15-6-6-6 6" />
+    </svg>
+    <span>Menú</span>
+  </button>
+</section>
+
+<script>
+  function initGuiaNav() {
+    const links = document.querySelectorAll("[data-guia-link]");
+    const sections = Array.from(
+      document.querySelectorAll(".guia-content .guia-block[id]")
+    ) as HTMLElement[];
+    if (!links.length || !sections.length) return;
+
+    const root = document.querySelector(".guia-section");
+    const offset = root
+      ? parseFloat(getComputedStyle(root).getPropertyValue("--guia-scroll-offset")) * 16 || 92
+      : 92;
+
+    function update() {
+      const y = window.scrollY + offset + 8;
+      let current = sections[0]?.id ?? "";
+      for (const s of sections) {
+        if (s.offsetTop <= y) current = s.id;
+      }
+      links.forEach((a) => {
+        a.classList.toggle("active", a.getAttribute("data-guia-link") === current);
+      });
+    }
+
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+  }
+
+  function initBackToMenu() {
+    const fab = document.getElementById("guiaBackToMenu");
+    const nav = document.querySelector(".guia-nav") as HTMLElement | null;
+    if (!fab || !nav) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          fab.classList.toggle("visible", !entry.isIntersecting);
+        });
+      },
+      { threshold: 0, rootMargin: "-40px 0px 0px 0px" }
+    );
+    observer.observe(nav);
+
+    fab.addEventListener("click", () => {
+      const root = document.querySelector(".guia-section") as HTMLElement | null;
+      const headerH = (document.querySelector(".main-header") as HTMLElement | null)?.offsetHeight ?? 68;
+      const targetY = (root?.getBoundingClientRect().top ?? 0) + window.scrollY - headerH - 8;
+      window.scrollTo({ top: Math.max(targetY, 0), behavior: "smooth" });
+    });
+  }
+
+  initGuiaNav();
+  initBackToMenu();
+  document.addEventListener("astro:page-load", () => {
+    initGuiaNav();
+    initBackToMenu();
+  });
+</script>

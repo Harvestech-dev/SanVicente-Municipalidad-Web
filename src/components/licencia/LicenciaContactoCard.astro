@@ -1,0 +1,17 @@
+---
+interface Props {
+  title: string;
+  destacada?: boolean;
+}
+
+const { title, destacada = false } = Astro.props;
+---
+
+<article class:list={["lic-contacto-card", destacada && "lic-contacto-card--destacada"]}>
+  <header class="lic-contacto-card-header">
+    <h3 class="lic-contacto-card-title">{title}</h3>
+  </header>
+  <div class="lic-contacto-card-body">
+    <slot />
+  </div>
+</article>

@@ -1,0 +1,133 @@
+---
+import data from "../../data/licencia.json";
+import ContactoIcon from "./ContactoIcon.astro";
+import LicenciaContactoCard from "./LicenciaContactoCard.astro";
+import "./licencia-contacto.css";
+
+const { centro, localidades_circuito: circuito } = data;
+
+function telHref(num: string) {
+  const digits = num.replace(/\D/g, "");
+  return digits.startsWith("54") ? `tel:+${digits}` : `tel:+54${digits.replace(/^0/, "")}`;
+}
+
+function waHref(num: string) {
+  const digits = num.replace(/\D/g, "");
+  return `https://wa.me/${digits.startsWith("54") ? digits : `549${digits}`}`;
+}
+
+---
+
+<div class="lic-contacto-section">
+  <div class="lic-contacto-intro">
+    <h2 id="licencia-contacto-titulo">Centro de otorgamiento de San Vicente</h2>
+    {circuito?.lead ? <p>{circuito.lead}</p> : null}
+  </div>
+
+  <aside class="lic-contacto-panel" aria-label="Datos de atención">
+    <div class="lic-contacto-cards-grid">
+      <LicenciaContactoCard destacada title={centro.titulo_institucion ?? "Municipalidad de San Vicente"}>
+        <ul class="lic-contacto-canales" aria-label="Canales de contacto del centro">
+          <li class="lic-contacto-item">
+            <ContactoIcon type="ubicacion" size={16} />
+            {centro.maps_url ? (
+              <a href={centro.maps_url} target="_blank" rel="noopener noreferrer" class="lic-contacto-link">
+                {centro.direccion_linea2}
+              </a>
+            ) : (
+              <span class="lic-contacto-valor">{centro.direccion_linea2}</span>
+            )}
+          </li>
+          <li class="lic-contacto-item">
+            <ContactoIcon type="horario" size={16} />
+            <span class="lic-contacto-valor">{centro.horario}</span>
+          </li>
+          <li class="lic-contacto-item">
+            <ContactoIcon type="telefono" size={16} />
+            <a href={telHref(centro.telefono)} class="lic-contacto-link">{centro.telefono_display}</a>
+          </li>
+          <li class="lic-contacto-item">
+            <ContactoIcon type="whatsapp" size={16} />
+            <a href={waHref(centro.whatsapp)} target="_blank" rel="noopener noreferrer" class="lic-contacto-link">
+              {centro.whatsapp_display}
+            </a>
+          </li>
+          <li class="lic-contacto-item">
+            <ContactoIcon type="mail" size={16} />
+            <a href={`mailto:${centro.mail}`} class="lic-contacto-link">{centro.mail}</a>
+          </li>
+        </ul>
+      </LicenciaContactoCard>
+
+      {
+        circuito?.localidades?.map((loc) => (
+          <LicenciaContactoCard title={`Comuna de ${loc.nombre}`}>
+            <ul class="lic-contacto-canales">
+              {loc.direccion ? (
+                <li class="lic-contacto-item">
+                  <ContactoIcon type="ubicacion" size={16} />
+                  {loc.maps_url ? (
+                    <a href={loc.maps_url} target="_blank" rel="noopener noreferrer" class="lic-contacto-link">
+                      {loc.direccion}
+                    </a>
+                  ) : (
+                    <span class="lic-contacto-valor">{loc.direccion}</span>
+                  )}
+                </li>
+              ) : null}
+              {loc.horario ? (
+                <li class="lic-contacto-item">
+                  <ContactoIcon type="horario" size={16} />
+                  <span class="lic-contacto-valor">{loc.horario}</span>
+                </li>
+              ) : null}
+              {loc.telefono && loc.telefono_display ? (
+                <li class="lic-contacto-item">
+                  <ContactoIcon type="telefono" size={16} />
+                  <a href={telHref(loc.telefono)} class="lic-contacto-link">{loc.telefono_display}</a>
+                </li>
+              ) : null}
+              {loc.whatsapp && loc.whatsapp_display ? (
+                <li class="lic-contacto-item">
+                  <ContactoIcon type="whatsapp" size={16} />
+                  <a href={waHref(loc.whatsapp)} target="_blank" rel="noopener noreferrer" class="lic-contacto-link">
+                    {loc.whatsapp_display}
+                  </a>
+                </li>
+              ) : null}
+              {loc.mail ? (
+                <li class="lic-contacto-item">
+                  <ContactoIcon type="mail" size={16} />
+                  <a href={`mailto:${loc.mail}`} class="lic-contacto-link">{loc.mail}</a>
+                </li>
+              ) : null}
+            </ul>
+          </LicenciaContactoCard>
+        ))
+      }
+
+      <p class="lic-contacto-tip" role="note">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4" />
+          <path d="M12 8h.01" />
+        </svg>
+        <span>
+          Recordá que el domicilio de tu DNI debe coincidir con el de tu licencia
+          de conducir para que esta tenga vigencia.
+        </span>
+      </p>
+    </div>
+  </aside>
+</div>

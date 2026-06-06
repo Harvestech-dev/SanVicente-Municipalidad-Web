@@ -185,7 +185,7 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 .cp{background:var(--brand);color:white;border-color:var(--brand)}
 .cs{background:var(--color-background-primary);color:var(--brand);border-color:var(--brand-border)}
 .cg{background:var(--success);color:white;border-color:var(--success)}
-.cw{background:#25d366;color:white;border-color:#25d366}
+.cw{background:var(--brand);color:white;border-color:var(--brand)}
 .cr{background:var(--danger);color:white;border-color:var(--danger)}
 /* summary card */
 .sc{background:var(--color-background-primary);border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-top:8px}
@@ -227,11 +227,12 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 .req-item.req-pending{opacity:.42;pointer-events:none}
 .req-item.req-done{border-color:var(--success);background:var(--success-soft)}
 .req-hd{display:flex;align-items:flex-start;gap:10px;padding:10px 12px}
-.req-chk-icon{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;color:transparent;transition:background .2s,border-color .2s,color .2s}
-.req-done .req-chk-icon{background:#fff;border-color:var(--success);color:var(--success)}
+.req-chk-icon{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;color:transparent;padding:0;background:none;font:inherit;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.req-active .req-chk-icon:hover{border-color:var(--brand);color:var(--brand)}
+.req-done .req-chk-icon{background:#fff;border-color:var(--success);color:var(--success);cursor:default}
 .req-act{padding:8px 12px 10px;border-top:1px solid var(--color-border-tertiary);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .req-pending .req-act{display:none}
-.req-lotengo{background:var(--brand);color:white;border:none;border-radius:var(--border-radius-md);padding:8px 14px;font-size:12px;cursor:pointer;font-weight:500;display:flex;align-items:center;transition:opacity .12s}
+.req-lotengo{background:var(--brand);color:white;border:none;border-radius:var(--border-radius-md);padding:8px 14px;font-size:12px;cursor:pointer;font-weight:500;display:flex;align-items:center;margin-left:auto;transition:opacity .12s}
 .req-lotengo:hover{opacity:.88}
 .req-done .req-lotengo{display:none!important}
 /* Botón principal de "Sacar turno" — destacado, claro, prioridad visual */
@@ -268,7 +269,7 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 .cbtn-resumen .ic{font-size:16px}
 /* ── Lenguaje de interacción unificado para todos los botones del chat ──
    Radio ya unificado vía --border-radius-md; acá se igualan foco y press. */
-.cbtn-confirm:focus-visible,.cbtn-resumen:focus-visible,.cta-btn:focus-visible,.back-btn:focus-visible,.req-lotengo:focus-visible,.btn-cerrar:focus-visible{
+.cbtn-confirm:focus-visible,.cbtn-resumen:focus-visible,.cta-btn:focus-visible,.back-btn:focus-visible,.req-lotengo:focus-visible,.req-chk-icon:focus-visible,.btn-cerrar:focus-visible{
   outline:2px solid var(--brand);outline-offset:2px;
 }
 .cbtn-confirm:not(:disabled):active,.cbtn-resumen:active,.cta-btn:active,.back-btn:active,.req-lotengo:active{
@@ -600,6 +601,11 @@ const ICONS={
   message:'<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>'
 };
 function ic(name,size){const p=ICONS[name];if(!p)return "";return `<svg viewBox="0 0 24 24" width="${size||14}" height="${size||14}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;}
+/* Glyph de marca WhatsApp (FontAwesome, equivalente a react-icons/fa FaWhatsapp).
+   Fill-based con viewBox propio 0 0 448 512 — no usa ic() (que es stroke 24x24).
+   Usar SIEMPRE que un botón abra WhatsApp. */
+const ICON_WHATSAPP='<path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.2-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>';
+function icWa(size){const s=size||16;return `<svg viewBox="0 0 448 512" width="${s}" height="${s}" fill="currentColor" aria-hidden="true" style="flex-shrink:0">${ICON_WHATSAPP}</svg>`;}
 const SYMBOL_ICON={"✓":"check","✗":"x","⚠":"alert","↺":"refresh","+":"plus","?":"help","🗓":"calendar","📅":"calendar","›":"chevron","⬇":"download","📤":"share"};
 /* Convierte símbolos conocidos a SVG; deja pasar SVG ya armado y emojis (clases/encuesta). */
 function resolveIcon(raw){
@@ -1230,8 +1236,8 @@ async function paso3x_extravio_final(info){
   const a=document.createElement("a");
   a.href=`https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${encodeURIComponent(msg)}`;
   a.target="_blank";a.rel="noopener";a.className="cbtn-confirm on";
-  a.style.cssText="display:flex;align-items:center;justify-content:center;text-decoration:none";
-  a.textContent="Enviar consulta por WhatsApp";
+  a.style.cssText="display:flex;align-items:center;justify-content:center;text-decoration:none;gap:6px";
+  a.innerHTML=`${icWa(16)}<span>Enviar consulta</span>`;
   a.onclick=()=>setTimeout(()=>paso7_feedback(),250);
   opts.appendChild(a);
 }
@@ -1366,7 +1372,7 @@ async function paso3c_venc_estado(){
   a.target="_blank";a.rel="noopener";
   a.className="cbtn-confirm on cbtn-turno";
   a.style.cssText="display:flex;align-items:center;justify-content:center;text-decoration:none;gap:6px";
-  a.textContent="💬 Enviar consulta por WhatsApp";
+  a.innerHTML=`${icWa(16)}<span>Enviar consulta</span>`;
   a.onclick=()=>{addUser("Enviar consulta por WhatsApp");setTimeout(()=>paso7_feedback(),250);};
   opts.appendChild(a);
   bindEnterToPrimaryButton(opts,a,{requireOn:false});
@@ -1780,7 +1786,7 @@ async function paso5b_preTurno(o){
     // Profesional → WhatsApp (gestión manual, sin turnero)
     const bTurno=document.createElement("button");bTurno.type="button";bTurno.className="cbtn-confirm on cbtn-turno";
     const msg=encodeURIComponent(`Hola, quiero tramitar subclases ${S.subclases.join(", ")}, solicito libre de multas y turno.`);
-    bTurno.innerHTML=`<span style="display:inline-flex;align-items:center;justify-content:center;gap:8px">${ic("calendar",16)}<span>Solicitar turno</span></span>`;
+    bTurno.innerHTML=`<span style="display:inline-flex;align-items:center;justify-content:center;gap:8px">${icWa(16)}<span>Solicitar turno</span></span>`;
     bTurno.onclick=()=>{window.open(`https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${msg}`,"_blank","noopener,noreferrer");addUser("Solicitar turno profesional");setTimeout(()=>paso7_feedback(),250);};
     opts.appendChild(bTurno);
     appendResumenBtn(opts);
@@ -1808,7 +1814,7 @@ async function paso5b_preTurno(o){
       const wa=`https://wa.me/${L.wsp.replace(/\D/g,"")}?text=${encodeURIComponent(txt)}`;
       const bWa=document.createElement("button");bWa.type="button";bWa.className="cta-btn cw";
       bWa.style.cssText="width:100%;justify-content:center;padding:12px;font-size:14px;";
-      bWa.innerHTML=`${ic("message",16)}Continuar el trámite por WhatsApp`;
+      bWa.innerHTML=`${icWa(16)}<span>Continuar el trámite</span>`;
       bWa.onclick=async()=>{
         window.open(wa,"_blank","noopener,noreferrer");
         await addBot(`<span class="badge bo">WhatsApp</span><br>Se abrió una ventana con el mensaje listo para enviar.`);
@@ -1830,7 +1836,7 @@ async function paso5b_preTurno(o){
       const wa=`https://wa.me/${L.wsp.replace(/\D/g,"")}?text=${encodeURIComponent(txt)}`;
       const bWa=document.createElement("button");bWa.type="button";bWa.className="cta-btn cw";
       bWa.style.cssText="width:100%;justify-content:center;padding:12px;font-size:14px;";
-      bWa.innerHTML=`${ic("message",16)}Continuar el trámite por WhatsApp`;
+      bWa.innerHTML=`${icWa(16)}<span>Continuar el trámite</span>`;
       bWa.onclick=async()=>{
         window.open(wa,"_blank","noopener,noreferrer");
         await addBot(`<span class="badge bo">WhatsApp</span><br>Se abrió una ventana con el mensaje listo para enviar.`);
@@ -1890,7 +1896,7 @@ async function paso5_requisitos(){
     const reqLibre={
       title:"Libre de multas municipal",
       desc:"Verificamos que no tenés infracciones firmes pendientes. Si tenés multas, primero regularizá la situación.",
-      action:{label:"Solicitar por WhatsApp",cls:"cw",href:`https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${encodeURIComponent("Hola, necesito el libre de multas para licencia de conducir.")}`,blank:true}
+      action:{label:"Solicitar libre de multas",cls:"cw",icon:"whatsapp",href:`https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${encodeURIComponent("Hola, necesito el libre de multas para licencia de conducir.")}`,blank:true}
     };
     const REQS=S.esProf
       ?[REQS_BASE[0],REQS_BASE[1],REQS_BASE[2]]
@@ -1918,31 +1924,41 @@ async function paso5_requisitos(){
       el.className="req-item "+(i===0?"req-active":"req-pending");
 
       const hd=document.createElement("div");hd.className="req-hd";
-      const chkIc=document.createElement("div");chkIc.className="req-chk-icon";
+      const chkIc=document.createElement("button");chkIc.type="button";chkIc.className="req-chk-icon";
+      chkIc.setAttribute("role","checkbox");chkIc.setAttribute("aria-checked","false");
+      chkIc.setAttribute("aria-label",`Marcar "${req.title}" como entendido`);
       chkIc.innerHTML=`<svg viewBox="0 0 12 10" width="12" height="10"><path d="M1 5l3.5 3.5L11 1" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       const bod=document.createElement("div");bod.style.flex="1";
       bod.innerHTML=`<div class="rbody"><strong>${i+1}. ${req.title}</strong><small>${req.desc}</small></div>`;
       hd.appendChild(chkIc);hd.appendChild(bod);
       el.appendChild(hd);
 
+      function markDone(){
+        if(checkedCount[i]||!el.classList.contains("req-active"))return;
+        checkedCount[i]=true;
+        chkIc.setAttribute("aria-checked","true");
+        el.classList.add("req-done");
+        el.classList.remove("req-active");
+        upd();
+        revealNext(i);
+      }
+      chkIc.onclick=markDone;
+
       const actWrap=document.createElement("div");actWrap.className="req-act";
       if(req.action){
         const a=document.createElement("a");a.href=req.action.href;
         if(req.action.blank){a.target="_blank";a.rel="noopener";}
-        a.className=`cta-btn ${req.action.cls}`;a.textContent=req.action.label;
+        a.className=`cta-btn ${req.action.cls}`;
+        if(req.action.icon==="whatsapp"){a.innerHTML=`${icWa(16)}<span>${req.action.label}</span>`;}
+        else if(req.action.icon){a.innerHTML=`${ic(req.action.icon,16)}<span>${req.action.label}</span>`;}
+        else{a.textContent=req.action.label;}
         if(!req.action.blank)a.addEventListener("click",e=>e.preventDefault());
         actWrap.appendChild(a);
       }
       const loBtn=document.createElement("button");
       loBtn.type="button";loBtn.className="req-lotengo";
-      loBtn.innerHTML=`<svg viewBox="0 0 12 10" width="11" height="11" style="margin-right:5px"><path d="M1 5l3.5 3.5L11 1" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>Lo tengo`;
-      loBtn.onclick=()=>{
-        checkedCount[i]=true;
-        el.classList.add("req-done");
-        el.classList.remove("req-active");
-        upd();
-        revealNext(i);
-      };
+      loBtn.textContent="Entendido";
+      loBtn.onclick=markDone;
       actWrap.appendChild(loBtn);
       el.appendChild(actWrap);
       reqEls.push(el);
@@ -2041,7 +2057,7 @@ function buildTurnero(){
   if(S.esProf){
     const msg=encodeURIComponent(`Hola, quiero tramitar subclases ${S.subclases.join(", ")}, solicito libre de multas y turno.`);
     return `<div class="tc"><div class="ti">💬</div><h3>Coordiná tu turno por WhatsApp</h3><p>Para licencias profesionales la gestión se realiza con nuestro equipo.</p>
-    <a href="https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${msg}" target="_blank" rel="noopener" class="cta-btn cw" style="width:100%;justify-content:center;font-size:13px;padding:10px;">Pedir libre de multas y solicitar turno</a></div>`;
+    <a href="https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${msg}" target="_blank" rel="noopener" class="cta-btn cw" style="width:100%;justify-content:center;font-size:13px;padding:10px;">${icWa(16)}<span>Solicitar libre de multas y turno</span></a></div>`;
   }
   if(S.tipo==="renovacion_simple"){
     return `<div class="tc"><div class="ti">🩺</div><h3>Turno — Examen psicofísico</h3><p>Para tu renovación solo necesitás el examen psicofísico.</p>

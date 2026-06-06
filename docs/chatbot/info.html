@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía de Licencia de Conducir — San Vicente</title>
+<style>
+:root{
+  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --tp:#1e293b;--ts:#64748b;--bg:#fff;--bg2:#f8fafc;--br:#e2e8f0;
+  --primary:#c26d0e;--primary-hover:#a05a0b;--primary-bg:#fdf2e9;--primary-fg:#7a4309;--primary-border:#f5c99b;
+  --ok-bg:#e1f5ee;--ok-border:#9fe1cb;--ok-fg:#085041;
+  --warn-bg:#faeeda;--warn-border:#fac775;--warn-fg:#633806;
+  --rmd:8px;--rlg:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--bg2);color:var(--tp);min-height:100vh;padding:0 12px}
+.wrap{max-width:980px;margin:0 auto;padding:1.5rem 0 3rem;display:grid;grid-template-columns:220px 1fr;gap:24px}
+header.top{grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:1rem;border-bottom:1px solid var(--br);flex-wrap:wrap}
+header.top .ttl{display:flex;align-items:center;gap:12px}
+header.top .logo{width:38px;height:38px;border-radius:var(--rmd);background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+header.top h1{font-size:16px;font-weight:600;line-height:1.3}
+header.top p{font-size:12px;color:var(--ts);margin-top:1px}
+header.top .back{
+  background:var(--primary);color:#fff;border:none;border-radius:var(--rmd);
+  padding:9px 14px;font-size:13px;cursor:pointer;text-decoration:none;font-weight:500;
+  display:inline-flex;align-items:center;gap:6px;
+}
+header.top .back:hover{background:var(--primary-hover)}
+nav.side{position:sticky;top:16px;align-self:start;display:flex;flex-direction:column;gap:4px;padding:12px;background:#fff;border:1px solid var(--br);border-radius:var(--rlg)}
+nav.side a{
+  text-decoration:none;color:var(--ts);font-size:13.5px;padding:8px 10px;border-radius:var(--rmd);
+  display:flex;align-items:center;gap:8px;transition:background .12s,color .12s;
+}
+nav.side a:hover{background:var(--bg2);color:var(--tp)}
+nav.side a.active{background:var(--primary-bg);color:var(--primary-fg);font-weight:500}
+main{display:flex;flex-direction:column;gap:28px;min-width:0}
+section{background:#fff;border:1px solid var(--br);border-radius:var(--rlg);padding:20px 22px;scroll-margin-top:16px}
+section h2{font-size:18px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+section .lead{color:var(--ts);font-size:13px;margin-bottom:14px;line-height:1.55}
+section h3{font-size:14px;font-weight:600;margin:18px 0 8px;color:var(--tp);display:flex;align-items:center;gap:8px}
+section h3 .ic{font-size:16px}
+.subclase{border:1px solid var(--br);border-radius:var(--rmd);overflow:hidden;margin-bottom:10px}
+.subclase-head{padding:10px 12px;background:var(--bg2);font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--br)}
+.subclase-row{display:flex;gap:10px;padding:10px 12px;border-bottom:1px solid var(--br);font-size:13px;line-height:1.55}
+.subclase-row:last-child{border-bottom:none}
+.subclase-row .cod{font-weight:600;color:var(--primary);min-width:54px;flex-shrink:0;font-family:ui-monospace,monospace}
+.subclase-row .info{flex:1;min-width:0}
+.subclase-row .info .nm{font-weight:500;color:var(--tp)}
+.subclase-row .info .ds{color:var(--ts);font-size:12px;margin-top:2px}
+.subclase-row .pills{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0}
+.pill{font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:500;white-space:nowrap}
+.pill.edad{background:var(--bg2);color:var(--ts);border:1px solid var(--br)}
+.pill.prof{background:var(--warn-bg);color:var(--warn-fg);border:1px solid var(--warn-border)}
+.pill.com{background:var(--primary-bg);color:var(--primary-fg);border:1px solid var(--primary-border)}
+.req-card{background:var(--bg2);border:1px solid var(--br);border-radius:var(--rmd);padding:14px 16px;margin-bottom:10px}
+.req-card .ttl{font-weight:600;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.req-card .lead{color:var(--ts);font-size:12.5px;margin-bottom:10px;line-height:1.5}
+.req-card ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.req-card li{font-size:13px;line-height:1.55;padding:8px 10px;background:#fff;border:1px solid var(--br);border-radius:var(--rmd);display:flex;gap:8px}
+.req-card li::before{content:"•";color:var(--primary);font-weight:bold;flex-shrink:0}
+.req-card.warn{background:#fffbeb;border-color:var(--warn-border)}
+table.tabla{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+table.tabla th,table.tabla td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--br)}
+table.tabla th{background:var(--bg2);font-weight:600;font-size:12px;color:var(--tp);text-transform:uppercase;letter-spacing:.03em}
+table.tabla tbody tr:hover{background:var(--bg2)}
+table.tabla td.monto{font-weight:600;color:var(--ok-fg);white-space:nowrap}
+table.tabla td.cat{font-weight:500}
+.tabla-wrap{overflow-x:auto;border:1px solid var(--br);border-radius:var(--rmd);margin-top:8px}
+.tabla-wrap table.tabla{margin-top:0}
+details.faq{border:1px solid var(--br);border-radius:var(--rmd);margin-bottom:8px;background:#fff}
+details.faq summary{padding:12px 14px;cursor:pointer;font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:8px;list-style:none}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq summary::after{content:"›";margin-left:auto;font-size:18px;color:var(--ts);transition:transform .2s}
+details.faq[open] summary::after{transform:rotate(90deg)}
+details.faq summary:hover{background:var(--bg2)}
+details.faq .body{padding:0 14px 14px;font-size:13px;line-height:1.6;color:var(--tp)}
+details.faq .body a{color:var(--primary);text-decoration:underline}
+.contactos{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:8px}
+.contacto{
+  background:#fff;border:1px solid var(--br);border-radius:var(--rmd);padding:12px 14px;
+  text-decoration:none;color:var(--tp);display:flex;flex-direction:column;gap:4px;
+}
+.contacto:hover{background:var(--bg2);border-color:var(--primary)}
+.contacto .nm{font-weight:500;font-size:13px;display:flex;align-items:center;gap:6px}
+.contacto .ds{font-size:11.5px;color:var(--ts);line-height:1.4}
+footer.bot{grid-column:1 / -1;color:var(--ts);font-size:11.5px;text-align:center;margin-top:8px;line-height:1.6}
+footer.bot a{color:var(--primary);text-decoration:none}
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;gap:14px}
+  nav.side{position:static;flex-direction:row;flex-wrap:wrap;gap:6px;padding:8px}
+  nav.side a{flex:1 1 auto;justify-content:center;padding:8px 10px;font-size:13px;text-align:center}
+}
+@media (max-width:480px){
+  body{padding:0 8px}
+  .wrap{padding:1rem 0 2rem;gap:12px}
+  header.top h1{font-size:14px}
+  section{padding:16px 14px}
+  .subclase-row{flex-direction:column;gap:6px}
+  .subclase-row .pills{flex-direction:row;flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="ttl">
+    <div class="logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 3a3 3 0 110 6 3 3 0 010-6zm5 12H7v-.6c0-2.2 3.3-3.4 5-3.4s5 1.2 5 3.4v.6z"/></svg>
+    </div>
+    <div>
+      <h1>Guía de Licencia de Conducir</h1>
+      <p>Municipalidad de San Vicente · Santa Fe</p>
+    </div>
+  </div>
+  <a class="back" href="/Tramites/licencia">← Volver al sitio</a>
+</header>
+
+<nav class="side">
+  <a href="#subclases">Clases y subclases</a>
+  <a href="#requisitos">Requisitos por trámite</a>
+  <a href="#costos">Costos y vigencia</a>
+  <a href="#faq">Preguntas y contactos</a>
+</nav>
+
+<main>
+<!-- Contenido idéntico al publicado en /Tramites/licencia — ver src/data/licencia-guia.json -->
+<section id="subclases">
+  <h2>Clases y subclases</h2>
+  <p class="lead">Las licencias se dividen en 7 clases (A a G), cada una con subclases por tipo de vehículo, peso o uso. Algunas son <strong>profesionales</strong> y requieren mayor de 21 años + libre de multas.</p>
+  <p class="lead" style="margin-top:8px"><a href="/Tramites/licencia">Ver la guía completa en el sitio municipal</a> · <a href="/Tramites/licencia-asistente">Iniciar asistente de trámite</a></p>
+</section>
+</main>
+
+<footer class="bot">
+  Documento de referencia para desarrollo. La versión oficial está en
+  <a href="/Tramites/licencia">/Tramites/licencia</a>.
+</footer>
+
+</div>
+<script>
+(function(){
+  const links=document.querySelectorAll("nav.side a");
+  const secs=Array.from(document.querySelectorAll("main section"));
+  function actualizar(){
+    const y=window.scrollY+80;
+    let actual=secs[0]?.id||"";
+    for(const s of secs){if(s.offsetTop<=y)actual=s.id;}
+    links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+actual));
+  }
+  window.addEventListener("scroll",actualizar,{passive:true});
+  actualizar();
+})();
+</script>
+</body>
+</html>

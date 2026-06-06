@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Asistente Licencia — San Vicente (prueba)</title>
+  <title>Asistente Licencia — San Vicente</title>
   <style>
     /* Tema San Vicente — paleta mapeada al sitio Municipalidad de San Vicente */
     :root {
@@ -14,7 +14,7 @@
       --color-background-secondary: #F8FAFC;
       --color-border-secondary: #e2e8f0;
       --color-border-tertiary: #e2e8f0;
-      --border-radius-md: 8px;
+      --border-radius-md: 10px;
       --border-radius-lg: 12px;
       /* Marca */
       --sv-primario: #C26D0E;
@@ -26,9 +26,10 @@
     }
     body {
       background: #F8FAFC;
-      min-height: 100vh;
+      min-height: 100dvh;
       margin: 0;
       padding: 0 12px;
+      scrollbar-gutter: stable both-edges;
     }
   </style>
 </head>
@@ -37,48 +38,66 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:transparent}
-#cw{font-family:var(--font-sans,sans-serif);max-width:620px;margin:0 auto;padding:1.5rem 0 2rem}
-#hdr{display:flex;align-items:center;gap:12px;padding-bottom:1.25rem;border-bottom:.5px solid var(--color-border-tertiary);margin-bottom:1rem}
-#hdr .logo{width:38px;height:38px;border-radius:var(--border-radius-md);background:#C26D0E;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-#hdr .logo svg{width:20px;height:20px;fill:white}
-#hdr h1{font-size:15px;font-weight:500;color:var(--color-text-primary);line-height:1.3}
-#hdr p{font-size:12px;color:var(--color-text-secondary);margin-top:1px}
+#cw{font-family:var(--font-sans,sans-serif);max-width:620px;margin:0 auto;padding:1.5rem 0 3.5rem}
 #msgs{display:flex;flex-direction:column;gap:12px}
-.msg{display:flex;align-items:flex-start;gap:10px}
+.msg{display:flex;align-items:flex-start;gap:10px;scroll-margin-top:14px}
 .msg.user{flex-direction:row-reverse}
-.bubble{max-width:90%;padding:10px 14px;border-radius:var(--border-radius-lg);font-size:14px;line-height:1.65;color:var(--color-text-primary)}
-.bot .bubble{background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);border-radius:4px var(--border-radius-lg) var(--border-radius-lg) var(--border-radius-lg)}
-.user .bubble{background:#FDF2E9;border:.5px solid #F5C99B;color:#5A2F00;border-radius:var(--border-radius-lg) 4px var(--border-radius-lg) var(--border-radius-lg)}
+.bubble{position:relative;max-width:90%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.65;color:var(--color-text-primary);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.bot .bubble{background:#ffffff;border:1px solid #e2e8f0;border-radius:18px}
+.user .bubble{background:#FDF2E9;border:1px solid #F5C99B;color:#5A2F00;border-radius:18px}
+/* Tail / colita del globo */
+.bot .bubble::before,
+.bot .bubble::after,
+.user .bubble::before,
+.user .bubble::after{content:"";position:absolute;width:0;height:0;pointer-events:none}
+.bot .bubble::after{left:-7px;top:12px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:8px solid #ffffff}
+.bot .bubble::before{left:-9px;top:11px;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:9px solid #e2e8f0}
+.user .bubble::after{right:-7px;top:12px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:8px solid #FDF2E9}
+.user .bubble::before{right:-9px;top:11px;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:9px solid #F5C99B}
 .av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;margin-top:2px}
 .bot .av{background:#C26D0E;color:white}
 .user .av{background:#F5C99B;color:#5A2F00}
-#opts{margin-top:12px}
+#opts{margin-top:12px;scroll-margin-bottom:28px}
 /* back */
-.back-btn{background:transparent;border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 12px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:10px;transition:background .12s;width:fit-content}
+.back-btn{background:transparent;border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 12px;font-size:12px;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:10px;transition:background .12s;width:fit-content}
 .back-btn:hover{background:var(--color-background-secondary)}
 /* confirm btn */
 .cbtn-confirm{background:#C26D0E;color:white;border:none;border-radius:var(--border-radius-md);padding:10px 16px;font-size:13px;cursor:pointer;width:100%;font-weight:500;opacity:.32;pointer-events:none;transition:opacity .2s;margin-top:8px;display:block}
+.cbtn-confirm:disabled,.cbtn-confirm[aria-disabled="true"]{opacity:.32;pointer-events:none;cursor:not-allowed}
 .cbtn-confirm.on{opacity:1;pointer-events:all}
 .cbtn-confirm.on:hover{opacity:.9}
 /* single-select buttons */
-.opt-btn{background:var(--color-background-primary);border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 14px;font-size:13px;color:var(--color-text-primary);cursor:pointer;text-align:left;display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;width:100%;transition:background .12s,border-color .12s}
-.opt-btn:hover{background:var(--color-background-secondary);border-color:#C26D0E}
-.opt-btn.sel{background:#FDF2E9;border-color:#C26D0E;border-width:1.5px}
-.opt-btn.sel .lbl{color:#7A4309;font-weight:500}
-.opt-btn.dim{opacity:.42;cursor:not-allowed}
-.opt-btn .ic{font-size:13px;width:18px;flex-shrink:0;margin-top:1px}
+.opt-btn{background:#fff;border:1px solid #d4dae3;border-radius:10px;padding:12px 14px;font-size:13px;color:var(--color-text-primary);cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;margin-bottom:8px;width:100%;box-shadow:0 1px 2px rgba(15,23,42,.06);transition:background .12s,border-color .12s,box-shadow .12s,transform .06s}
+.opt-btn:hover{background:#FDF2E9;border-color:#C26D0E;box-shadow:0 2px 10px rgba(194,109,14,.14)}
+.opt-btn:active{transform:translateY(1px)}
+.opt-btn:focus-visible{outline:2px solid #C26D0E;outline-offset:2px}
+.opt-btn.sel{background:#FDF2E9;border-color:#C26D0E;border-width:1.5px;box-shadow:0 2px 10px rgba(194,109,14,.16)}
+.opt-btn.sel .lbl{color:#7A4309;font-weight:600}
+.opt-btn.dim{opacity:.45;cursor:not-allowed;box-shadow:none}
+.opt-btn .ic{font-size:13px;width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#FDF2E9;color:#C26D0E;font-weight:600}
+.opt-btn:hover .ic,.opt-btn.sel .ic{background:#fff}
 .opt-btn .ol{display:flex;flex-direction:column;gap:1px;flex:1}
-.opt-btn .lbl{font-size:13px;color:var(--color-text-primary)}
-.opt-btn .sub{font-size:11px;color:var(--color-text-secondary)}
+.opt-btn .lbl{font-size:13.5px;color:var(--color-text-primary);font-weight:500}
+.opt-btn .sub{font-size:11px;color:var(--color-text-secondary);font-weight:400}
+/* Acción afirmativa primaria (ej. confirmar datos) */
+.opt-btn.primary{background:#C26D0E;border-color:#C26D0E;box-shadow:0 2px 10px rgba(194,109,14,.24)}
+.opt-btn.primary .lbl{color:#fff;font-weight:600}
+.opt-btn.primary .sub{color:rgba(255,255,255,.85)}
+.opt-btn.primary .ic{background:rgba(255,255,255,.22);color:#fff}
+.opt-btn.primary:hover{background:#A05A0B;border-color:#A05A0B}
+.opt-btn.primary:hover .ic{background:rgba(255,255,255,.28)}
 /* badges */
 .badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;display:inline-block;margin-bottom:6px}
 .bi{background:#FDF2E9;color:#7A4309}.bo{background:#e1f5ee;color:#085041}.bw{background:#faeeda;color:#633806}
 /* boxes */
-.ibox{background:#FDF2E9;border:.5px solid #F5C99B;border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:#7A4309;margin-top:8px;line-height:1.5}
-.wbox{background:#faeeda;border:.5px solid #fac775;border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:#633806;margin-top:8px}
-.gbox{background:#e1f5ee;border:.5px solid #9fe1cb;border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:#085041;margin-top:8px}
+.ibox{background:#FDF2E9;border:1px solid #F5C99B;border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:#7A4309;margin-top:8px;line-height:1.5}
+.wbox{background:#faeeda;border:1px solid #fac775;border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:#633806;margin-top:8px}
+.gbox{background:#e1f5ee;border:1px solid #9fe1cb;border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:#085041;margin-top:8px}
 /* inputs */
-input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);display:block;margin-top:6px}
+input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);display:block;margin-top:6px}
+/* Color de marca en los campos: deja claro dónde hay que continuar */
+input.date-inp,select.fsel,.dni-inp,textarea.cmt-inp{border-color:#D98A3D;background:#FFF9F2}
+input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{outline:none;border-color:#C26D0E;border-width:1.5px;box-shadow:0 0 0 3px rgba(194,109,14,.25)}
 .err{color:#a32d2d;font-size:12px;margin-top:4px;display:none}
 /* typing */
 .typing{display:flex;gap:4px;align-items:center;padding:10px 14px}
@@ -86,7 +105,7 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
 @keyframes bl{0%,80%,100%{opacity:.3}40%{opacity:1}}
 /* ── Collapsible subclass selector ── */
-.clase-block{border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:8px;overflow:hidden}
+.clase-block{border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:8px;overflow:hidden}
 .clase-toggle{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;background:var(--color-background-primary);user-select:none;transition:background .12s}
 .clase-toggle:hover{background:var(--color-background-secondary)}
 .clase-toggle.has-sel{background:#FDF2E9}
@@ -97,9 +116,9 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 .clase-toggle .ct-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
 .clase-toggle .ct-arrow{font-size:11px;color:var(--color-text-secondary);transition:transform .2s;flex-shrink:0}
 .clase-toggle.open .ct-arrow{transform:rotate(90deg)}
-.clase-subs{display:none;border-top:.5px solid var(--color-border-tertiary)}
+.clase-subs{display:none;border-top:1px solid var(--color-border-tertiary)}
 .clase-subs.open{display:block}
-.sub-row{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-bottom:.5px solid var(--color-border-tertiary);cursor:pointer;transition:background .1s;background:var(--color-background-primary)}
+.sub-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-bottom:1px solid #d4dae3;cursor:pointer;transition:background .1s;background:var(--color-background-primary)}
 .sub-row:last-child{border-bottom:none}
 .sub-row:hover:not(.age-dim):not(.inc-row):not(.lock-row){background:var(--color-background-secondary)}
 .sub-row.sel-row{background:#FDF2E9}
@@ -123,50 +142,50 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 .sel-row .chk-ic path{stroke:#fff!important}
 .sub-row.inc-row .chk-ic path{stroke:#64748b!important}
 .sub-desc{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
-.pill{font-size:10px;padding:1px 6px;border-radius:10px;margin-top:3px;display:inline-block;border:.5px solid}
+.pill{font-size:10px;padding:1px 6px;border-radius:10px;margin-top:3px;display:inline-block;border:1px solid}
 .pill-age{background:#fcebeb;color:#791f1f;border-color:#f7c1c1}
 /* req list */
 .rlist{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:8px}
-.ritem{border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden}
+.ritem{border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden}
 .rhead{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--color-background-primary)}
 .rnum{background:#C26D0E;color:white;font-size:10px;font-weight:500;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .rbody{font-size:13px;color:var(--color-text-primary);flex:1;line-height:1.4}
 .rbody small{display:block;color:var(--color-text-secondary);font-size:12px;margin-top:2px}
-.ract{padding:8px 12px;border-top:.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
-.cta-btn{padding:8px 13px;border-radius:var(--border-radius-md);font-size:12px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border:.5px solid;font-weight:500}
+.ract{padding:8px 12px;border-top:1px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.cta-btn{padding:8px 13px;border-radius:var(--border-radius-md);font-size:12px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border:1px solid;font-weight:500}
 .cp{background:#C26D0E;color:white;border-color:#C26D0E}
 .cs{background:var(--color-background-primary);color:#C26D0E;border-color:#F5C99B}
 .cg{background:#0f6e56;color:white;border-color:#0f6e56}
 .cw{background:#25d366;color:white;border-color:#25d366}
 .cr{background:#a32d2d;color:white;border-color:#a32d2d}
 /* summary card */
-.sc{background:var(--color-background-primary);border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-top:8px}
-.sr{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:.5px solid var(--color-border-tertiary);gap:12px}
+.sc{background:var(--color-background-primary);border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px 16px;margin-top:8px}
+.sr{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--color-border-tertiary);gap:12px}
 .sr:last-child{border-bottom:none}
 .sr span:first-child{color:var(--color-text-secondary);flex-shrink:0}
 .sr span:last-child{font-weight:500;color:var(--color-text-primary);text-align:right}
 /* turnero */
-.tc{border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px;text-align:center;background:var(--color-background-primary);margin-top:8px}
+.tc{border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:14px;text-align:center;background:var(--color-background-primary);margin-top:8px}
 .tc .ti{font-size:26px;margin-bottom:5px}
 .tc h3{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
 .tc p{font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;line-height:1.4}
 /* sel summary tags */
 .sel-tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
-.stag{font-size:12px;padding:3px 10px;border-radius:20px;background:#FDF2E9;color:#7A4309;border:.5px solid #F5C99B}
+.stag{font-size:12px;padding:3px 10px;border-radius:20px;background:#FDF2E9;color:#7A4309;border:1px solid #F5C99B}
 .stag.prof{background:#faeeda;color:#633806;border-color:#fac775}
 /* doc checklist */
 .doc-section{margin-top:10px}
 .doc-section>h4{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:8px}
-.doc-chk-row{display:flex;align-items:flex-start;gap:10px;margin-top:8px;padding:8px 0;border-top:.5px solid var(--color-border-tertiary)}
+.doc-chk-row{display:flex;align-items:flex-start;gap:10px;margin-top:8px;padding:8px 0;border-top:1px solid var(--color-border-tertiary)}
 .doc-chk-row:first-of-type{border-top:none}
 .doc-chk-row input[type=checkbox]{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#C26D0E;cursor:pointer}
 .doc-chk-row .doc-chk-lbl{flex:1;font-size:13px;line-height:1.45}
 .doc-chk-row .doc-chk-lbl small{display:block;color:var(--color-text-secondary);font-size:12px;margin-top:2px}
-.sum-section{margin-top:16px;padding-top:12px;border-top:.5px solid var(--color-border-tertiary)}
+.sum-section{margin-top:16px;padding-top:12px;border-top:1px solid var(--color-border-tertiary)}
 .sum-section>h4{font-size:13px;font-weight:600;margin-bottom:8px}
-.chk-datos{display:flex;align-items:flex-start;gap:10px;margin-top:14px;padding:10px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border:.5px solid var(--color-border-tertiary)}
+.chk-datos{display:flex;align-items:flex-start;gap:10px;margin-top:14px;padding:10px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border:1px solid var(--color-border-tertiary)}
 .chk-datos input{margin-top:2px;accent-color:#C26D0E}
-.dni-inp{width:100%;font-size:15px;padding:10px 12px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);letter-spacing:.05em}
+.dni-inp{width:100%;font-size:15px;padding:10px 12px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);letter-spacing:.05em}
 .export-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .export-row .cta-btn,.export-row .opt-btn{flex:1;min-width:140px;justify-content:center}
 .clase-block.prof-block-locked .clase-toggle{pointer-events:none;cursor:not-allowed;opacity:.62}
@@ -174,14 +193,14 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 .fin-deriv .tc{text-align:left}
 .fin-deriv .tc p{font-size:13px;line-height:1.5}
 /* sequential requirements */
-.req-item{border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:8px;overflow:hidden;transition:border-color .2s,background .2s}
+.req-item{border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);margin-bottom:8px;overflow:hidden;transition:border-color .2s,background .2s}
 .req-item.req-active{border-color:#C26D0E}
 .req-item.req-pending{opacity:.42;pointer-events:none}
 .req-item.req-done{border-color:#0f6e56;background:#f0faf6}
 .req-hd{display:flex;align-items:flex-start;gap:10px;padding:10px 12px}
 .req-chk-icon{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--color-border-secondary);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;color:transparent;transition:background .2s,border-color .2s,color .2s}
 .req-done .req-chk-icon{background:#0f6e56;border-color:#0f6e56;color:white}
-.req-act{padding:8px 12px 10px;border-top:.5px solid var(--color-border-tertiary);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.req-act{padding:8px 12px 10px;border-top:1px solid var(--color-border-tertiary);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .req-pending .req-act{display:none}
 .req-lotengo{background:#C26D0E;color:white;border:none;border-radius:var(--border-radius-md);padding:8px 14px;font-size:12px;cursor:pointer;font-weight:500;display:flex;align-items:center;transition:opacity .12s}
 .req-lotengo:hover{opacity:.88}
@@ -193,7 +212,7 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
   font-size:16px;
   font-weight:600;
   letter-spacing:.01em;
-  border-radius:var(--border-radius-lg);
+  border-radius:var(--border-radius-md);
   box-shadow:0 4px 14px rgba(194,109,14,.28);
   line-height:1.3;
 }
@@ -218,91 +237,22 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 }
 .cbtn-resumen:hover{background:#FDF2E9;border-color:#C26D0E}
 .cbtn-resumen .ic{font-size:16px}
-/* ── Modal del resumen final (Fase 2) ── */
-#resumen-overlay{
-  position:fixed;inset:0;background:rgba(15,23,42,.55);
-  display:none;align-items:flex-start;justify-content:center;
-  z-index:1000;padding:20px 12px;overflow-y:auto;
+/* ── Lenguaje de interacción unificado para todos los botones del chat ──
+   Radio ya unificado vía --border-radius-md; acá se igualan foco y press. */
+.cbtn-confirm:focus-visible,.cbtn-resumen:focus-visible,.cta-btn:focus-visible,.back-btn:focus-visible,.req-lotengo:focus-visible,.btn-cerrar:focus-visible{
+  outline:2px solid #C26D0E;outline-offset:2px;
 }
-#resumen-overlay.open{display:flex}
-.resumen-modal{
-  background:#ffffff;border-radius:var(--border-radius-lg);
-  max-width:760px;width:100%;
-  box-shadow:0 20px 50px rgba(15,23,42,.25);
-  display:flex;flex-direction:column;overflow:hidden;
-  margin:auto;
+.cbtn-confirm:not(:disabled):active,.cbtn-resumen:active,.cta-btn:active,.back-btn:active,.req-lotengo:active{
+  transform:translateY(1px);
 }
-.resumen-toolbar{
-  display:flex;gap:10px;align-items:center;justify-content:space-between;
-  padding:12px 16px;border-bottom:.5px solid var(--color-border-tertiary);
-  background:var(--color-background-secondary);flex-wrap:wrap;
-}
-.resumen-toolbar h2{font-size:15px;font-weight:600;color:var(--color-text-primary);margin:0}
-.resumen-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn-pdf{
-  background:#C26D0E;color:white;border:none;border-radius:var(--border-radius-md);
-  padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;
-  display:inline-flex;align-items:center;gap:6px;transition:opacity .12s;
-}
-.btn-pdf:hover{opacity:.9}
-.btn-pdf:disabled{opacity:.55;cursor:wait}
-.btn-pdf.btn-share{background:#0f6e56;border-color:#0f6e56}
+.cta-btn{transition:opacity .12s,transform .06s}
+.cta-btn:hover{opacity:.92}
 .btn-cerrar{
   background:var(--color-background-primary);color:var(--color-text-secondary);
-  border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);
+  border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);
   padding:9px 14px;font-size:13px;cursor:pointer;
 }
 .btn-cerrar:hover{background:var(--color-background-secondary)}
-.resumen-print{padding:24px 28px;color:#0f172a;font-family:var(--font-sans,system-ui,sans-serif);}
-.resumen-print h1{font-size:20px;font-weight:600;margin-bottom:4px}
-.resumen-print h2{font-size:15px;font-weight:600;margin:20px 0 8px;padding-bottom:6px;border-bottom:1px solid #e2e8f0}
-.resumen-print h2:first-of-type{margin-top:14px}
-.resumen-print .meta{color:#64748b;font-size:12px;margin-bottom:8px}
-.resumen-print .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:6px}
-.resumen-print .grid2 div{font-size:13px;line-height:1.5}
-.resumen-print .grid2 strong{color:#475569;font-weight:500;display:block;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
-.resumen-print .grid2 span{color:#0f172a;font-weight:500}
-.resumen-print .pago{
-  background:#f0faf6;border:.5px solid #9fe1cb;border-radius:var(--border-radius-md);
-  padding:14px 16px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
-}
-.resumen-print .pago-monto{font-size:22px;font-weight:600;color:#085041}
-.resumen-print .pago-detalle{font-size:12px;color:#085041;line-height:1.4}
-.resumen-print .checklist{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:6px}
-.resumen-print .checklist li{
-  display:flex;gap:10px;font-size:13px;line-height:1.5;
-  padding:8px 10px;border:.5px solid #e2e8f0;border-radius:var(--border-radius-md);
-}
-.resumen-print .checklist .box{
-  width:16px;height:16px;border:1.5px solid #94a3b8;border-radius:3px;flex-shrink:0;margin-top:2px;
-}
-.resumen-print .checklist small{display:block;color:#64748b;font-size:11px;margin-top:2px}
-.resumen-print .links{display:flex;flex-direction:column;gap:6px;margin-top:6px}
-.resumen-print .links a{
-  color:#C26D0E;text-decoration:none;font-size:13px;
-  padding:8px 10px;border:.5px solid #F5C99B;border-radius:var(--border-radius-md);
-  background:#FFF9F2;display:flex;align-items:center;gap:8px;
-}
-.resumen-print .links a:hover{background:#FDF2E9}
-.resumen-print .links a span.lico{font-size:14px;flex-shrink:0}
-.resumen-print .links a small{display:block;color:#64748b;font-size:11px;margin-top:2px}
-.resumen-print .links a div{flex:1}
-.resumen-print .nota{
-  font-size:12px;color:#64748b;margin-top:14px;padding:10px 12px;
-  background:#f8fafc;border-radius:var(--border-radius-md);line-height:1.5;
-}
-.resumen-print .firma{margin-top:18px;text-align:center;font-size:11px;color:#94a3b8;line-height:1.5}
-/* ── @media print: oculta toda la app y deja sólo el resumen ── */
-@media print{
-  body{background:white!important;padding:0!important}
-  #cw,#hdr,#msgs,#opts{display:none!important}
-  #resumen-overlay{position:static!important;background:transparent!important;padding:0!important;display:block!important}
-  #resumen-overlay.open{display:block!important}
-  .resumen-toolbar{display:none!important}
-  .resumen-modal{box-shadow:none!important;border-radius:0!important;max-width:100%!important}
-  .resumen-print{padding:24px 0!important;page-break-inside:avoid}
-  .resumen-print a{color:#C26D0E!important;text-decoration:underline!important}
-}
 /* ── Modal Turnero ── */
 #turno-overlay{
   display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);
@@ -311,23 +261,25 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 #turno-overlay.open{display:flex;align-items:flex-start;justify-content:center}
 .turno-modal{
   background:#fff;border-radius:var(--border-radius-lg);max-width:520px;width:100%;
+  max-height:calc(100dvh - 40px);
   box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden;
   margin:auto;
 }
 .turno-toolbar{
   display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding:14px 16px;border-bottom:.5px solid var(--color-border-tertiary);background:#f8fafc;
+  padding:14px 16px;border-bottom:1px solid var(--color-border-tertiary);background:#f8fafc;
 }
 .turno-toolbar h2{font-size:15px;font-weight:600;color:var(--color-text-primary);margin:0}
 .turno-toolbar .btn-cerrar{
-  background:transparent;border:.5px solid var(--color-border-secondary);
+  background:transparent;border:1px solid var(--color-border-secondary);
   border-radius:var(--border-radius-md);padding:6px 12px;font-size:12px;cursor:pointer;
   color:var(--color-text-secondary);
 }
-.turno-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.turno-body{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;flex:1 1 auto;min-height:0}
+.turno-foot{padding:12px 16px 14px;border-top:1px solid var(--color-border-tertiary);background:#fff;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
 .turno-nav{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .turno-nav button{
-  background:#fff;border:.5px solid var(--color-border-secondary);
+  background:#fff;border:1px solid var(--color-border-secondary);
   border-radius:var(--border-radius-md);padding:6px 12px;font-size:14px;cursor:pointer;
 }
 .turno-nav button:disabled{opacity:.4;cursor:not-allowed}
@@ -337,7 +289,7 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 .turno-cal .td{
   aspect-ratio:1;display:flex;align-items:center;justify-content:center;
   font-size:13px;border-radius:var(--border-radius-md);
-  background:#fff;border:.5px solid var(--color-border-tertiary);cursor:pointer;color:var(--color-text-primary);
+  background:#fff;border:1px solid var(--color-border-tertiary);cursor:pointer;color:var(--color-text-primary);
 }
 .turno-cal .td.empty{background:transparent;border:none;pointer-events:none}
 .turno-cal .td.past,.turno-cal .td.no{opacity:.32;cursor:not-allowed;background:#f1f5f9;color:#94a3b8}
@@ -346,14 +298,14 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 .turno-horarios-wrap h3{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin:0 0 6px}
 .turno-horarios{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px;min-height:8px}
 .turno-horarios .th{
-  background:#fff;border:.5px solid var(--color-border-secondary);
+  background:#fff;border:1px solid var(--color-border-secondary);
   border-radius:var(--border-radius-md);padding:8px 6px;font-size:12px;cursor:pointer;
   color:var(--color-text-primary);
 }
 .turno-horarios .th:hover{background:#FDF2E9;border-color:#C26D0E}
 .turno-horarios .th.sel{background:#C26D0E;color:#fff;border-color:#C26D0E;font-weight:600}
 .turno-resumen{
-  background:#f8fafc;border:.5px solid var(--color-border-tertiary);
+  background:#f8fafc;border:1px solid var(--color-border-tertiary);
   border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:var(--color-text-primary);
   text-align:center;
 }
@@ -363,10 +315,7 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 @media (max-width:768px){
   #cw{padding:1rem 0 1.5rem}
   .bubble{max-width:94%;font-size:13.5px}
-  .resumen-modal{max-width:100%}
   .turno-modal{max-width:100%}
-  .resumen-print{padding:20px 18px}
-  .resumen-print .grid2{gap:6px 12px}
   .turno-horarios{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}
 }
 
@@ -374,10 +323,6 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 @media (max-width:480px){
   body{padding:0 8px}
   #cw{padding:.75rem 0 1.25rem}
-  #hdr{gap:10px;padding-bottom:1rem;margin-bottom:.75rem}
-  #hdr .logo{width:34px;height:34px}
-  #hdr h1{font-size:14px}
-  #hdr p{font-size:11px}
   .bubble{max-width:95%;font-size:13.5px;padding:9px 12px}
   .av{width:24px;height:24px;font-size:10px}
   .msg{gap:8px}
@@ -385,21 +330,6 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
   .opt-btn .lbl{font-size:13.5px}
   .cbtn-confirm{padding:12px 14px;font-size:14px}
   .cta-btn{font-size:13px;padding:10px 12px}
-  /* Modal resumen full-screen */
-  #resumen-overlay{padding:0}
-  .resumen-modal{border-radius:0;min-height:100vh;max-width:100%}
-  .resumen-toolbar{padding:10px 12px;flex-wrap:wrap;gap:6px}
-  .resumen-toolbar h2{font-size:14px;flex:1 1 100%}
-  .resumen-toolbar-actions{flex:1 1 100%;justify-content:flex-end}
-  .resumen-print{padding:16px 14px}
-  .resumen-print h1{font-size:18px}
-  .resumen-print h2{font-size:14px;margin:16px 0 6px}
-  .resumen-print .grid2{grid-template-columns:1fr;gap:6px}
-  .resumen-print .grid2 div[style*="grid-column"]{grid-column:1 / -1!important}
-  .resumen-print .pago{flex-direction:column;align-items:flex-start;padding:12px 14px}
-  .resumen-print .pago-monto{font-size:20px}
-  .resumen-print .checklist li,
-  .resumen-print .links a{font-size:12.5px}
   /* Modal turno full-screen */
   #turno-overlay{padding:0;align-items:stretch}
   .turno-modal{border-radius:0;min-height:100vh;max-width:100%;margin:0}
@@ -424,27 +354,8 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 </style>
 
 <div id="cw">
-  <div id="hdr">
-    <div class="logo"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 3a3 3 0 110 6 3 3 0 010-6zm5 12H7v-.6c0-2.2 3.3-3.4 5-3.4s5 1.2 5 3.4v.6z"/></svg></div>
-    <div><h1>Asistente de Licencia de Conducir</h1><p>Municipalidad de San Vicente · Santa Fe</p></div>
-  </div>
   <div id="msgs"></div>
   <div id="opts"></div>
-</div>
-
-<!-- Modal del Resumen final (Fase 2) -->
-<div id="resumen-overlay" role="dialog" aria-modal="true" aria-label="Resumen del trámite">
-  <div class="resumen-modal" id="resumen-modal-inner">
-    <div class="resumen-toolbar">
-      <h2>Resumen del trámite</h2>
-      <div class="resumen-toolbar-actions">
-        <button type="button" class="btn-pdf" id="btn-descargar-pdf">⬇ Descargar PDF</button>
-        <button type="button" class="btn-pdf btn-share" id="btn-compartir-pdf" hidden>📤 Compartir</button>
-        <button type="button" class="btn-cerrar" id="btn-cerrar-resumen">Cerrar</button>
-      </div>
-    </div>
-    <div class="resumen-print" id="resumen-print-body"></div>
-  </div>
 </div>
 
 <!-- Modal Turnero -->
@@ -456,9 +367,9 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
     </div>
     <div class="turno-body">
       <div class="turno-nav">
-        <button type="button" id="turno-prev" aria-label="Mes anterior">←</button>
+        <button type="button" id="turno-prev" aria-label="Mes anterior"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
         <span id="turno-mes-label"></span>
-        <button type="button" id="turno-next" aria-label="Mes siguiente">→</button>
+        <button type="button" id="turno-next" aria-label="Mes siguiente"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
       </div>
       <div class="turno-cal-head"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
       <div class="turno-cal" id="turno-cal"></div>
@@ -466,8 +377,10 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
         <h3 id="turno-horarios-titulo">Elegí un día disponible</h3>
         <div class="turno-horarios" id="turno-horarios"></div>
       </div>
+    </div>
+    <div class="turno-foot">
       <div class="turno-resumen" id="turno-resumen">Sin selección.</div>
-      <button type="button" class="cbtn-confirm" id="btn-confirmar-turno">Confirmar turno</button>
+      <button type="button" class="cbtn-confirm" id="btn-confirmar-turno" disabled aria-disabled="true">Confirmar turno</button>
     </div>
   </div>
 </div>
@@ -476,7 +389,10 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 /* finContacto: "wa" | "mail" — canal para enviar el resumen al municipio (solo localidades propio:false)
    Si omitís finContacto: usa WhatsApp si hay wsp, si no mail. */
 /* WhatsApp municipal (Argentina): 54 + 9 + código + número → 5493492646942 */
-const CONTACTO_WHATSAPP_SV="5493492646942";
+/* Datos de contacto: si la página Astro inyectó window.SV_LICENCIA_DATOS (desde src/data/licencia.json)
+   se usan esos valores; en la vista standalone caen a las constantes embebidas de abajo. */
+const SV_DATOS=(typeof window!=="undefined"&&window.SV_LICENCIA_DATOS)||null;
+const CONTACTO_WHATSAPP_SV=(SV_DATOS&&SV_DATOS.whatsapp)||"5493492646942";
 
 /* PDF local de la Ley provincial 13.133 (Santa Fe) — usado cada vez que se la cita en el flujo. */
 const LEY_13133_URL="/chatbot/licencia/documentacion/L1313325112010.pdf";
@@ -484,11 +400,22 @@ function leyLink(texto){return `<a href="${LEY_13133_URL}" target="_blank" rel="
 
 const LOCS={
   "San Vicente":{propio:true,wsp:CONTACTO_WHATSAPP_SV,mail:null},
-  "Angélica":{propio:false,wsp:"5493406000001",mail:"tramites@angelica.gob.ar",finContacto:"wa"},
-  "Plaza Clucellas":{propio:false,wsp:"5493406000002",mail:"consultas@plazaclucellas.gob.ar",finContacto:"wa"},
-  "Colonia Margarita":{propio:false,wsp:"5493406000003",mail:"municipio@coloniamargarita.gob.ar",finContacto:"mail"},
-  "Colonia Iturraspe":{propio:false,wsp:"5493406000004",mail:"info@coloniaiturraspe.gob.ar",finContacto:"wa"}
+  "Angélica":{propio:false,wsp:"5493492315517",mail:"comunadeangelica@angcoop.com.ar",finContacto:"wa"},
+  "Plaza Clucellas":{propio:false,wsp:"5493492666900",mail:"comunaclucellas@hotmail.com",finContacto:"wa"},
+  "Colonia Margarita":{propio:false,wsp:"5493492256596",mail:"comunacolmar@gmail.com",finContacto:"wa"},
+  "Colonia Iturraspe":{propio:false,wsp:"5493492221655",mail:"comunacoloniaiturraspe@hotmail.com",finContacto:"wa"}
 };
+
+/* Sobrescribe WhatsApp/mail de cada localidad con los de licencia.json cuando están disponibles.
+   Las banderas propio/finContacto son específicas del chatbot y se mantienen acá. */
+if(SV_DATOS&&Array.isArray(SV_DATOS.localidades)){
+  SV_DATOS.localidades.forEach(l=>{
+    if(l&&l.nombre&&LOCS[l.nombre]){
+      if(l.whatsapp)LOCS[l.nombre].wsp=l.whatsapp;
+      if(l.mail)LOCS[l.nombre].mail=l.mail;
+    }
+  });
+}
 
 /* includes = subclases que quedan automáticamente incluidas si se elige esta */
 const SUBS=[
@@ -507,8 +434,8 @@ const SUBS=[
   {cod:"D.2",label:"D.2 — Más de 8 pasajeros",desc:"Profesional",edad:21,prof:true,inc:["D.1","B.1"],grupo:"D",gLabel:"Clase D — Transporte de pasajeros",ic:"🚌"},
   {cod:"D.3",label:"D.3 — Urgencia, emergencia o similares",desc:"Profesional — debe acompañarse de clase B.1 o D.1",edad:21,prof:true,inc:[],grupo:"D",gLabel:"Clase D — Transporte de pasajeros",ic:"🚌"},
   // Clase E — Articulados y maquinaria no agrícola
-  {cod:"E.1",label:"E.1 — Camiones articulados y/o con acoplado",desc:"Profesional",edad:21,prof:true,inc:["B.1"],grupo:"E",gLabel:"Clase E — Articulados y maquinaria no agrícola",ic:"⚙"},
-  {cod:"E.2",label:"E.2 — Maquinaria especial no agrícola",desc:"Profesional",edad:21,prof:true,inc:[],grupo:"E",gLabel:"Clase E — Articulados y maquinaria no agrícola",ic:"⚙"},
+  {cod:"E.1",label:"E.1 — Camiones articulados y/o con acoplado",desc:"Profesional",edad:21,prof:true,inc:["B.1"],grupo:"E",gLabel:"Clase E — Articulados y maquinaria no agrícola",ic:"🏗️"},
+  {cod:"E.2",label:"E.2 — Maquinaria especial no agrícola",desc:"Profesional",edad:21,prof:true,inc:[],grupo:"E",gLabel:"Clase E — Articulados y maquinaria no agrícola",ic:"🏗️"},
   // Clase F — Adaptados para discapacidad
   {cod:"F",label:"F — Automotores incluidos en clase B o profesionales, adaptados",desc:"Debe acompañarse de B, C, D o E. Adaptación según la discapacidad del titular. Mayor de 18 años. Si acompaña a una clase profesional, requiere 2 años de antigüedad en B.",edad:18,prof:false,inc:[],grupo:"F",gLabel:"Clase F — Adaptados para discapacidad",ic:"♿"},
   // Clase G — Maquinaria agrícola
@@ -611,8 +538,8 @@ function dmyToIso(dmy){
   if(dt.getFullYear()!==yyyy||dt.getMonth()!==mm-1||dt.getDate()!==dd)return null;
   return `${String(yyyy).padStart(4,"0")}-${String(mm).padStart(2,"0")}-${String(dd).padStart(2,"0")}`;
 }
-function addUser(t){const d=document.createElement("div");d.className="msg user";d.innerHTML=`<div class="av">Vos</div><div class="bubble">${t}</div>`;msgs.appendChild(d);d.scrollIntoView({behavior:"smooth",block:"end"});}
-function addBot(html,delay=0){return new Promise(res=>{setTimeout(()=>{const t=document.createElement("div");t.className="msg bot";t.innerHTML=`<div class="av">SV</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;msgs.appendChild(t);t.scrollIntoView({behavior:"smooth",block:"end"});setTimeout(()=>{t.remove();const d=document.createElement("div");d.className="msg bot";d.innerHTML=`<div class="av">SV</div><div class="bubble">${html}</div>`;msgs.appendChild(d);d.scrollIntoView({behavior:"smooth",block:"end"});res();},480);},delay);});}
+function addUser(t){const d=document.createElement("div");d.className="msg user";d.innerHTML=`<div class="av">Vos</div><div class="bubble">${t}</div>`;msgs.appendChild(d);chatScrollIntoView(d,"end");}
+function addBot(html,delay=0){return new Promise(res=>{setTimeout(()=>{const t=document.createElement("div");t.className="msg bot";t.innerHTML=`<div class="av">SV</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;msgs.appendChild(t);chatScrollIntoView(t,"end");setTimeout(()=>{t.remove();const d=document.createElement("div");d.className="msg bot";d.innerHTML=`<div class="av">SV</div><div class="bubble">${html}</div>`;msgs.appendChild(d);chatScrollIntoView(d,"end");res();},480);},delay);});}
 function clearOpts(){
   if(window._optsEnterAbort){
     try{window._optsEnterAbort.abort();}catch(x){}
@@ -624,13 +551,86 @@ function clearOpts(){
   }
   opts.innerHTML="";
 }
-function addBack(fn,lbl="Volver al paso anterior"){const b=document.createElement("button");b.className="back-btn";b.innerHTML=`← ${lbl}`;b.onclick=()=>{clearOpts();fn();};opts.appendChild(b);}
+/* ── Iconografía (estilo Lucide, inline SVG, stroke=currentColor) ──
+   Unifica los íconos de acciones del chat. Los íconos de clases (SUBS) y los emojis
+   de la encuesta final NO pasan por acá: quedan como están. */
+const ICONS={
+  back:'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  chevron:'<path d="m9 18 6-6-6-6"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
+  calendar:'<rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  alert:'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/>',
+  plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  help:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  pin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  edit:'<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+  message:'<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>'
+};
+function ic(name,size){const p=ICONS[name];if(!p)return "";return `<svg viewBox="0 0 24 24" width="${size||14}" height="${size||14}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;}
+const SYMBOL_ICON={"✓":"check","✗":"x","⚠":"alert","↺":"refresh","+":"plus","?":"help","🗓":"calendar","📅":"calendar","›":"chevron","⬇":"download","📤":"share"};
+/* Convierte símbolos conocidos a SVG; deja pasar SVG ya armado y emojis (clases/encuesta). */
+function resolveIcon(raw){
+  if(raw==null||raw==="")return ic("chevron");
+  if(typeof raw==="string"&&raw.indexOf("<svg")===0)return raw;
+  const n=SYMBOL_ICON[raw];
+  return n?ic(n):raw;
+}
+
+function addBack(fn,lbl="Volver al paso anterior"){const b=document.createElement("button");b.className="back-btn";b.innerHTML=`${ic("back",14)}<span>${lbl}</span>`;b.onclick=()=>{clearOpts();fn();};opts.appendChild(b);}
+
+/* Avanza la conversación anclando el ARRIBA del último globo del bot al tope del área visible
+   (no el fondo): así las preguntas con contenido alto —ej. selector de clases— quedan siempre
+   visibles y el resto del bloque se lee scrolleando hacia abajo. */
+/* Contenedor scrolleable del chat. En la página municipal es el host <sv-asistente-licencia>
+   (overflow:auto, contiene al shadow root). En standalone es el documento. Se resuelve de forma
+   determinística (sin trepar ancestros), así el scroll NO mueve la página, solo el chat. */
+function chatScroller(){
+  const r=msgs.getRootNode&&msgs.getRootNode();
+  if(r&&r.host)return r.host;
+  return document.scrollingElement||document.documentElement;
+}
+
+/* Scrollea SOLO el contenedor del chat (no la página) para dejar `el` arriba ("start"),
+   abajo ("end") o lo justo para verse ("nearest"). */
+function chatScrollIntoView(el,block){
+  if(!el)return;
+  const margin=14;
+  const sc=chatScroller();
+  const root=document.scrollingElement||document.documentElement;
+  const isRoot=(sc===root||sc===document.documentElement||sc===document.body);
+  const er=el.getBoundingClientRect();
+  const scTop=isRoot?0:sc.getBoundingClientRect().top;
+  const curTop=isRoot?window.pageYOffset:sc.scrollTop;
+  const elTopAbs=curTop+(er.top-scTop);
+  const viewH=isRoot?window.innerHeight:sc.clientHeight;
+  let top=curTop;
+  if(block==="start")top=elTopAbs-margin;
+  else if(block==="end")top=elTopAbs+er.height-viewH+margin;
+  else{
+    if(elTopAbs<curTop+margin)top=elTopAbs-margin;
+    else if(elTopAbs+er.height>curTop+viewH-margin)top=elTopAbs+er.height-viewH+margin;
+  }
+  if(top<0)top=0;
+  (isRoot?window:sc).scrollTo({top,behavior:"smooth"});
+}
+
+function advanceScroll(){
+  const botMsgs=msgs.querySelectorAll(".msg.bot");
+  const last=botMsgs[botMsgs.length-1];
+  if(last)chatScrollIntoView(last,"start");
+  else chatScrollIntoView(opts,"end");
+}
 
 /* ── Confirm button helper ── */
 function makeConfirmBtn(label){
-  const b=document.createElement("button");b.className="cbtn-confirm";b.textContent=label;return b;
+  const b=document.createElement("button");b.type="button";b.className="cbtn-confirm";b.textContent=label;b.disabled=true;b.setAttribute("aria-disabled","true");return b;
 }
-function activateBtn(b,label){b.classList.add("on");if(label)b.textContent=label;}
+function activateBtn(b,label){b.classList.add("on");b.disabled=false;b.setAttribute("aria-disabled","false");if(label)b.textContent=label;}
+function deactivateBtn(b){b.classList.remove("on");b.disabled=true;b.setAttribute("aria-disabled","true");}
 
 /** Enter en el campo dispara el botón Confirmar cuando está activo (.on). */
 function bindEnterSubmitInput(inputEl,btnEl){
@@ -696,11 +696,13 @@ function pickOne(items,onPick,backFn,backLbl){
   clearOpts();if(backFn)addBack(backFn,backLbl);
   items.forEach((item,i)=>{
     const b=document.createElement("button");b.className="opt-btn"+(item.dim?" dim":"");
-    b.innerHTML=`<span class="ic">${item.icon||"›"}</span><div class="ol"><span class="lbl">${item.label}</span>${item.sub?`<span class="sub">${item.sub}</span>`:""}</div>`;
+    b.innerHTML=`<span class="ic">${resolveIcon(item.icon)}</span><div class="ol"><span class="lbl">${item.label}</span>${item.sub?`<span class="sub">${item.sub}</span>`:""}</div>`;
     if(!item.dim)b.onclick=()=>onPick(item,i);
     opts.appendChild(b);
   });
-  opts.scrollIntoView({behavior:"smooth",block:"end"});
+  const firstBtn=opts.querySelector(".opt-btn:not(.dim)");
+  if(firstBtn)firstBtn.focus({preventScroll:true});
+  advanceScroll();
 }
 
 /* ── Date input + confirmación explícita ── */
@@ -723,9 +725,9 @@ function showDate(hint,backFn,onConfirm,savedVal,cfg){
     return{ok:true,iso};
   }
   function syncBtn(){
-    if(!inp.value){btn.classList.remove("on");err.style.display="none";return;}
+    if(!inp.value){deactivateBtn(btn);err.style.display="none";return;}
     const v=validacionFecha();
-    if(!v.ok){err.textContent=v.msg;err.style.display="block";btn.classList.remove("on");return;}
+    if(!v.ok){err.textContent=v.msg;err.style.display="block";deactivateBtn(btn);return;}
     err.style.display="none";
     activateBtn(btn,mode==="nacimiento"?"Confirmar fecha de nacimiento":"Confirmar fecha de vencimiento");
   }
@@ -752,7 +754,8 @@ function showDate(hint,backFn,onConfirm,savedVal,cfg){
   };
   bindEnterSubmitInput(inp,btn);
   opts.appendChild(inp);opts.appendChild(err);opts.appendChild(btn);
-  opts.scrollIntoView({behavior:"smooth",block:"end"});
+  inp.focus({preventScroll:true});
+  advanceScroll();
 }
 
 function showDni(backFn){
@@ -767,7 +770,7 @@ function showDni(backFn){
   function syncBtn(){
     const n=norm(inp.value);
     if(n.length>=7&&n.length<=9){activateBtn(btn,"Confirmar");err.style.display="none";}
-    else btn.classList.remove("on");
+    else deactivateBtn(btn);
   }
   inp.addEventListener("input",()=>{inp.value=norm(inp.value);syncBtn();});
   if(S.dni)syncBtn();
@@ -778,7 +781,8 @@ function showDni(backFn){
   };
   bindEnterSubmitInput(inp,btn);
   opts.appendChild(hint);opts.appendChild(inp);opts.appendChild(err);opts.appendChild(btn);
-  opts.scrollIntoView({behavior:"smooth",block:"end"});
+  inp.focus({preventScroll:true});
+  advanceScroll();
 }
 
 /* ── Select — confirma al elegir opción (sin segundo botón) ── */
@@ -795,7 +799,8 @@ function showSelect(optsList,placeholder,backFn,onConfirm,savedVal){
     onConfirm(sel.value);
   });
   opts.appendChild(sel);
-  opts.scrollIntoView({behavior:"smooth",block:"end"});
+  sel.focus({preventScroll:true});
+  advanceScroll();
 }
 
 /* ══ COLLAPSIBLE MULTI-SELECT SUBCLASS SELECTOR ══
@@ -907,7 +912,7 @@ function showSubclasSelector(edad,presel,onConfirm,backFn,cfg){
   }
 
   const sumWrap=document.createElement("div");
-  sumWrap.style.cssText="margin-top:10px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;";
+  sumWrap.style.cssText="margin-top:10px;background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;";
   const sumLbl=document.createElement("div");sumLbl.style.cssText="color:var(--color-text-secondary);font-size:12px;margin-bottom:4px;";sumLbl.textContent="Sin subclases seleccionadas";
   const tagWrap=document.createElement("div");tagWrap.className="sel-tags";
   sumWrap.appendChild(sumLbl);sumWrap.appendChild(tagWrap);
@@ -947,7 +952,7 @@ function showSubclasSelector(edad,presel,onConfirm,backFn,cfg){
     if(errs.length){
       errBox.innerHTML=errs.map(e=>`⚠ ${e}`).join("<br>");
       errBox.style.display="block";
-      errBox.scrollIntoView({behavior:"smooth",block:"nearest"});
+      chatScrollIntoView(errBox,"nearest");
       return;
     }
     errBox.style.display="none";
@@ -1030,7 +1035,7 @@ function showSubclasSelector(edad,presel,onConfirm,backFn,cfg){
     }
     if(totalEff.size===0){
       sumLbl.textContent="Sin subclases seleccionadas";
-      btn.classList.remove("on");btn.textContent="Continuar";
+      deactivateBtn(btn);btn.textContent="Continuar";
     } else {
       sumLbl.textContent=soloSel.length?"Subclases elegidas por vos:":"Elegí al menos una subclase:";
       soloSel.forEach(c=>{
@@ -1039,7 +1044,7 @@ function showSubclasSelector(edad,presel,onConfirm,backFn,cfg){
         tagWrap.appendChild(t);
       });
       if(liveErrs.length){
-        btn.classList.remove("on");
+        deactivateBtn(btn);
         btn.textContent=`Falta clase acompañante (${soloSel.length} seleccionada${soloSel.length!==1?"s":""})`;
       } else {
         activateBtn(btn,`Continuar (${soloSel.length} seleccionada${soloSel.length!==1?"s":""})`);
@@ -1049,11 +1054,10 @@ function showSubclasSelector(edad,presel,onConfirm,backFn,cfg){
       const ref=rowMap[lastClickedRow.dataset.cod];
       if(ref){ref.subsDiv.classList.remove("open");ref.tog.classList.remove("open");}
     }
-    opts.scrollIntoView({behavior:"smooth",block:"end"});
   }
 
   updateSelector();
-  opts.scrollIntoView({behavior:"smooth",block:"end"});
+  advanceScroll();
 }
 
 /* ════════════════════ FLOW ════════════════════ */
@@ -1071,17 +1075,18 @@ function backToDni(){
 
 async function paso1_loc(){
   setProg(1);
-  await addBot(`¿En qué localidad vivís?<br><span style="font-size:12px;color:var(--color-text-secondary)">Recordá que debe realizarse en la localidad que figura en tu DNI.</span>`);
-  const ayuda=document.createElement("details");
-  ayuda.style.cssText="margin:8px 0 6px;font-size:12px;color:var(--color-text-secondary)";
-  ayuda.innerHTML=`<summary style="cursor:pointer">¿Por qué?</summary><div style="margin-top:6px">Porque legalmente la licencia se tramita según domicilio real. Base: ${leyLink("Ley 13.133")}, Art. 25.</div>`;
-  opts.appendChild(ayuda);
-  showSelect(Object.keys(LOCS),"Seleccioná tu localidad",backToDni,(val)=>{
-    S.localidad=val;
-    S.tramiteLocal=!!LOCS[val].propio;
-    addUser(val);
-    paso2_nac();
-  },S.localidad);
+  await addBot(`¿En qué localidad vivís?<br><span style="font-size:12px;color:var(--color-text-secondary)">Recordá que debe realizarse en la localidad que figura en tu DNI.</span><details style="margin-top:8px;font-size:12px;color:var(--color-text-secondary)"><summary style="cursor:pointer">¿Por qué?</summary><div style="margin-top:6px">Porque legalmente la licencia se tramita según domicilio real. Base: ${leyLink("Ley 13.133")}, Art. 25.</div></details>`);
+  const PIN=`<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+  pickOne(
+    Object.keys(LOCS).map(loc=>({icon:PIN,label:loc})),
+    (it)=>{
+      S.localidad=it.label;
+      S.tramiteLocal=!!LOCS[it.label].propio;
+      addUser(it.label);
+      paso2_nac();
+    },
+    backToDni
+  );
 }
 
 async function paso2_nac(){
@@ -1119,7 +1124,7 @@ async function paso2_nac_confirmarEdad(val,edad,fmt){
       bEnt.textContent="Entendido";
       bEnt.onclick=()=>reiniciar();
       opts.appendChild(bEnt);
-      opts.scrollIntoView({behavior:"smooth",block:"end"});
+      advanceScroll();
     } else {
       addUser("Me equivoqué");
       paso2_nac();
@@ -1301,7 +1306,7 @@ async function paso3c_venc(){
   },null,{mode:"vencimiento"});
   const btnNo=document.createElement("button");
   btnNo.type="button";btnNo.className="opt-btn";btnNo.style.marginTop="8px";
-  btnNo.innerHTML=`<span class="ic">?</span><div class="ol"><span class="lbl">No sé / no recuerdo</span></div>`;
+  btnNo.innerHTML=`<span class="ic">${ic("help",14)}</span><div class="ol"><span class="lbl">No sé / no recuerdo</span></div>`;
   btnNo.onclick=()=>{addUser("No sé / no recuerdo");paso3c_venc_estado();};
   opts.appendChild(btnNo);
 }
@@ -1338,7 +1343,7 @@ async function paso3c_venc_estado(){
   a.onclick=()=>{addUser("Enviar consulta por WhatsApp");setTimeout(()=>paso7_feedback(),250);};
   opts.appendChild(a);
   bindEnterToPrimaryButton(opts,a,{requireOn:false});
-  opts.scrollIntoView({behavior:"smooth",block:"end"});
+  advanceScroll();
 }
 
 async function paso3d_altaForzada(){
@@ -1448,10 +1453,8 @@ function textoResumenTramite(){
   const tipoLabel={alta:"Alta — primera licencia",alta_forzada:"Alta — vencida más de 1 año",renovacion_simple:"Renovación simple",renovacion_ampliacion:"Renovación con ampliación"}[S.tipo]||String(S.tipo||"");
   const nacFmt=S.nac?fmtFechaDMY(S.nac):"—";
   const subSel=S.selUsuario&&S.selUsuario.length?S.selUsuario.join(", "):"—";
-  const subFull=S.subclases&&S.subclases.length?S.subclases.join(", "):"—";
   const vc=calcVigenciaCosto();
   const vigTxt=vc.vigencia!=null?`${vc.vigencia} año${vc.vigencia===1?"":"s"}`:"—";
-  const costoTxt=vc.costo!=null?fmtPesos(vc.costo):"—";
   const turnoLineas=S.turno?[
     "",
     "TURNO RESERVADO:",
@@ -1459,23 +1462,19 @@ function textoResumenTramite(){
     `· Código de turno: ${S.turno.id}`,
   ]:[];
   return[
-    "RESUMEN — Licencia de conducir",
+    "Hola, quiero continuar el trámite de mi licencia de conducir en el municipio.",
+    "Estos son mis datos:",
     "",
     "DNI: "+(S.dni||"—"),
     "Localidad de domicilio: "+(S.localidad||"—"),
-    "Ámbito de gestión: "+(S.tramiteLocal?"San Vicente (turno local)":"Otro municipio — contacto según domicilio"),
     "Fecha de nacimiento: "+nacFmt+(S.edad?" ("+S.edad+" años)":""),
     "Tipo de trámite: "+tipoLabel,
-    "Subclases elegidas por vos: "+subSel,
-    "Subclases del trámite (efectivas / incluidas): "+subFull,
+    "Subclases solicitadas: "+subSel,
     "Categoría: "+(S.esProf?"Profesional":"Común / particular"),
     "Vigencia estimada: "+vigTxt,
-    "Costo estimado: "+costoTxt+(S.tipo==="renovacion_ampliacion"?" (puede ajustarse en ampliaciones)":""),
     ...turnoLineas,
     "",
-    ...lineasChecklistDocumentacion(),
-    "",
-    "— Mensaje generado por el asistente —",
+    "— Mensaje generado por el asistente de licencias —",
     fmtFechaHoraAhora(),
   ].join("\n");
 }
@@ -1491,13 +1490,29 @@ function canalFinExterno(loc){
 }
 
 /** Inserta un botón secundario "Ver / Descargar resumen" que abre el modal del resumen completo. */
-function appendResumenBtn(parent){
-  const b=document.createElement("button");
-  b.type="button";b.className="cbtn-resumen";
-  b.innerHTML=`<span class="ic">📄</span><span>Ver y descargar resumen del trámite</span>`;
-  b.onclick=()=>openResumenModal();
-  parent.appendChild(b);
-  return b;
+/* Resumen del trámite: el PDF ES el resumen, así que ofrecemos descargar/compartir
+   directamente (sin paso intermedio de "ver resumen", que mostraba lo mismo). */
+/* onUsed (opcional): se dispara cuando el usuario descarga o comparte, para habilitar
+   acciones posteriores (ej. "Finalizar") y evitar que se pierda el resumen. */
+function appendResumenBtn(parent,onUsed){
+  const bDown=document.createElement("button");
+  bDown.type="button";bDown.className="cbtn-resumen";
+  bDown.innerHTML=`<span class="ic">${ic("download",15)}</span><span>Descargar resumen (PDF)</span>`;
+  bDown.onclick=()=>{descargarResumenPDF(bDown);if(onUsed)onUsed();};
+  parent.appendChild(bDown);
+
+  /* "Compartir" solo si el navegador puede compartir archivos (mobile/Chrome/Safari). */
+  try{
+    const probe=new File([new Blob(["x"])],"x.pdf",{type:"application/pdf"});
+    if(navigator.canShare&&navigator.canShare({files:[probe]})){
+      const bShare=document.createElement("button");
+      bShare.type="button";bShare.className="cbtn-resumen";
+      bShare.innerHTML=`<span class="ic">${ic("share",15)}</span><span>Compartir resumen (PDF)</span>`;
+      bShare.onclick=()=>{compartirResumenPDF(bShare);if(onUsed)onUsed();};
+      parent.appendChild(bShare);
+    }
+  }catch(e){/* sin Web Share: queda solo Descargar */}
+  return bDown;
 }
 
 /* ════════════════════ TURNERO: API mock + Modal ════════════════════
@@ -1639,11 +1654,11 @@ function _tRenderResumen(){
     const [y,mo,d]=_tModal.dia.split("-");
     r.textContent=`${d}/${mo}/${y} · ${_tModal.hora} hs`;
     r.classList.add("ok");
-    btn.classList.add("on");
+    activateBtn(btn);
   } else {
     r.textContent=_tModal.dia?"Elegí un horario":"Sin selección.";
     r.classList.remove("ok");
-    btn.classList.remove("on");
+    deactivateBtn(btn);
   }
 }
 
@@ -1668,9 +1683,9 @@ function _tRenderResumen(){
   document.getElementById("btn-confirmar-turno").onclick=async()=>{
     const btn=document.getElementById("btn-confirmar-turno");
     if(!_tModal.dia||!_tModal.hora||!btn.classList.contains("on"))return;
-    btn.classList.remove("on");btn.textContent="Confirmando...";
+    deactivateBtn(btn);btn.textContent="Confirmando...";
     const res=await turneroApi.confirmar(_tModal.dia,_tModal.hora,{dni:S.dni,tipo:S.tipo,subclases:S.subclases});
-    btn.textContent="Confirmar turno";btn.classList.add("on");
+    btn.textContent="Confirmar turno";activateBtn(btn);
     if(res.ok){
       S.turno={fecha:_tModal.dia,hora:_tModal.hora,id:res.id,examen:_tModal.tipo};
       const cb=_tModal.onConfirm;
@@ -1693,19 +1708,22 @@ function _renderTurnoBlock(){
     box.innerHTML=`<strong>✅ Turno reservado</strong><br>${tipoExamen}<br>${fmtFechaDMY(S.turno.fecha)} · ${S.turno.hora} hs<br><small style="opacity:.8">Código: ${S.turno.id}</small>`;
     opts.appendChild(box);
     const bCambiar=document.createElement("button");bCambiar.type="button";bCambiar.className="opt-btn";bCambiar.style.marginTop="8px";
-    bCambiar.innerHTML=`<span class="ic">✏</span><div class="ol"><span class="lbl">Cambiar turno</span></div>`;
+    bCambiar.innerHTML=`<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span><div class="ol"><span class="lbl">Cambiar turno</span></div>`;
     bCambiar.onclick=()=>openTurnoModal({tipoExamen,onConfirm:()=>{
       addUser(`Turno: ${fmtFechaDMY(S.turno.fecha)} ${S.turno.hora}`);
       paso5b_preTurno({silent:true});
     }});
     opts.appendChild(bCambiar);
-    appendResumenBtn(opts);
-    const bFin=document.createElement("button");bFin.type="button";bFin.className="cbtn-confirm on";bFin.textContent="Finalizar";
+    const bFin=document.createElement("button");bFin.type="button";bFin.className="cbtn-confirm";bFin.textContent="Finalizar";bFin.disabled=true;bFin.setAttribute("aria-disabled","true");
     bFin.onclick=()=>{addUser("Finalizar trámite");paso7_feedback();};
+    const finHint=document.createElement("p");finHint.style.cssText="color:var(--color-text-secondary);font-size:12px;margin-top:8px;text-align:center;";
+    finHint.textContent="Descargá o compartí el resumen para no perder la información antes de finalizar.";
+    appendResumenBtn(opts,()=>{activateBtn(bFin,"Finalizar");finHint.style.display="none";});
+    opts.appendChild(finHint);
     opts.appendChild(bFin);
   } else {
     const bRes=document.createElement("button");bRes.type="button";bRes.className="cbtn-confirm on";
-    bRes.textContent=`📅 Reservar turno — ${tipoExamen}`;
+    bRes.innerHTML=`<span style="display:inline-flex;align-items:center;justify-content:center;gap:8px">${ic("calendar",16)}<span>Reservar turno — ${tipoExamen}</span></span>`;
     bRes.onclick=()=>openTurnoModal({tipoExamen,onConfirm:()=>{
       addUser(`Turno: ${fmtFechaDMY(S.turno.fecha)} ${S.turno.hora}`);
       paso5b_preTurno({silent:true});
@@ -1763,7 +1781,7 @@ async function paso5b_preTurno(o){
       const wa=`https://wa.me/${L.wsp.replace(/\D/g,"")}?text=${encodeURIComponent(txt)}`;
       const bWa=document.createElement("button");bWa.type="button";bWa.className="cta-btn cw";
       bWa.style.cssText="width:100%;justify-content:center;padding:12px;font-size:14px;";
-      bWa.innerHTML="💬 Enviar resumen por WhatsApp al municipio";
+      bWa.innerHTML=`${ic("message",16)}Continuar el trámite por WhatsApp`;
       bWa.onclick=async()=>{
         window.open(wa,"_blank","noopener,noreferrer");
         await addBot(`<span class="badge bo">WhatsApp</span><br>Se abrió una ventana con el mensaje listo para enviar.`);
@@ -1785,7 +1803,7 @@ async function paso5b_preTurno(o){
       const wa=`https://wa.me/${L.wsp.replace(/\D/g,"")}?text=${encodeURIComponent(txt)}`;
       const bWa=document.createElement("button");bWa.type="button";bWa.className="cta-btn cw";
       bWa.style.cssText="width:100%;justify-content:center;padding:12px;font-size:14px;";
-      bWa.innerHTML="💬 Enviar resumen por WhatsApp al municipio";
+      bWa.innerHTML=`${ic("message",16)}Continuar el trámite por WhatsApp`;
       bWa.onclick=async()=>{
         window.open(wa,"_blank","noopener,noreferrer");
         await addBot(`<span class="badge bo">WhatsApp</span><br>Se abrió una ventana con el mensaje listo para enviar.`);
@@ -1805,7 +1823,7 @@ async function paso5b_preTurno(o){
     const bTurno=opts.querySelector(".cbtn-confirm");
     if(bTurno)bindEnterToPrimaryButton(opts,bTurno,{requireOn:false});
   }
-  opts.scrollIntoView({behavior:"smooth",block:"end"});
+  advanceScroll();
 }
 
 /* ── Requisitos + Resumen integrado ── */
@@ -1861,10 +1879,10 @@ async function paso5_requisitos(){
       if(i+1<REQS.length){
         reqEls[i+1].classList.remove("req-pending");
         reqEls[i+1].classList.add("req-active");
-        setTimeout(()=>reqEls[i+1].scrollIntoView({behavior:"smooth",block:"nearest"}),80);
+        setTimeout(()=>chatScrollIntoView(reqEls[i+1],"nearest"),80);
       } else {
         dataSec.style.display="";
-        setTimeout(()=>dataSec.scrollIntoView({behavior:"smooth",block:"nearest"}),80);
+        setTimeout(()=>chatScrollIntoView(dataSec,"nearest"),80);
       }
     }
 
@@ -1944,10 +1962,10 @@ async function paso5_requisitos(){
     datosP.innerHTML="<strong>¿Son correctos estos datos?</strong>";
     dataSec.appendChild(datosP);
     const datosBtns=document.createElement("div");datosBtns.style.cssText="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap";
-    const bDatSi=document.createElement("button");bDatSi.type="button";bDatSi.className="opt-btn";bDatSi.style.flex="1";bDatSi.style.minWidth="120px";
-    bDatSi.innerHTML=`<span class="ic">✓</span><div class="ol"><span class="lbl">Sí</span></div>`;
+    const bDatSi=document.createElement("button");bDatSi.type="button";bDatSi.className="opt-btn primary";bDatSi.style.flex="1";bDatSi.style.minWidth="120px";
+    bDatSi.innerHTML=`<span class="ic">${ic("check",14)}</span><div class="ol"><span class="lbl">Sí</span></div>`;
     const bDatNo=document.createElement("button");bDatNo.type="button";bDatNo.className="opt-btn";bDatNo.style.flex="1";bDatNo.style.minWidth="120px";
-    bDatNo.innerHTML=`<span class="ic">✗</span><div class="ol"><span class="lbl">No</span><span class="sub">Volver a ingresar</span></div>`;
+    bDatNo.innerHTML=`<span class="ic">${ic("x",14)}</span><div class="ol"><span class="lbl">No</span><span class="sub">Volver a ingresar</span></div>`;
     function allOk(){return checkedCount.every(Boolean)&&datosOk===true;}
     function upd(){}
     bDatSi.onclick=()=>{
@@ -1965,13 +1983,13 @@ async function paso5_requisitos(){
       bDatSi.classList.remove("sel");
       paso2_nac_corregir();
     };
-    datosBtns.appendChild(bDatSi);datosBtns.appendChild(bDatNo);
+    datosBtns.appendChild(bDatNo);datosBtns.appendChild(bDatSi);
     dataSec.appendChild(datosBtns);
     bindEnterDocContinuar(dataSec,{classList:{contains:()=>allOk()},click:()=>{if(allOk()){addUser("Sí, son correctos");paso5b_preTurno({});}}});
 
     root.appendChild(dataSec);
     opts.appendChild(root);
-    opts.scrollIntoView({behavior:"smooth",block:"end"});
+    advanceScroll();
   },400);
 }
 
@@ -1986,9 +2004,9 @@ async function paso6_turno(){
     appendResumenBtn(opts);
 
     const b=document.createElement("button");b.className="opt-btn";b.style.marginTop="12px";
-    b.innerHTML=`<span class="ic">↺</span><div class="ol"><span class="lbl">Iniciar un trámite nuevo</span></div>`;
+    b.innerHTML=`<span class="ic">${ic("refresh",14)}</span><div class="ol"><span class="lbl">Iniciar un trámite nuevo</span></div>`;
     b.onclick=reiniciar;opts.appendChild(b);
-    opts.scrollIntoView({behavior:"smooth",block:"end"});
+    advanceScroll();
   },300);
 }
 
@@ -2029,8 +2047,9 @@ async function paso7_feedback_detalle(rating){
   clearOpts();
   addBack(()=>paso7_feedback());
   const ta=document.createElement("textarea");
+  ta.className="cmt-inp";
   ta.placeholder="Escribí tu comentario (opcional)";
-  ta.style.cssText="width:100%;min-height:80px;font-size:13px;padding:9px 10px;border:.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-family:inherit;resize:vertical;margin-top:6px";
+  ta.style.cssText="width:100%;min-height:80px;font-size:13px;padding:9px 10px;border:1px solid #D98A3D;border-radius:var(--border-radius-md);background:#FFF9F2;color:var(--color-text-primary);font-family:inherit;resize:vertical;margin-top:6px";
   opts.appendChild(ta);
 
   const btn=makeConfirmBtn("Enviar comentario");
@@ -2043,12 +2062,12 @@ async function paso7_feedback_detalle(rating){
       await addBot("¡Gracias por tu feedback! Vamos a usarlo para mejorar.");
       clearOpts();
       const b=document.createElement("button");b.className="opt-btn";
-      b.innerHTML=`<span class="ic">↺</span><div class="ol"><span class="lbl">Iniciar un trámite nuevo</span></div>`;
+      b.innerHTML=`<span class="ic">${ic("refresh",14)}</span><div class="ol"><span class="lbl">Iniciar un trámite nuevo</span></div>`;
       b.onclick=reiniciar;opts.appendChild(b);
     })();
   };
   opts.appendChild(btn);
-  opts.scrollIntoView({behavior:"smooth",block:"end"});
+  advanceScroll();
 }
 
 /* ════════════════════ FASE 2: RESUMEN COMPLETO (modal + impresión) ════════════════════
@@ -2077,140 +2096,9 @@ function tramiteIncluyeExamenTeorico(){
   return S.tipo==="alta"||S.tipo==="alta_forzada"||S.tipo==="renovacion_ampliacion";
 }
 
-function htmlEscape(s){
-  return String(s==null?"":s)
-    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
-}
-
-function buildResumenHtml(){
-  const tipoLabel={
-    alta:"Alta — primera licencia",
-    alta_forzada:"Alta — vencida más de 1 año",
-    renovacion_simple:"Renovación simple",
-    renovacion_ampliacion:"Renovación con ampliación"
-  }[S.tipo]||String(S.tipo||"—");
-
-  const vc=calcVigenciaCosto();
-  const vigTxt=vc.vigencia!=null?`${vc.vigencia} año${vc.vigencia===1?"":"s"}`:"—";
-  const costoTxt=vc.costo!=null?fmtPesos(vc.costo):"—";
-  const subSel=S.selUsuario&&S.selUsuario.length?S.selUsuario.join(", "):"—";
-  const subFull=S.subclases&&S.subclases.length?S.subclases.join(", "):"—";
-  const nacFmt=S.nac?fmtFechaDMY(S.nac):"—";
-
-  /* Checklist de documentación: idem flujo principal */
-  const reqs=[
-    {n:"DNI vigente",d:"Original y fotocopia. El domicilio debe figurar en San Vicente."},
-    {n:"Certificado CENAT",d:"Certificado Nacional de Antecedentes de Tránsito. Tramitar y pagar online; presentar pagado el día del turno."}
-  ];
-  if(!S.esProf){
-    reqs.push({n:"Libre de multas municipal",d:"Verificá que no tenés infracciones firmes pendientes. Si tenés multas, regularizá antes."});
-  }
-  reqs.push({n:"Declaración Jurada de Salud",d:"Aptitudes psicofísicas (Art. 23 inc. c, Ley 13.133). Completala antes de ir al municipio."});
-
-  const checklistHtml=reqs.map((r,i)=>`
-    <li><div class="box"></div><div><strong>${i+1}. ${htmlEscape(r.n)}</strong><small>${htmlEscape(r.d)}</small></div></li>
-  `).join("");
-
-  /* Links útiles: si la URL es vacía, muestro un texto "(próximamente)" en lugar de link */
-  function linkItem(icon,titulo,desc,url){
-    const tieneUrl=!!url;
-    if(!tieneUrl){
-      return `<a href="#" onclick="return false" style="opacity:.55;cursor:not-allowed">
-        <span class="lico">${icon}</span><div><strong>${htmlEscape(titulo)}</strong><small>${htmlEscape(desc)} — próximamente disponible</small></div></a>`;
-    }
-    return `<a href="${htmlEscape(url)}" target="_blank" rel="noopener">
-      <span class="lico">${icon}</span><div><strong>${htmlEscape(titulo)}</strong><small>${htmlEscape(desc)}</small></div></a>`;
-  }
-
-  const incluyeExamen=tramiteIncluyeExamenTeorico();
-  const itemsLinks=[
-    linkItem("📄","Certificado CENAT","Tramitalo y pagalo online antes del turno",RES_URLS.cenat),
-    linkItem("🩺","Declaración Jurada de Salud","Formulario para descargar y completar",RES_URLS.declaracionJurada)
-  ];
-  if(incluyeExamen){
-    itemsLinks.push(linkItem("📚","Manual del conductor (PDF)","Material de estudio para el examen teórico",RES_URLS.manualConductor));
-    itemsLinks.push(linkItem("📝","Simulador de examen teórico","Practicá online preguntas oficiales antes del examen",RES_URLS.simuladorExamen));
-  }
-  itemsLinks.push(linkItem("⚖","Ley provincial 13.133","Marco normativo de licencias en Santa Fe",RES_URLS.ley13133));
-  itemsLinks.push(linkItem("💬","Libre de multas municipal","Solicitar por WhatsApp al municipio",RES_URLS.libreMultasWa));
-  const linksHtml=itemsLinks.join("");
-
-  /* Nota especial para ampliación: vigencia se alinea al vencimiento actual */
-  const notaAmpliacion=S.tipo==="renovacion_ampliacion"
-    ?`<div class="nota"><strong>Aviso (ampliación):</strong> la vigencia de las nuevas subclases se alineará al vencimiento de tu licencia actual (Art. 28, Ley 13.133). El monto final puede ajustarse al confirmar el trámite en el municipio.</div>`
-    :"";
-
-  return `
-    <h1>Resumen — Licencia de conducir</h1>
-    <div class="meta">Generado el ${fmtFechaHoraAhora()}</div>
-
-    <h2>Datos personales</h2>
-    <div class="grid2">
-      <div><strong>DNI</strong><span>${htmlEscape(S.dni||"—")}</span></div>
-      <div><strong>Localidad de domicilio</strong><span>${htmlEscape(S.localidad||"—")}</span></div>
-      <div><strong>Fecha de nacimiento</strong><span>${nacFmt}</span></div>
-      <div><strong>Edad</strong><span>${S.edad?S.edad+" años":"—"}</span></div>
-    </div>
-
-    <h2>Detalle del trámite</h2>
-    <div class="grid2">
-      <div><strong>Tipo de trámite</strong><span>${htmlEscape(tipoLabel)}</span></div>
-      <div><strong>Categoría</strong><span>${S.esProf?"Profesional":"Común / particular"}</span></div>
-      <div style="grid-column:1 / -1"><strong>Subclases elegidas por vos</strong><span>${htmlEscape(subSel)}</span></div>
-      <div style="grid-column:1 / -1"><strong>Subclases efectivas (incluye automáticas)</strong><span>${htmlEscape(subFull)}</span></div>
-      <div><strong>Ámbito de gestión</strong><span>${S.tramiteLocal?"San Vicente (turno local)":"Otro municipio"}</span></div>
-    </div>
-
-    <h2>Vigencia y costo estimado</h2>
-    <div class="pago">
-      <div class="pago-detalle">
-        <div>Vigencia estimada: <strong>${vigTxt}</strong></div>
-        <div>Calculado según edad${S.esProf?" y categoría profesional":""}.</div>
-      </div>
-      <div class="pago-monto">${costoTxt}</div>
-    </div>
-    ${notaAmpliacion}
-
-    ${S.turno?`
-    <h2>Turno reservado</h2>
-    <div class="grid2">
-      <div><strong>Examen</strong><span>${htmlEscape(S.turno.examen)}</span></div>
-      <div><strong>Fecha y hora</strong><span>${fmtFechaDMY(S.turno.fecha)} · ${htmlEscape(S.turno.hora)} hs</span></div>
-      <div style="grid-column:1 / -1"><strong>Código de turno</strong><span>${htmlEscape(S.turno.id)}</span></div>
-    </div>
-    `:""}
-
-    <h2>Documentación a presentar</h2>
-    <ul class="checklist">${checklistHtml}</ul>
-
-    <h2>Links útiles</h2>
-    <div class="links">${linksHtml}</div>
-
-    <div class="firma">Asistente municipal de licencias · San Vicente, Santa Fe<br>Documento generado automáticamente · Los montos son estimados y los confirma el municipio al momento del pago.</div>
-  `;
-}
 
 function notifyParentModal(open){
   try{window.parent&&window.parent!==window&&window.parent.postMessage({type:"sv-chatbot-modal",open:!!open},"*");}catch(e){}
-}
-
-function openResumenModal(){
-  const ov=document.getElementById("resumen-overlay");
-  const body=document.getElementById("resumen-print-body");
-  if(!ov||!body)return;
-  body.innerHTML=buildResumenHtml();
-  ov.classList.add("open");
-  document.body.style.overflow="hidden";
-  notifyParentModal(true);
-}
-
-function closeResumenModal(){
-  const ov=document.getElementById("resumen-overlay");
-  if(!ov)return;
-  ov.classList.remove("open");
-  document.body.style.overflow="";
-  notifyParentModal(false);
 }
 
 /* ════════════════════ PDF descargable (pdfmake) ════════════════════
@@ -2230,6 +2118,28 @@ function loadPdfMake(){
     inject(PDFMAKE_URLS[0]).then(()=>inject(PDFMAKE_URLS[1])).then(res).catch(rej);
   });
   return _pdfMakeLoading;
+}
+
+/* Logo municipal para el PDF: se baja una vez y se cachea como dataURL base64
+   (pdfmake necesita la imagen embebida, no una URL). Si falla, el PDF sale sin logo. */
+let _logoDataUrl=null;
+function loadLogoDataUrl(){
+  if(_logoDataUrl!==null)return Promise.resolve(_logoDataUrl||null);
+  const candidates=["/images/logo_muni_bandera.png","/images/Isologo_muni.png"];
+  return (async()=>{
+    for(const url of candidates){
+      try{
+        const r=await fetch(url);
+        if(!r.ok)continue;
+        const blob=await r.blob();
+        const dataUrl=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(blob);});
+        _logoDataUrl=dataUrl;
+        return dataUrl;
+      }catch(e){/* probar siguiente candidato */}
+    }
+    _logoDataUrl="";   // marca "ya intentado, sin logo" para no reintentar en cada descarga
+    return null;
+  })();
 }
 
 function _filenamePDF(){
@@ -2306,8 +2216,21 @@ function buildResumenDocDefinition(){
   }
 
   const content=[];
+  /* Encabezado de marca: logo municipal a la izquierda + identificación a la derecha. */
+  content.push({
+    columns:[
+      _logoDataUrl
+        ?{image:_logoDataUrl,width:150,margin:[0,0,0,0]}
+        :{text:"Municipalidad de San Vicente",style:"brandName",margin:[0,6,0,0]},
+      {stack:[
+        {text:"Asistente de Licencias de Conducir",style:"brandName",alignment:"right"},
+        {text:"San Vicente · Santa Fe",style:"brandSub",alignment:"right"}
+      ],margin:[0,10,0,0]}
+    ],
+    columnGap:10
+  });
+  content.push({canvas:[{type:"line",x1:0,y1:0,x2:515,y2:0,lineWidth:1,lineColor:"#F5C99B"}],margin:[0,8,0,4]});
   content.push({text:"Resumen — Licencia de conducir",style:"h1"});
-  content.push({text:"Municipalidad de San Vicente · Santa Fe",style:"sub"});
   content.push({text:`Generado el ${fmtFechaHoraAhora()}`,style:"meta"});
 
   content.push({text:"Datos personales",style:"h2"});
@@ -2335,8 +2258,8 @@ function buildResumenDocDefinition(){
         {stack:[
           {text:[{text:"Vigencia estimada: ",fontSize:10},{text:vigTxt,bold:true,fontSize:11}]},
           {text:`Calculado según edad${S.esProf?" y categoría profesional":""}.`,fontSize:9,color:"#64748b",margin:[0,2,0,0]}
-        ],margin:[10,10,8,10],fillColor:"#f0faf6"},
-        {text:costoTxt,style:"pagoMonto",margin:[12,12,12,12],fillColor:"#f0faf6",alignment:"right"}
+        ],margin:[10,10,8,10],fillColor:"#FDF2E9"},
+        {text:costoTxt,style:"pagoMonto",margin:[12,12,12,12],fillColor:"#FDF2E9",alignment:"right"}
       ]]
     },
     layout:"noBorders"
@@ -2395,18 +2318,39 @@ function buildResumenDocDefinition(){
   });
 
   return {
-    info:{title:`Resumen Licencia ${S.dni||""}`.trim(),author:"Municipalidad de San Vicente"},
+    content,
+    info:{
+      title:`Resumen Licencia ${S.dni||""}`.trim(),
+      author:"Municipalidad de San Vicente",
+      subject:"Resumen del trámite de licencia de conducir",
+      keywords:"licencia, conducir, San Vicente, Santa Fe, trámite"
+    },
     pageSize:"A4",
-    pageMargins:[40,42,40,42],
+    pageMargins:[40,42,40,58],
     defaultStyle:{fontSize:10,color:"#1E293B"},
+    /* Pie de página repetido: contacto del centro + número de página (B4). */
+    footer:function(currentPage,pageCount){
+      return {
+        margin:[40,6,40,0],
+        stack:[
+          {canvas:[{type:"line",x1:0,y1:0,x2:515,y2:0,lineWidth:0.5,lineColor:"#e2e8f0"}]},
+          {columns:[
+            {text:"Centro de Licencias San Vicente · Buenos Aires 96 · Lun a Vie 7:30–13:00 hs · WhatsApp 3492 646942",fontSize:7,color:"#94a3b8",margin:[0,4,0,0]},
+            {text:`Página ${currentPage} de ${pageCount}`,fontSize:7,color:"#94a3b8",alignment:"right",margin:[0,4,0,0]}
+          ]}
+        ]
+      };
+    },
     styles:{
-      h1:{fontSize:18,bold:true,margin:[0,0,0,2],color:"#0F172A"},
-      h2:{fontSize:12,bold:true,margin:[0,16,0,6],color:"#0F172A"},
+      h1:{fontSize:17,bold:true,margin:[0,2,0,2],color:"#0F172A"},
+      h2:{fontSize:12,bold:true,margin:[0,16,0,6],color:"#7A4309"},
+      brandName:{fontSize:12,bold:true,color:"#7A4309"},
+      brandSub:{fontSize:9,color:"#64748b",margin:[0,1,0,0]},
       sub:{fontSize:10,color:"#475569",margin:[0,0,0,2]},
       meta:{fontSize:9,color:"#64748b",margin:[0,0,0,4]},
       label:{fontSize:8,color:"#475569",bold:true,characterSpacing:0.3},
       value:{fontSize:10,color:"#0F172A"},
-      pagoMonto:{fontSize:18,bold:true,color:"#085041"},
+      pagoMonto:{fontSize:18,bold:true,color:"#C26D0E"},
       nota:{fontSize:9,color:"#7A4309",italics:true,margin:[0,6,0,0],background:"#FDF2E9"},
       firma:{fontSize:9,color:"#94a3b8",alignment:"center",margin:[0,22,0,0]}
     }
@@ -2416,7 +2360,7 @@ function buildResumenDocDefinition(){
 async function descargarResumenPDF(btn){
   try{
     if(btn){btn.disabled=true;btn.dataset._lbl=btn.textContent;btn.textContent="Generando…";}
-    await loadPdfMake();
+    await Promise.all([loadPdfMake(),loadLogoDataUrl()]);
     const def=buildResumenDocDefinition();
     pdfMake.createPdf(def).download(_filenamePDF());
   }catch(e){
@@ -2430,7 +2374,7 @@ async function descargarResumenPDF(btn){
 async function compartirResumenPDF(btn){
   try{
     if(btn){btn.disabled=true;btn.dataset._lbl=btn.textContent;btn.textContent="Generando…";}
-    await loadPdfMake();
+    await Promise.all([loadPdfMake(),loadLogoDataUrl()]);
     const def=buildResumenDocDefinition();
     const fname=_filenamePDF();
     pdfMake.createPdf(def).getBlob(async blob=>{
@@ -2451,30 +2395,6 @@ async function compartirResumenPDF(btn){
     alert("No se pudo compartir el PDF.");console.error("[share pdf]",e);
   }
 }
-
-/* Wiring del modal — listeners se enganchan una sola vez al cargar la página */
-(function bindResumenModal(){
-  const ov=document.getElementById("resumen-overlay");
-  const btnPdf=document.getElementById("btn-descargar-pdf");
-  const btnShare=document.getElementById("btn-compartir-pdf");
-  const btnX=document.getElementById("btn-cerrar-resumen");
-  if(!ov||!btnPdf||!btnX)return;
-  btnX.addEventListener("click",closeResumenModal);
-  ov.addEventListener("click",e=>{if(e.target===ov)closeResumenModal();});
-  document.addEventListener("keydown",e=>{
-    if(e.key==="Escape"&&ov.classList.contains("open"))closeResumenModal();
-  });
-  btnPdf.addEventListener("click",()=>descargarResumenPDF(btnPdf));
-  if(btnShare){
-    /* Sólo mostramos "Compartir" si el navegador soporta Web Share API con archivos
-       (típicamente mobile/Chrome/Safari). */
-    const probe=new File([new Blob(["x"])],"x.pdf",{type:"application/pdf"});
-    if(navigator.canShare&&navigator.canShare({files:[probe]})){
-      btnShare.hidden=false;
-      btnShare.addEventListener("click",()=>compartirResumenPDF(btnShare));
-    }
-  }
-})();
 
 function reiniciar(){
   if(window._optsEnterAbort){

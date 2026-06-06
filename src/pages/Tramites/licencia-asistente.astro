@@ -1,58 +1,109 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import licenciaData from "../../data/licencia.json";
+
+const chatbotHtml = readFileSync(
+  resolve("./public/chatbot/licencia/index.html"),
+  "utf8"
+);
+
+// Datos de contacto desde licencia.json (fuente única) — se inyectan al chatbot
+// como window.SV_LICENCIA_DATOS. El chatbot usa estos valores y, si no existen,
+// cae a sus constantes embebidas (vista standalone).
+const svDatos = {
+  whatsapp: licenciaData.whatsapp,
+  localidades: (licenciaData.localidades_circuito?.localidades ?? []).map((l) => ({
+    nombre: l.nombre,
+    whatsapp: l.whatsapp,
+    mail: l.mail,
+  })),
+};
+
+// 1. Estilos: concatenar <style>...</style>, quitar body{}/html{} (rompen layout host)
+const stylesRaw = [
+  ...chatbotHtml.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi),
+]
+  .map((m) => m[1])
+  .join("\n");
+const styles = stylesRaw
+  .replace(/(^|[\s,;}])body\s*\{[^}]*\}/g, "$1")
+  .replace(/(^|[\s,;}])html\s*\{[^}]*\}/g, "$1");
+
+// 2. Body interno (sin <style>/<script>)
+const bodyMatch = chatbotHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+let bodyHtml = bodyMatch?.[1] ?? "";
+bodyHtml = bodyHtml
+  .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+  .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
+
+// 3. Script: redirigir queries de DOM al shadow root del host
+const scriptMatch = chatbotHtml.match(
+  /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/i
+);
+let scriptCode = scriptMatch?.[1] ?? "";
+scriptCode = scriptCode
+  .replace(/document\.getElementById\(/g, "root.getElementById(")
+  .replace(/document\.querySelectorAll\(/g, "root.querySelectorAll(")
+  .replace(/document\.querySelector\(/g, "root.querySelector(");
 ---
 
-<Layout title="Asistente Licencia de Conducir (Staging) — San Vicente">
+<Layout title="Asistente Licencia de Conducir — San Vicente">
   <main class="asistente-page">
-    <section class="hero-asistente">
-      <div class="container">
-        <a href="/Tramites/licencia" class="back-link">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-          Volver a Licencias
-        </a>
-        <span class="staging-badge">Versión de prueba</span>
-        <h1>Asistente de Licencia de Conducir</h1>
-        <p>Respondé unas preguntas y te indicamos los requisitos, costo y turno según tu trámite.</p>
-      </div>
-    </section>
+    <div class="container page-toolbar">
+      <a href="/Tramites/licencia" class="back-link">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>
+        Volver a Licencias
+      </a>
+    </div>
 
-    <section class="iframe-section">
-      <div class="container">
-        <div class="iframe-wrap" id="chatbot-iframe-wrap">
-          <iframe
-            id="chatbot-iframe"
-            src="/chatbot/licencia/index.html"
-            title="Asistente de Licencia de Conducir"
-            loading="lazy"
-            allow="clipboard-write"
-          ></iframe>
-        </div>
-        <p class="disclaimer">
-          Esta es una versión de prueba. Los datos no se guardan en un servidor —
-          el resumen se genera localmente en tu dispositivo.
-        </p>
+    <section class="asistente-section">
+      <div class="container asistente-container">
+        <h1 class="sr-only">Asistente de Licencia de Conducir</h1>
+        <sv-asistente-licencia class="asistente-host"></sv-asistente-licencia>
       </div>
     </section>
   </main>
 
-  <script is:inline>
-    (function () {
-      const wrap = document.getElementById("chatbot-iframe-wrap");
-      if (!wrap) return;
-      const iframe = document.getElementById("chatbot-iframe");
-      window.addEventListener("message", (e) => {
-        if (!iframe || e.source !== iframe.contentWindow) return;
-        const data = e.data || {};
-        if (data.type !== "sv-chatbot-modal") return;
-        if (data.open) {
-          wrap.classList.add("is-fullscreen");
-          document.documentElement.style.overflow = "hidden";
-        } else {
-          wrap.classList.remove("is-fullscreen");
-          document.documentElement.style.overflow = "";
-        }
-      });
-    })();
+  <script is:inline define:vars={{ styles, bodyHtml, scriptCode, svDatos }}>
+    class SvAsistenteLicencia extends HTMLElement {
+      connectedCallback() {
+        if (this.shadowRoot) return;
+        const root = this.attachShadow({ mode: "open" });
+
+        const styleEl = document.createElement("style");
+        styleEl.textContent = styles;
+        root.appendChild(styleEl);
+
+        const tmp = document.createElement("div");
+        tmp.innerHTML = bodyHtml;
+        while (tmp.firstChild) root.appendChild(tmp.firstChild);
+
+        // Inyecta los datos de contacto (licencia.json) antes de correr el chatbot
+        window.SV_LICENCIA_DATOS = svDatos;
+
+        // Ejecuta el script original en IIFE con `root` = shadow root del host
+        const s = document.createElement("script");
+        s.textContent =
+          "(function(){var root=document.querySelector('sv-asistente-licencia').shadowRoot;" +
+          scriptCode +
+          "})();";
+        document.head.appendChild(s);
+      }
+    }
+    if (!customElements.get("sv-asistente-licencia")) {
+      customElements.define("sv-asistente-licencia", SvAsistenteLicencia);
+    }
   </script>
 </Layout>
 
@@ -60,7 +111,11 @@ import Layout from "../../layouts/Layout.astro";
   .asistente-page {
     background-color: var(--color-fondo-claro);
     color: var(--color-texto);
-    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - 68px);
+    min-height: 0;
+    overflow: hidden;
   }
   .container {
     max-width: 1140px;
@@ -68,109 +123,100 @@ import Layout from "../../layouts/Layout.astro";
     padding: 0 1.5rem;
   }
 
-  .hero-asistente {
-    background: var(--color-primario);
-    color: white;
-    padding: 2.5rem 0 2rem;
-  }
-  .hero-asistente .container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  .page-toolbar {
+    padding-top: 1.25rem;
+    padding-bottom: 0.5rem;
   }
   .back-link {
-    color: white;
-    opacity: 0.85;
-    text-decoration: none;
-    font-size: 0.9rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    width: fit-content;
-    transition: opacity 0.15s;
-  }
-  .back-link:hover {
-    opacity: 1;
-  }
-  .staging-badge {
-    background: rgba(255, 255, 255, 0.18);
-    color: white;
-    font-size: 0.75rem;
+    gap: 0.4rem;
+    color: var(--color-primario);
+    text-decoration: none;
+    font-size: 0.9rem;
     font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.65rem;
-    border-radius: 999px;
-    width: fit-content;
+    padding: 0.45rem 0.75rem 0.45rem 0.6rem;
+    border-radius: 8px;
+    transition: background 0.15s ease, color 0.15s ease;
   }
-  .hero-asistente h1 {
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
-    font-weight: 800;
-    margin: 0;
+  .back-link svg {
+    transition: transform 0.15s ease;
   }
-  .hero-asistente p {
-    font-size: 1rem;
-    opacity: 0.92;
-    max-width: 640px;
-    margin: 0;
+  .back-link:hover,
+  .back-link:focus-visible {
+    background: var(--color-primario-suave, #fdf2e9);
+    color: var(--color-primario-hover, #a05a0b);
+  }
+  .back-link:hover svg,
+  .back-link:focus-visible svg {
+    transform: translateX(-2px);
+  }
+  .back-link:focus-visible {
+    outline: 2px solid var(--color-primario);
+    outline-offset: 2px;
   }
 
-  .iframe-section {
-    padding: 2rem 0 4rem;
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
-  .iframe-wrap {
-    background: white;
+
+  .asistente-section {
+    padding: 0.5rem 0 1rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .asistente-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .asistente-host {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scroll-padding-bottom: 32px;
+    scrollbar-gutter: stable both-edges;
+    background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
     box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-    overflow: hidden;
     max-width: 720px;
-    margin: 0 auto;
-    transition: max-width 0.18s ease, border-radius 0.18s ease;
-  }
-  .iframe-wrap iframe {
-    display: block;
     width: 100%;
-    height: 78vh;
-    min-height: 600px;
-    border: 0;
-    background: white;
-    transition: height 0.18s ease;
-  }
-  /* Fullscreen: iframe takes over viewport so its position:fixed modal (resumen / turno) covers the whole site. */
-  .iframe-wrap.is-fullscreen {
-    position: fixed;
-    inset: 0;
-    max-width: 100%;
-    margin: 0;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    z-index: 1000;
-  }
-  .iframe-wrap.is-fullscreen iframe {
-    height: 100vh;
-    min-height: 100vh;
-  }
-  .disclaimer {
-    margin: 1.25rem auto 0;
-    max-width: 720px;
-    font-size: 0.8rem;
-    color: #64748b;
-    text-align: center;
-    line-height: 1.5;
+    margin: 0 auto;
+    padding: 0 12px;
   }
 
   @media (max-width: 768px) {
-    .hero-asistente {
-      padding: 2rem 0 1.5rem;
+    .page-toolbar {
+      padding-top: 0.75rem;
+      padding-bottom: 0.25rem;
     }
-    .iframe-section {
-      padding: 1.25rem 0 2.5rem;
+    .asistente-section {
+      padding: 0.25rem 0 0.75rem;
     }
-    .iframe-wrap iframe {
-      height: 82vh;
-      min-height: 520px;
+    .asistente-container {
+      padding: 0 0.75rem;
+    }
+    .asistente-host {
+      border-radius: 12px;
+    }
+  }
+  @media (max-width: 480px) {
+    .asistente-host {
+      padding: 0 8px;
     }
   }
 </style>

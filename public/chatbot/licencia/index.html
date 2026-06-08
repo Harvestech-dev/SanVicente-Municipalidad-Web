@@ -418,11 +418,11 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 <script>
 /* finContacto: "wa" | "mail" — canal para enviar el resumen al municipio (solo localidades propio:false)
    Si omitís finContacto: usa WhatsApp si hay wsp, si no mail. */
-/* WhatsApp municipal (Argentina): 54 + 9 + código + número → 5493492646942 */
+/* WhatsApp municipal (Argentina): 54 + 9 + código + número → 5493492301207 */
 /* Datos de contacto: si la página Astro inyectó window.SV_LICENCIA_DATOS (desde src/data/licencia.json)
    se usan esos valores; en la vista standalone caen a las constantes embebidas de abajo. */
 const SV_DATOS=(typeof window!=="undefined"&&window.SV_LICENCIA_DATOS)||null;
-const CONTACTO_WHATSAPP_SV=(SV_DATOS&&SV_DATOS.whatsapp)||"5493492646942";
+const CONTACTO_WHATSAPP_SV=(SV_DATOS&&SV_DATOS.whatsapp)||"5493492301207";
 
 /* PDF local de la Ley provincial 13.133 (Santa Fe) — usado cada vez que se la cita en el flujo. */
 const LEY_13133_URL="/chatbot/licencia/documentacion/L1313325112010.pdf";
@@ -852,6 +852,10 @@ function showSubclasSelector(edad,presel,onConfirm,backFn,cfg){
     return true;
   });
   const selSet=new Set(preselF.filter(c=>!yaTiene.has(c)));
+  /* La preselección puede venir del conjunto EFECTIVO (elegidas + incluidas). Quitamos las
+     subclases que sólo están por inclusión de otra elegida: en todo el flujo mostramos sólo
+     lo que el usuario eligió, nunca lo que queda incluido automáticamente. */
+  getIncluidas(selSet).forEach(c=>selSet.delete(c));
   const grupos=["A","B","C","D","E","F","G"];
   const rowMap={};
   const blockRefs=[];
@@ -1245,10 +1249,10 @@ async function paso3x_extravio_final(info){
 /* ── Selección de licencias actuales ── */
 async function paso3b_licActuales(){
   setProg(2);
-  await addBot(`Seleccioná las <strong>clases</strong> de tu licencia actual.<br><span style="font-size:12px;color:var(--color-text-secondary)">Las encontrás impresas en el frente de tu carné.</span>`);
+  await addBot(`Seleccioná las <strong>clases</strong> de tu licencia actual.<br><span style="font-size:12px;color:var(--color-text-secondary)">Las encontrás impresas en el frente de tu licencia de conducir.</span>`);
   showSubclasSelector(S.edad,S.licActuales,(selArr)=>{
     S.licActuales=selArr;
-    const etq=selArr.join(", ");
+    const etq=(S.selUsuario&&S.selUsuario.length?S.selUsuario:selArr).join(", ");
     addUser(`Licencias actuales: ${etq}`);
     paso3bb_eleccionRenovAmp();
   },paso3_tieneLC,{ocultarFueraEdad:true});
@@ -1272,7 +1276,8 @@ async function paso4_ampliarDesdeLicencia(){
   setProg(3);
   await addBot(`Seleccioná las <strong>nuevas</strong> subclases que querés agregar.`);
   showSubclasSelector(S.edad,[],()=>{
-    addUser(`Subclases a tramitar: ${S.subclases.join(", ")}`);
+    const etq=(S.selUsuario&&S.selUsuario.length?S.selUsuario:S.subclases).join(", ");
+    addUser(`Subclases a tramitar: ${etq}`);
     paso3c_venc();
   },paso3bb_eleccionRenovAmp,{yaTiene:S.licActuales});
 }
@@ -1327,7 +1332,7 @@ function paso3c_aplicarEstado(estado,etiquetaUsuario){
 async function paso3c_venc(){
   setProg(2);
   await addBot(`¿Cuándo vence (o venció) tu licencia?`);
-  showDate("Figura en el frente de tu carné de conducir.",paso3c_volverDesdeVenc,(val)=>{
+  showDate("Figura en el frente de tu licencia de conducir.",paso3c_volverDesdeVenc,(val)=>{
     const dias=(new Date()-new Date(val))/(1000*60*60*24);
     const fv=fmtFechaDMY(val);
     if(dias>365){
@@ -1393,7 +1398,7 @@ async function paso4_nuevasSubs(){
   showSubclasSelector(S.edad,S.subclases.length?S.subclases:[],(selArr)=>{
     S.subclases=selArr;
     S.esProf=S.subclases.some(c=>SUBS.find(s=>s.cod===c)?.prof);
-    addUser(`Subclases: ${selArr.join(", ")}`);
+    addUser(`Subclases: ${(S.selUsuario&&S.selUsuario.length?S.selUsuario:selArr).join(", ")}`);
     paso5_requisitos();
   },()=>{
     if(S.tipo==="alta_forzada")paso3d_altaForzada();
@@ -1471,7 +1476,7 @@ function appendExportToolbar(parent,txt){
   return row;
 }
 
-/** Misma documentación que el paso “Revisá que tengas la documentación lista” (para copiar/compartir/correo). */
+/** Misma documentación que el paso de documentación a presentar (para copiar/compartir/correo). */
 function lineasChecklistDocumentacion(){
   return[
     "DOCUMENTACIÓN A PRESENTAR (checklist):",
@@ -1879,7 +1884,7 @@ async function paso5_requisitos(){
     const REQS_BASE=[
       {
         title:"Original y fotocopia del DNI Vigente",
-        desc:"El domicilio debe figurar en San Vicente.",
+        desc:"Fotocopia de frente y dorso con todos los datos legibles.",
         action:null
       },
       {
@@ -1895,7 +1900,7 @@ async function paso5_requisitos(){
     ];
     const reqLibre={
       title:"Libre de multas municipal",
-      desc:"Verificamos que no tenés infracciones firmes pendientes. Si tenés multas, primero regularizá la situación.",
+      desc:"Verificamos que no tenés infracciones pendientes. Si tenés multas, primero regularizá la situación.",
       action:{label:"Solicitar libre de multas",cls:"cw",icon:"whatsapp",href:`https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${encodeURIComponent("Hola, necesito el libre de multas para licencia de conducir.")}`,blank:true}
     };
     const REQS=S.esProf
@@ -1904,7 +1909,7 @@ async function paso5_requisitos(){
     const checkedCount=Array(REQS.length).fill(false);
 
     const docSec=document.createElement("div");docSec.className="doc-section";
-    docSec.innerHTML="<h4>Revisá que tengas la documentación lista</h4>";
+    docSec.innerHTML="";
 
     const reqEls=[];
 
@@ -1996,7 +2001,7 @@ async function paso5_requisitos(){
     } else if(vc.vigencia!=null){
       const w=document.createElement("p");
       w.style.cssText="margin-top:8px;font-size:12px;color:var(--color-text-secondary);line-height:1.5";
-      w.textContent="* Valores estimados: el municipio confirmará el monto definitivo al momento del pago. Cada municipio puede tener honorarios propios.";
+      w.textContent="* Valores estimados: el municipio confirmará el monto definitivo al momento del pago.";
       sumSec.appendChild(w);
     }
     dataSec.appendChild(sumSec);
@@ -2234,14 +2239,13 @@ function buildResumenDocDefinition(){
   const vigTxt=vc.vigencia!=null?`${vc.vigencia} año${vc.vigencia===1?"":"s"}`:"—";
   const costoTxt=vc.costo!=null?fmtPesos(vc.costo):"—";
   const subSel=(S.selUsuario&&S.selUsuario.length)?S.selUsuario.join(", "):"—";
-  const subFull=(S.subclases&&S.subclases.length)?S.subclases.join(", "):"—";
   const nacFmt=S.nac?fmtFechaDMY(S.nac):"—";
 
   const reqs=[
-    {n:"DNI vigente",d:"Original y fotocopia. El domicilio debe figurar en San Vicente."},
+    {n:"DNI vigente",d:"Original y fotocopia de frente y dorso con todos los datos legibles."},
     {n:"Certificado CENAT",d:"Certificado Nacional de Antecedentes de Tránsito. Tramitar y pagar online; presentar pagado el día del turno."}
   ];
-  if(!S.esProf)reqs.push({n:"Libre de multas municipal",d:"Verificá que no tenés infracciones firmes pendientes. Si tenés multas, regularizá antes."});
+  if(!S.esProf)reqs.push({n:"Libre de multas municipal",d:"Verificá que no tenés infracciones pendientes. Si tenés multas, regularizá antes."});
   reqs.push({n:"Declaración Jurada de Salud",d:"Aptitudes psicofísicas (Art. 23 inc. c, Ley 13.133). Completala antes de ir al municipio."});
 
   const incluyeExamen=tramiteIncluyeExamenTeorico();
@@ -2305,8 +2309,7 @@ function buildResumenDocDefinition(){
   content.push(_resumenTablaSimple([
     ["Tipo de trámite",tipoLabel],
     ["Categoría",S.esProf?"Profesional":"Común / particular"],
-    ["Subclases elegidas",subSel],
-    ["Subclases efectivas",subFull],
+    ["Subclases seleccionadas",subSel],
     ["Ámbito de gestión",S.tramiteLocal?"San Vicente (turno local)":"Otro municipio"]
   ]));
 
@@ -2395,7 +2398,7 @@ function buildResumenDocDefinition(){
         stack:[
           {canvas:[{type:"line",x1:0,y1:0,x2:515,y2:0,lineWidth:0.5,lineColor:"#e2e8f0"}]},
           {columns:[
-            {text:"Centro de Licencias San Vicente · Buenos Aires 96 · Lun a Vie 7:30–13:00 hs · WhatsApp 3492 646942",fontSize:7,color:"#94a3b8",margin:[0,4,0,0]},
+            {text:"Centro de Licencias San Vicente · Buenos Aires 96 · Lun a Vie 7:30–13:00 hs · WhatsApp 3492 301207",fontSize:7,color:"#94a3b8",margin:[0,4,0,0]},
             {text:`Página ${currentPage} de ${pageCount}`,fontSize:7,color:"#94a3b8",alignment:"right",margin:[0,4,0,0]}
           ]}
         ]

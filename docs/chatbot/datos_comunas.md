@@ -5,12 +5,10 @@ Número de WhatsApp: 3492315517
 Número de teléfono fijo: 03492 - 487406/633
 Correo electrónico: comunadeangelica@angcoop.com.ar
 
-Buen dia
 Comuna Colonia Iturraspe
 Horario de atencion:6y30 a 12y30 hs
 Direccion:Zona Rural Col.Iturraspe
 Watsapp:3492-221655
-Telefono Fijo : no tenemos
 Correo Electronico:
 comunacoloniaiturraspe@hotmail.com
 

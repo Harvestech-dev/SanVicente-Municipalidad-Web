@@ -199,23 +199,28 @@ scriptCode = scriptCode
     padding: 0 12px;
   }
 
+  /* Mobile: el asistente ocupa TODO el viewport como un modal (cubre el header del sitio).
+     Se oculta la toolbar "Volver" — su rol lo cumple la X de cerrar dentro del chat. */
   @media (max-width: 768px) {
     .page-toolbar {
-      padding-top: 0.75rem;
-      padding-bottom: 0.25rem;
+      display: none;
     }
     .asistente-section {
-      padding: 0.25rem 0 0.75rem;
+      padding: 0;
     }
     .asistente-container {
-      padding: 0 0.75rem;
+      padding: 0;
     }
     .asistente-host {
-      border-radius: 12px;
-    }
-  }
-  @media (max-width: 480px) {
-    .asistente-host {
+      position: fixed;
+      inset: 0;
+      z-index: 1100; /* por encima del header sticky del sitio (z-index:1000) */
+      max-width: none;
+      width: 100%;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
       padding: 0 8px;
     }
   }

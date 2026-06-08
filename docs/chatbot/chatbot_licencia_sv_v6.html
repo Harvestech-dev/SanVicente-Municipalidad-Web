@@ -602,7 +602,7 @@ function dmyToIso(dmy){
   return `${String(yyyy).padStart(4,"0")}-${String(mm).padStart(2,"0")}-${String(dd).padStart(2,"0")}`;
 }
 function addUser(t){const d=document.createElement("div");d.className="msg user";d.innerHTML=`<div class="av">Vos</div><div class="bubble">${t}</div>`;msgs.appendChild(d);d.scrollIntoView({behavior:"smooth",block:"end"});}
-function addBot(html,delay=0){return new Promise(res=>{setTimeout(()=>{const t=document.createElement("div");t.className="msg bot";t.innerHTML=`<div class="av">SV</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;msgs.appendChild(t);t.scrollIntoView({behavior:"smooth",block:"end"});setTimeout(()=>{t.remove();const d=document.createElement("div");d.className="msg bot";d.innerHTML=`<div class="av">SV</div><div class="bubble">${html}</div>`;msgs.appendChild(d);d.scrollIntoView({behavior:"smooth",block:"end"});res();},480);},delay);});}
+function addBot(html,delay=0){return new Promise(res=>{setTimeout(()=>{const t=document.createElement("div");t.className="msg bot";t.innerHTML=`<div class="av">SV</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;msgs.appendChild(t);t.scrollIntoView({behavior:"smooth",block:"start"});setTimeout(()=>{t.remove();const d=document.createElement("div");d.className="msg bot";d.innerHTML=`<div class="av">SV</div><div class="bubble">${html}</div>`;msgs.appendChild(d);d.scrollIntoView({behavior:"smooth",block:"start"});res();},480);},delay);});}
 function clearOpts(){
   if(window._optsEnterAbort){
     try{window._optsEnterAbort.abort();}catch(x){}

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Asistente Licencia — San Vicente (prueba)</title>
+  <title>Asistente Licencia — San Vicente</title>
   <style>
     /* Tema standalone (si se embebe en otra página, el host puede sobreescribir estas variables) */
     :root {
@@ -465,8 +465,8 @@ input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:.5p
 <script>
 /* finContacto: "wa" | "mail" — canal para enviar el resumen al municipio (solo localidades propio:false)
    Si omitís finContacto: usa WhatsApp si hay wsp, si no mail. */
-/* WhatsApp municipal (Argentina): 54 + 9 + código + número → 5493492646942 */
-const CONTACTO_WHATSAPP_SV="5493492646942";
+/* WhatsApp municipal (Argentina): 54 + 9 + código + número → 5493492301207 */
+const CONTACTO_WHATSAPP_SV="5493492301207";
 
 /* PDF local de la Ley provincial 13.133 (Santa Fe) — usado cada vez que se la cita en el flujo. */
 const LEY_13133_URL="documentacion/L1313325112010.pdf";
@@ -474,10 +474,10 @@ function leyLink(texto){return `<a href="${LEY_13133_URL}" target="_blank" rel="
 
 const LOCS={
   "San Vicente":{propio:true,wsp:CONTACTO_WHATSAPP_SV,mail:null},
-  "Angélica":{propio:false,wsp:"5493406000001",mail:"tramites@angelica.gob.ar",finContacto:"wa"},
-  "Plaza Clucellas":{propio:false,wsp:"5493406000002",mail:"consultas@plazaclucellas.gob.ar",finContacto:"wa"},
-  "Colonia Margarita":{propio:false,wsp:"5493406000003",mail:"municipio@coloniamargarita.gob.ar",finContacto:"mail"},
-  "Colonia Iturraspe":{propio:false,wsp:"5493406000004",mail:"info@coloniaiturraspe.gob.ar",finContacto:"wa"}
+  "Angélica":{propio:false,wsp:"5493492315517",mail:"comunadeangelica@angcoop.com.ar",finContacto:"wa"},
+  "Plaza Clucellas":{propio:false,wsp:"5493492666900",mail:"comunaclucellas@hotmail.com",finContacto:"wa"},
+  "Colonia Margarita":{propio:false,wsp:"5493492256596",mail:"comunacolmar@gmail.com",finContacto:"wa"},
+  "Colonia Iturraspe":{propio:false,wsp:"5493492221655",mail:"comunacoloniaiturraspe@hotmail.com",finContacto:"wa"}
 };
 
 /* includes = subclases que quedan automáticamente incluidas si se elige esta */
@@ -497,8 +497,8 @@ const SUBS=[
   {cod:"D.2",label:"D.2 — Más de 8 pasajeros",desc:"Profesional",edad:21,prof:true,inc:["D.1","B.1"],grupo:"D",gLabel:"Clase D — Transporte de pasajeros",ic:"🚌"},
   {cod:"D.3",label:"D.3 — Urgencia, emergencia o similares",desc:"Profesional — debe acompañarse de clase B.1 o D.1",edad:21,prof:true,inc:[],grupo:"D",gLabel:"Clase D — Transporte de pasajeros",ic:"🚌"},
   // Clase E — Articulados y maquinaria no agrícola
-  {cod:"E.1",label:"E.1 — Camiones articulados y/o con acoplado",desc:"Profesional",edad:21,prof:true,inc:["B.1"],grupo:"E",gLabel:"Clase E — Articulados y maquinaria no agrícola",ic:"⚙"},
-  {cod:"E.2",label:"E.2 — Maquinaria especial no agrícola",desc:"Profesional",edad:21,prof:true,inc:[],grupo:"E",gLabel:"Clase E — Articulados y maquinaria no agrícola",ic:"⚙"},
+  {cod:"E.1",label:"E.1 — Camiones articulados y/o con acoplado",desc:"Profesional",edad:21,prof:true,inc:["B.1"],grupo:"E",gLabel:"Clase E — Articulados y maquinaria no agrícola",ic:"🏗️"},
+  {cod:"E.2",label:"E.2 — Maquinaria especial no agrícola",desc:"Profesional",edad:21,prof:true,inc:[],grupo:"E",gLabel:"Clase E — Articulados y maquinaria no agrícola",ic:"🏗️"},
   // Clase F — Adaptados para discapacidad
   {cod:"F",label:"F — Automotores incluidos en clase B o profesionales, adaptados",desc:"Debe acompañarse de B, C, D o E. Adaptación según la discapacidad del titular. Mayor de 18 años. Si acompaña a una clase profesional, requiere 2 años de antigüedad en B.",edad:18,prof:false,inc:[],grupo:"F",gLabel:"Clase F — Adaptados para discapacidad",ic:"♿"},
   // Clase G — Maquinaria agrícola
@@ -802,6 +802,10 @@ function showSubclasSelector(edad,presel,onConfirm,backFn,cfg){
     return true;
   });
   const selSet=new Set(preselF.filter(c=>!yaTiene.has(c)));
+  /* La preselección puede venir del conjunto EFECTIVO (elegidas + incluidas). Quitamos las
+     subclases que sólo están por inclusión de otra elegida: en todo el flujo mostramos sólo
+     lo que el usuario eligió, nunca lo que queda incluido automáticamente. */
+  getIncluidas(selSet).forEach(c=>selSet.delete(c));
   const grupos=["A","B","C","D","E","F","G"];
   const rowMap={};
   const blockRefs=[];
@@ -1195,10 +1199,10 @@ async function paso3x_extravio_final(info){
 /* ── Selección de licencias actuales ── */
 async function paso3b_licActuales(){
   setProg(2);
-  await addBot(`Seleccioná las subclases de tu licencia actual.<br><span style="font-size:12px;color:var(--color-text-secondary)">Las encontrás impresas en el frente de tu carné.</span>`);
+  await addBot(`Seleccioná las subclases de tu licencia actual.<br><span style="font-size:12px;color:var(--color-text-secondary)">Las encontrás impresas en el frente de tu licencia de conducir.</span>`);
   showSubclasSelector(S.edad,S.licActuales,(selArr)=>{
     S.licActuales=selArr;
-    const etq=selArr.join(", ");
+    const etq=(S.selUsuario&&S.selUsuario.length?S.selUsuario:selArr).join(", ");
     addUser(`Licencias actuales: ${etq}`);
     paso3bb_eleccionRenovAmp();
   },paso3_tieneLC,{ocultarFueraEdad:true});
@@ -1222,7 +1226,8 @@ async function paso4_ampliarDesdeLicencia(){
   setProg(3);
   await addBot(`Seleccioná las <strong>nuevas</strong> subclases que querés agregar.`);
   showSubclasSelector(S.edad,[],()=>{
-    addUser(`Subclases a tramitar: ${S.subclases.join(", ")}`);
+    const etq=(S.selUsuario&&S.selUsuario.length?S.selUsuario:S.subclases).join(", ");
+    addUser(`Subclases a tramitar: ${etq}`);
     paso3c_venc();
   },paso3bb_eleccionRenovAmp,{yaTiene:S.licActuales});
 }
@@ -1279,7 +1284,7 @@ function paso3c_aplicarEstado(estado,etiquetaUsuario){
 async function paso3c_venc(){
   setProg(2);
   await addBot(`¿Cuándo vence (o venció) tu licencia?`);
-  showDate("Figura en el frente de tu carné de conducir.",paso3c_volverDesdeVenc,(val)=>{
+  showDate("Figura en el frente de tu licencia de conducir.",paso3c_volverDesdeVenc,(val)=>{
     const dias=(new Date()-new Date(val))/(1000*60*60*24);
     const fv=fmtFechaDMY(val);
     if(dias>365){
@@ -1345,7 +1350,7 @@ async function paso4_nuevasSubs(){
   showSubclasSelector(S.edad,S.subclases.length?S.subclases:[],(selArr)=>{
     S.subclases=selArr;
     S.esProf=S.subclases.some(c=>SUBS.find(s=>s.cod===c)?.prof);
-    addUser(`Subclases: ${selArr.join(", ")}`);
+    addUser(`Subclases: ${(S.selUsuario&&S.selUsuario.length?S.selUsuario:selArr).join(", ")}`);
     paso5_requisitos();
   },()=>{
     if(S.tipo==="alta_forzada")paso3d_altaForzada();
@@ -1423,7 +1428,7 @@ function appendExportToolbar(parent,txt){
   return row;
 }
 
-/** Misma documentación que el paso “Revisá que tengas la documentación lista” (para copiar/compartir/correo). */
+/** Misma documentación que el paso de documentación a presentar (para copiar/compartir/correo). */
 function lineasChecklistDocumentacion(){
   return[
     "DOCUMENTACIÓN A PRESENTAR (checklist):",
@@ -1438,7 +1443,6 @@ function textoResumenTramite(){
   const tipoLabel={alta:"Alta — primera licencia",alta_forzada:"Alta — vencida más de 1 año",renovacion_simple:"Renovación simple",renovacion_ampliacion:"Renovación con ampliación"}[S.tipo]||String(S.tipo||"");
   const nacFmt=S.nac?fmtFechaDMY(S.nac):"—";
   const subSel=S.selUsuario&&S.selUsuario.length?S.selUsuario.join(", "):"—";
-  const subFull=S.subclases&&S.subclases.length?S.subclases.join(", "):"—";
   const vc=calcVigenciaCosto();
   const vigTxt=vc.vigencia!=null?`${vc.vigencia} año${vc.vigencia===1?"":"s"}`:"—";
   const costoTxt=vc.costo!=null?fmtPesos(vc.costo):"—";
@@ -1456,8 +1460,7 @@ function textoResumenTramite(){
     "Ámbito de gestión: "+(S.tramiteLocal?"San Vicente (turno local)":"Otro municipio — contacto según domicilio"),
     "Fecha de nacimiento: "+nacFmt+(S.edad?" ("+S.edad+" años)":""),
     "Tipo de trámite: "+tipoLabel,
-    "Subclases elegidas por vos: "+subSel,
-    "Subclases del trámite (efectivas / incluidas): "+subFull,
+    "Subclases seleccionadas: "+subSel,
     "Categoría: "+(S.esProf?"Profesional":"Común / particular"),
     "Vigencia estimada: "+vigTxt,
     "Costo estimado: "+costoTxt+(S.tipo==="renovacion_ampliacion"?" (puede ajustarse en ampliaciones)":""),
@@ -1816,7 +1819,7 @@ async function paso5_requisitos(){
     const REQS_BASE=[
       {
         title:"DNI vigente",
-        desc:"Original y fotocopia. El domicilio debe figurar en San Vicente.",
+        desc:"Original y fotocopia de frente y dorso con todos los datos legibles.",
         action:null
       },
       {
@@ -1832,7 +1835,7 @@ async function paso5_requisitos(){
     ];
     const reqLibre={
       title:"Libre de multas municipal",
-      desc:"Verificamos que no tenés infracciones firmes pendientes. Si tenés multas, primero regularizá la situación.",
+      desc:"Verificamos que no tenés infracciones pendientes. Si tenés multas, primero regularizá la situación.",
       action:{label:"Solicitar por WhatsApp",cls:"cw",href:`https://wa.me/${CONTACTO_WHATSAPP_SV}?text=${encodeURIComponent("Hola, necesito el libre de multas para licencia de conducir.")}`,blank:true}
     };
     const REQS=S.esProf
@@ -1841,7 +1844,7 @@ async function paso5_requisitos(){
     const checkedCount=Array(REQS.length).fill(false);
 
     const docSec=document.createElement("div");docSec.className="doc-section";
-    docSec.innerHTML="<h4>Revisá que tengas la documentación lista</h4>";
+    docSec.innerHTML="";
 
     const reqEls=[];
 
@@ -2083,16 +2086,15 @@ function buildResumenHtml(){
   const vigTxt=vc.vigencia!=null?`${vc.vigencia} año${vc.vigencia===1?"":"s"}`:"—";
   const costoTxt=vc.costo!=null?fmtPesos(vc.costo):"—";
   const subSel=S.selUsuario&&S.selUsuario.length?S.selUsuario.join(", "):"—";
-  const subFull=S.subclases&&S.subclases.length?S.subclases.join(", "):"—";
   const nacFmt=S.nac?fmtFechaDMY(S.nac):"—";
 
   /* Checklist de documentación: idem flujo principal */
   const reqs=[
-    {n:"DNI vigente",d:"Original y fotocopia. El domicilio debe figurar en San Vicente."},
+    {n:"DNI vigente",d:"Original y fotocopia de frente y dorso con todos los datos legibles."},
     {n:"Certificado CENAT",d:"Certificado Nacional de Antecedentes de Tránsito. Tramitar y pagar online; presentar pagado el día del turno."}
   ];
   if(!S.esProf){
-    reqs.push({n:"Libre de multas municipal",d:"Verificá que no tenés infracciones firmes pendientes. Si tenés multas, regularizá antes."});
+    reqs.push({n:"Libre de multas municipal",d:"Verificá que no tenés infracciones pendientes. Si tenés multas, regularizá antes."});
   }
   reqs.push({n:"Declaración Jurada de Salud",d:"Aptitudes psicofísicas (Art. 23 inc. c, Ley 13.133). Completala antes de ir al municipio."});
 
@@ -2145,8 +2147,7 @@ function buildResumenHtml(){
     <div class="grid2">
       <div><strong>Tipo de trámite</strong><span>${htmlEscape(tipoLabel)}</span></div>
       <div><strong>Categoría</strong><span>${S.esProf?"Profesional":"Común / particular"}</span></div>
-      <div style="grid-column:1 / -1"><strong>Subclases elegidas por vos</strong><span>${htmlEscape(subSel)}</span></div>
-      <div style="grid-column:1 / -1"><strong>Subclases efectivas (incluye automáticas)</strong><span>${htmlEscape(subFull)}</span></div>
+      <div style="grid-column:1 / -1"><strong>Subclases seleccionadas</strong><span>${htmlEscape(subSel)}</span></div>
       <div><strong>Ámbito de gestión</strong><span>${S.tramiteLocal?"San Vicente (turno local)":"Otro municipio"}</span></div>
     </div>
 

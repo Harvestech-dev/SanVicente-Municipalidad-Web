@@ -1,0 +1,205 @@
+{
+  "nav": [
+    { "id": "subclases", "label": "Clases y subclases" },
+    { "id": "requisitos", "label": "Requisitos por trámite" },
+    { "id": "costos", "label": "Costos y vigencia" },
+    { "id": "documentacion", "label": "Documentación y enlaces" }
+  ],
+  "subclases": {
+    "lead": "Las licencias se dividen en 7 clases (A a G), cada una con subclases por tipo de vehículo, peso o uso. Algunas son profesionales (transporte comercial, pasajeros, camiones) y requieren mayor de 21 años y libre de multas.",
+    "grupos": [
+      {
+        "titulo": "Clase A — Motovehículos",
+        "icono": "🏍",
+        "filas": [
+          { "cod": "A.2.1", "nombre": "Motocicletas hasta 150cc", "desc": "Particular", "edad": "Desde 18", "tipo": "comun" },
+          { "cod": "A.2.2", "nombre": "Motocicletas de 150cc a 300cc", "desc": "Mayor de 21 (o 20 con 2 años de A.2.1 vigente)", "edad": "Desde 21", "tipo": "comun" },
+          { "cod": "A.3", "nombre": "Motocicletas de más de 300cc", "desc": "Particular. Incluye A.2.2 y A.2.1", "edad": "Desde 21", "tipo": "comun" },
+          { "cod": "A.4", "nombre": "Motos para transporte comercial/industrial", "desc": "Debe acompañarse de otra clase A", "edad": "Desde 21", "tipo": "prof" }
+        ]
+      },
+      {
+        "titulo": "Clase B — Automóviles y camionetas",
+        "icono": "🚗",
+        "filas": [
+          { "cod": "B.1", "nombre": "Automóviles, utilitarios y camionetas hasta 3.500 kg", "desc": "Particular", "edad": "Desde 18", "tipo": "comun" },
+          { "cod": "B.2", "nombre": "B.1 con acoplado hasta 750 kg o casa rodante", "desc": "Incluye B.1", "edad": "Desde 18", "tipo": "comun" }
+        ]
+      },
+      {
+        "titulo": "Clase C — Camiones",
+        "icono": "🚛",
+        "filas": [
+          { "cod": "C", "nombre": "Camiones sin acoplado y casas rodantes de más de 3.500 kg", "desc": "Incluye B.1", "edad": "Desde 21", "tipo": "prof" }
+        ]
+      },
+      {
+        "titulo": "Clase D — Transporte de pasajeros",
+        "icono": "🚌",
+        "filas": [
+          { "cod": "D.1", "nombre": "Hasta 8 pasajeros (remis, taxi, transporte privado)", "desc": "Incluye B.1", "edad": "Desde 21", "tipo": "prof" },
+          { "cod": "D.2", "nombre": "Más de 8 pasajeros", "desc": "Incluye D.1 y B.1", "edad": "Desde 21", "tipo": "prof" },
+          { "cod": "D.3", "nombre": "Urgencia, emergencia o similares", "desc": "Debe acompañarse de clase B.1 o D.1", "edad": "Desde 21", "tipo": "prof" }
+        ]
+      },
+      {
+        "titulo": "Clase E — Articulados y maquinaria no agrícola",
+        "icono": "maquinaria",
+        "filas": [
+          { "cod": "E.1", "nombre": "Camiones articulados y/o con acoplado", "desc": "Incluye B.1", "edad": "Desde 21", "tipo": "prof" },
+          { "cod": "E.2", "nombre": "Maquinaria especial no agrícola", "desc": "—", "edad": "Desde 21", "tipo": "prof" }
+        ]
+      },
+      {
+        "titulo": "Clase F — Adaptados para discapacidad",
+        "icono": "♿",
+        "filas": [
+          { "cod": "F", "nombre": "Automotores incluidos en clase B o profesionales, adaptados", "desc": "Debe acompañarse de B, C, D o E. Si acompaña a una clase profesional, requiere 2 años de antigüedad en B.", "edad": "Desde 18", "tipo": "comun" }
+        ]
+      },
+      {
+        "titulo": "Clase G — Maquinaria agrícola",
+        "icono": "🚜",
+        "filas": [
+          { "cod": "G.1", "nombre": "Tractores agrícolas", "desc": "Mayor de 18 años", "edad": "Desde 18", "tipo": "comun" },
+          { "cod": "G.2", "nombre": "Maquinaria especial agrícola", "desc": "Mayor de 18 años", "edad": "Desde 18", "tipo": "comun" }
+        ]
+      }
+    ]
+  },
+  "requisitos": {
+    "lead": "Todos los trámites requieren DNI vigente, CENAT pagado, libre de multas municipal y Declaración Jurada de Salud. La diferencia está en los exámenes y la documentación adicional.",
+    "tramites": [
+      {
+        "titulo": "Alta — Primera licencia",
+        "icono": "🆕",
+        "lead": "Es tu primera licencia de conducir o nunca tuviste una emitida en San Vicente.",
+        "items": [
+          "DNI vigente (original y fotocopia) con domicilio en San Vicente.",
+          "Certificado CENAT (Nacional de Antecedentes de Tránsito), tramitado y pagado online.",
+          "Libre de multas municipal.",
+          "Declaración Jurada de Salud (Art. 23 inc. c, Ley 13.133).",
+          "Examen psicofísico presencial.",
+          "Examen teórico (preguntas de tránsito y normativa).",
+          "Examen práctico de manejo."
+        ],
+        "variante": "primary"
+      },
+      {
+        "titulo": "Renovación simple",
+        "icono": "🔄",
+        "lead": "Ya tenés una licencia vigente o vencida hace menos de un año, y querés renovar las mismas subclases.",
+        "items": [
+          "DNI vigente, CENAT, libre de multas y Declaración Jurada de Salud.",
+          "Licencia anterior (original).",
+          "Examen psicofísico presencial.",
+          "No se rinde examen teórico ni práctico."
+        ],
+        "variante": "secondary"
+      },
+      {
+        "titulo": "Renovación con ampliación",
+        "icono": "➕",
+        "lead": "Tenés licencia vigente y querés sumar nuevas subclases.",
+        "items": [
+          "Mismos requisitos que renovación simple.",
+          "Examen teórico de las nuevas subclases.",
+          "Examen práctico de las nuevas subclases.",
+          "La vigencia de las nuevas subclases se alinea al vencimiento de la actual (Art. 28, Ley 13.133)."
+        ],
+        "variante": "secondary"
+      },
+      {
+        "titulo": "Alta forzada — vencida más de un año",
+        "icono": "⚠",
+        "lead": "Tu licencia venció hace más de 12 meses. Corresponde el trámite de alta completo (Art. 23, Ley 13.133).",
+        "items": [
+          "Mismos requisitos que el alta.",
+          "Examen psicofísico, teórico y práctico de todas las subclases.",
+          "Se aplica la tarifa de alta, no de renovación."
+        ],
+        "variante": "warn"
+      }
+    ]
+  },
+  "costos": {
+    "lead": "La vigencia depende de la edad y del tipo de licencia (común o profesional). Los costos están definidos por la tabla provincial vigente y pueden ajustarse al momento del pago.",
+    "vigencia": {
+      "headers": ["Edad", "Común (alta)", "Común (renovación)", "Profesional"],
+      "rows": [
+        ["18 años", "1 año", "—", "—"],
+        ["19 a 20 años", "1 año", "3 años", "—"],
+        ["21 a 45 años", "5 años", "5 años", "5 años"],
+        ["46 a 65 años", "5 años", "5 años", "3 años"],
+        ["66 a 70 años", "3 años", "3 años", "2 años"],
+        ["71 años o más", "1 año", "1 año", "1 año"]
+      ]
+    },
+    "tarifas": {
+      "headers": ["Tipo", "Vigencia", "Costo estimado"],
+      "rows": [
+        ["Común", "1 año", "$17.800"],
+        ["Común", "3 años", "$21.800"],
+        ["Común", "5 años", "$31.800"],
+        ["Profesional", "1 año", "$36.000"],
+        ["Profesional", "2 años o más", "$38.000"]
+      ]
+    },
+    "nota": "Cuando el trámite combina subclases comunes y profesionales, se aplica la tarifa profesional. En ampliaciones, el monto puede prorratearse según la vigencia restante."
+  },
+  "documentacion": {
+    "lead": "Formularios, trámites online y material de estudio necesarios para tu licencia de conducir.",
+    "enlaces": [
+      {
+        "titulo": "Asistente de trámite",
+        "desc": "Guía personalizada: requisitos, costo estimado y turno según tu caso.",
+        "href": "/Tramites/licencia-asistente",
+        "externo": false,
+        "tipo": "online",
+        "destacado": true
+      },
+      {
+        "titulo": "Certificado CENAT",
+        "desc": "Tramitá y pagá online el Certificado Nacional de Antecedentes de Tránsito.",
+        "href": "https://www.santafe.gov.ar/cenat/",
+        "externo": true,
+        "tipo": "online"
+      },
+      {
+        "titulo": "Libre de multas municipal",
+        "desc": "Solicitalo por WhatsApp antes de concurrir al turno.",
+        "href": "https://wa.me/5493492301207?text=Hola%2C%20necesito%20el%20libre%20de%20multas%20para%20licencia%20de%20conducir.",
+        "externo": true,
+        "tipo": "online"
+      },
+      {
+        "titulo": "Declaración Jurada de Salud",
+        "desc": "Formulario para completar antes del examen psicofísico (PDF).",
+        "href": "/chatbot/licencia/documentacion/Declaracion%20Jurada%20Salud.pdf",
+        "externo": true,
+        "tipo": "pdf"
+      },
+      {
+        "titulo": "Manual del conductor",
+        "desc": "Material oficial de estudio para el examen teórico (PDF).",
+        "href": "/chatbot/licencia/documentacion/Manual%20Conductor.pdf",
+        "externo": true,
+        "tipo": "pdf"
+      },
+      {
+        "titulo": "Simulador de examen teórico",
+        "desc": "Practicá online con preguntas oficiales de Santa Fe.",
+        "href": "https://www.santafe.gob.ar/examenlicencia/examenETLC/listarCuestionarios.php",
+        "externo": true,
+        "tipo": "online"
+      },
+      {
+        "titulo": "Ley provincial 13.133",
+        "desc": "Marco normativo de licencias de conducir en la provincia (PDF).",
+        "href": "/chatbot/licencia/documentacion/L1313325112010.pdf",
+        "externo": true,
+        "tipo": "pdf"
+      }
+    ]
+  }
+}

@@ -1,41 +1,68 @@
 {
   "txt_titulo": "Licencia de Conducir",
   "txt_descripcion": "Toda la información para obtener, renovar o tramitar tu licencia de conducir",
-  "alerta": {
-    "txt_titulo": "Sistema de Turnos Online - Próximamente",
-    "txt_mensaje": "Estamos trabajando en un nuevo sistema de turnos online para agilizar tu trámite. Mientras tanto, los turnos se otorgan de manera presencial por orden de llegada."
+  "whatsapp": "5493492301207",
+  "centro": {
+    "titulo": "San Vicente",
+    "titulo_institucion": "Municipalidad de San Vicente",
+    "direccion_linea1": "Centro de otorgamiento San Vicente",
+    "direccion_linea2": "Buenos Aires 96, San Vicente",
+    "maps_url": "https://maps.app.goo.gl/hZjWYFSwuWzYM21E9",
+    "horario": "Lunes a Viernes · 7:30 a 13:00 hs",
+    "telefono": "03492471253",
+    "telefono_display": "(03492) 471253",
+    "whatsapp": "5493492301207",
+    "whatsapp_display": "3492 301207",
+    "mail": "licenciadeconducirsv@gmail.com"
   },
-  "lista_atencion": [
-    {
-      "_tipo": "Dirección",
-      "lista_lineas": ["Centro de Licencias", "Av. San Martín 456", "San Vicente"],
-      "_icon": "map"
-    },
-    {
-      "_tipo": "Horarios",
-      "lista_lineas": ["Lunes a Viernes", "7:30 a 13:00 hs", "Turnos hasta las 12:00"],
-      "_icon": "clock"
-    },
-    {
-      "_tipo": "Contacto",
-      "lista_lineas": ["Tel: (03492) 456-7850", "licencias@sanvicente.gob", "Consultas: 8:00 a 12:00"],
-      "_icon": "phone"
-    }
-  ],
-  "_requisitos": {
-    "nueva": ["DNI original y fotocopia", "Certificado de domicilio (antigüedad máxima 30 días)", "Certificado de grupo sanguíneo", "Curso de educación vial (se realiza en el lugar)", "Examen psicofísico", "Examen teórico y práctico"],
-    "renovacion": ["DNI original", "Licencia anterior", "Certificado de libre deuda de multas", "Examen psicofísico"],
-    "duplicado": ["DNI original", "Denuncia policial por robo/extravío", "Certificado de libre deuda de multas"]
-    
-  },
-  "lista_categorias": [
-    { "_cat": "A1", "txt_desc": "Ciclomotor hasta 50cc" },
-    { "_cat": "A2", "txt_desc": "Motocicleta hasta 150cc" },
-    { "_cat": "A3", "txt_desc": "Motocicleta de más de 150cc" },
-    { "_cat": "B1", "txt_desc": "Automóvil hasta 3.500kg" },
-    { "_cat": "B2", "txt_desc": "Automóvil con acoplado" },
-    { "_cat": "C", "txt_desc": "Camiones sin acoplado" },
-    { "_cat": "D", "txt_desc": "Transporte de pasajeros" },
-    { "_cat": "E", "txt_desc": "Camiones con acoplado" }
-  ]
+  "localidades_circuito": {
+    "titulo": "Localidades que tramitan en este centro",
+    "lead": "Si tu domicilio figura en el DNI de alguna de estas localidades, el trámite se realiza en San Vicente.",
+    "localidades": [
+      {
+        "nombre": "Angélica",
+        "direccion": "9 de Julio 104, Angélica",
+        "maps_url": "https://maps.app.goo.gl/V99B7AB7PQma3ykFA",
+        "horario": "Lunes a Viernes · 7:00 a 13:00 hs",
+        "telefono": "03492487406",
+        "telefono_display": "(03492) 487406 / 633",
+        "whatsapp": "5493492315517",
+        "whatsapp_display": "3492 315517",
+        "mail": "comunadeangelica@angcoop.com.ar"
+      },
+      {
+        "nombre": "Plaza Clucellas",
+        "direccion": "Antonio Bonini 101, Plaza Clucellas",
+        "maps_url": "https://maps.app.goo.gl/BEa2hGd9mB62ng7W7",
+        "horario": "Lunes a Viernes · 6:30 a 12:30 hs",
+        "telefono": "03492499013",
+        "telefono_display": "(03492) 499013",
+        "whatsapp": "5493492666900",
+        "whatsapp_display": "3492 666900",
+        "mail": "comunaclucellas@hotmail.com"
+      },
+      {
+        "nombre": "Colonia Margarita",
+        "direccion": "Juan de Garay 270, Colonia Margarita",
+        "maps_url": "https://maps.app.goo.gl/FLW2EyMo3n1v5fTm6",
+        "horario": "Lunes a Viernes · 7:00 a 13:00 hs",
+        "telefono": null,
+        "telefono_display": null,
+        "whatsapp": "5493492256596",
+        "whatsapp_display": "3492 256596",
+        "mail": "comunacolmar@gmail.com"
+      },
+      {
+        "nombre": "Colonia Iturraspe",
+        "direccion": "Zona Rural, Colonia Iturraspe",
+        "maps_url": "https://maps.app.goo.gl/7ShjKkNakUgwaufF8",
+        "horario": "Lunes a Viernes · 6:30 a 12:30 hs",
+        "telefono": null,
+        "telefono_display": null,
+        "whatsapp": "5493492221655",
+        "whatsapp_display": "3492 221655",
+        "mail": "comunacoloniaiturraspe@hotmail.com"
+      }
+    ]
+  }
 }

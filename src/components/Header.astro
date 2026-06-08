@@ -124,19 +124,7 @@ const whatsappLink = whatsappItem?.link_destino
               aria-haspopup={item.submenu ? "true" : undefined}
             >
               {item.label}
-              {item.submenu && (
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  class="chevron"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              )}
+              {item.submenu && <span class="chevron" aria-hidden="true"></span>}
             </a>
             {item.submenu && (
               <ul class="dropdown-content">
@@ -316,6 +304,21 @@ const whatsappLink = whatsappItem?.link_destino
     position: relative;
   }
 
+  .dropdown > .nav-item-link {
+    cursor: pointer;
+  }
+
+  .chevron {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 6px solid var(--color-primario);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
   .dropdown-content {
     position: absolute;
     top: 100%;
@@ -344,6 +347,9 @@ const whatsappLink = whatsappItem?.link_destino
   @media (min-width: 1024px) {
     .dropdown:hover .dropdown-content {
       display: block;
+    }
+    .dropdown:hover .chevron {
+      transform: rotate(90deg);
     }
   }
 
@@ -412,7 +418,7 @@ const whatsappLink = whatsappItem?.link_destino
     }
 
     .dropdown.open .chevron {
-      transform: rotate(180deg);
+      transform: rotate(90deg);
     }
   }
 </style>

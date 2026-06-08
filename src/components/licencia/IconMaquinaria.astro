@@ -1,0 +1,65 @@
+---
+interface Props {
+  size?: number;
+  class?: string;
+}
+
+const { size = 20, class: className = "" } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  class:list={["icon-maquinaria", className]}
+  aria-hidden="true"
+>
+  <!-- Suelo -->
+  <path d="M1 21.25h22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+
+  <!-- Orugas -->
+  <path
+    d="M3.25 21.25V15.75c0-1.24 1.01-2.25 2.25-2.25h5c1.24 0 2.25 1.01 2.25 2.25v5.5"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linejoin="round"
+  ></path>
+  <ellipse cx="8" cy="18.1" rx="4.2" ry="1.1" stroke="currentColor" stroke-width="1.25"></ellipse>
+
+  <!-- Cabina -->
+  <path
+    d="M7 14.5V10.75c0-.55.45-1 1-1h2.5c.55 0 1 .45 1 1V14.5"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linejoin="round"
+  ></path>
+  <path d="M8.25 11.5h3" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" opacity="0.55"></path>
+
+  <!-- Brazo (boom + stick) -->
+  <path
+    d="M10.25 10.75 16.25 5.25 18.85 9.35"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  ></path>
+
+  <!-- Cazo -->
+  <path
+    d="M18.85 9.35 21.6 11.1 19.85 14.35 17.15 13.1Z"
+    fill="currentColor"
+    fill-opacity="0.15"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linejoin="round"
+  ></path>
+</svg>
+
+<style>
+  .icon-maquinaria {
+    display: block;
+    flex-shrink: 0;
+  }
+</style>

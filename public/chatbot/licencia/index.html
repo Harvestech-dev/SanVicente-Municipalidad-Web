@@ -11,19 +11,19 @@
 
       /* ════════ MARCA — único bloque a tocar por cliente ════════
          En embebido hereda del sitio (--color-primario*); standalone usa el fallback. */
-      --brand:        var(--color-primario, var(--brand));
-      --brand-hover:  var(--color-primario-hover, var(--brand-hover));
-      --brand-dark:   var(--brand-dark);
-      --brand-darker: var(--brand-darker);
-      --brand-soft:   var(--color-primario-suave, var(--brand-soft));
-      --brand-border: var(--brand-border);
-      --brand-strong: var(--brand-strong);
+      --brand:        var(--color-primario, #C26D0E);
+      --brand-hover:  var(--color-primario-hover, #A85C0B);
+      --brand-dark:   var(--color-primario-dark, #7A4309);
+      --brand-darker: var(--color-primario-darker, #5A2F00);
+      --brand-soft:   var(--color-primario-suave, #FDF2E9);
+      --brand-border: var(--color-primario-borde, #F5C99B);
+      --brand-strong: var(--color-primario-strong, #E0A45C);
       --brand-ink:    #ffffff;
 
       /* ════════ Semánticos (no cambian con la marca) ════════ */
-      --success:var(--success); --success-soft:var(--success-soft); --success-border:var(--success-border); --success-ink:var(--success-ink);
-      --warn-soft:var(--warn-soft); --warn-border:var(--warn-border); --warn-ink:var(--warn-ink);
-      --danger:var(--danger);
+      --success:#0f6e56; --success-soft:#e1f5ee; --success-border:#9fe1cb; --success-ink:#085041;
+      --warn-soft:#faeeda; --warn-border:#fac775; --warn-ink:#633806;
+      --danger:#a32d2d;
 
       /* ════════ Neutrales / superficie ════════ */
       --color-text-primary: #1E293B;
@@ -2172,7 +2172,7 @@ async function paso7_feedback_detalle(rating){
     if(txt)addUser(txt);
     else addUser("(sin comentario)");
     void (async()=>{
-      await addBot("¡Gracias por tu feedback! Vamos a usarlo para mejorar.");
+      await addBot("¡Gracias por tu respuesta! Vamos a usarla para mejorar.");
       clearOpts();
       const b=document.createElement("button");b.className="opt-btn";
       b.innerHTML=`<span class="ic">${ic("refresh",14)}</span><div class="ol"><span class="lbl">Iniciar un trámite nuevo</span></div>`;

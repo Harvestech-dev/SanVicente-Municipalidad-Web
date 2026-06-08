@@ -123,7 +123,8 @@ body{background:transparent}
 .wbox{background:var(--warn-soft);border:1px solid var(--warn-border);border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:var(--warn-ink);margin-top:8px}
 .gbox{background:var(--success-soft);border:1px solid var(--success-border);border-radius:var(--border-radius-md);padding:10px 12px;font-size:13px;color:var(--success-ink);margin-top:8px}
 /* inputs */
-input.date-inp,select.fsel{width:100%;font-size:13px;padding:9px 10px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);display:block;margin-top:6px}
+/* font-size:16px en inputs: evita el auto-zoom de iOS al enfocar (umbral 16px). */
+input.date-inp,select.fsel{width:100%;font-size:16px;padding:9px 10px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);display:block;margin-top:6px}
 /* Color de marca en los campos: deja claro dónde hay que continuar */
 input.date-inp,select.fsel,.dni-inp,textarea.cmt-inp{border-color:var(--brand-strong);background:#FFF9F2}
 input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{border-color:var(--brand);outline:2px solid var(--brand);outline-offset:2px}
@@ -214,7 +215,7 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 .sum-section>h4{font-size:13px;font-weight:600;margin-bottom:8px}
 .chk-datos{display:flex;align-items:flex-start;gap:10px;margin-top:14px;padding:10px 12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border:1px solid var(--color-border-tertiary)}
 .chk-datos input{margin-top:2px;accent-color:var(--brand)}
-.dni-inp{width:100%;font-size:15px;padding:10px 12px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);letter-spacing:.05em}
+.dni-inp{width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);letter-spacing:.05em}
 .export-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .export-row .cta-btn,.export-row .opt-btn{flex:1;min-width:140px;justify-content:center}
 .clase-block.prof-block-locked .clase-toggle{pointer-events:none;cursor:not-allowed;opacity:.62}
@@ -341,12 +342,29 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 }
 .turno-resumen.ok{background:var(--success-soft);border-color:var(--success-border);color:var(--success-ink);font-weight:500}
 
+/* Botón X de cerrar — sólo visible en mobile (chat full-screen). z-index por debajo del
+   turnero (1000) para que, con el modal de turno abierto, no se superponga con su "Cerrar". */
+.chat-close{display:none}
+
 /* ── Tablet ── */
 @media (max-width:768px){
-  #cw{padding:1rem 0 1.5rem}
+  #cw{padding:1.25rem 0 1.5rem}
   .bubble{max-width:94%;font-size:13.5px}
   .turno-modal{max-width:100%}
   .turno-horarios{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}
+  .chat-close{
+    display:flex;align-items:center;justify-content:center;
+    position:fixed;
+    top:calc(env(safe-area-inset-top,0px) + 10px);
+    right:calc(env(safe-area-inset-right,0px) + 12px);
+    width:38px;height:38px;border-radius:50%;
+    background:#fff;border:1px solid var(--color-border-secondary);
+    color:var(--color-text-secondary);
+    box-shadow:0 2px 8px rgba(15,23,42,.16);
+    z-index:900;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .chat-close:active{transform:scale(.94)}
+  .chat-close:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 }
 
 /* ── Mobile ── */
@@ -360,12 +378,14 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
   .opt-btn .lbl{font-size:13.5px}
   .cbtn-confirm{padding:12px 14px;font-size:14px}
   .cta-btn{font-size:13px;padding:10px 12px}
-  /* Modal turno full-screen */
-  #turno-overlay{padding:0;align-items:stretch}
-  .turno-modal{border-radius:0;min-height:100vh;max-width:100%;margin:0}
-  .turno-toolbar{padding:12px 14px}
+  /* Modal turno full-screen: una sola zona de scroll (.turno-body) y footer fijo visible.
+     height:100dvh (no 100vh) para que en iOS el footer con "Confirmar turno" no quede bajo el fold. */
+  #turno-overlay{padding:0;align-items:stretch;overflow:hidden}
+  .turno-modal{border-radius:0;height:100dvh;min-height:0;max-height:none;max-width:100%;margin:0}
+  .turno-toolbar{padding:11px 14px}
   .turno-toolbar h2{font-size:14px}
-  .turno-body{padding:14px;gap:10px}
+  .turno-body{padding:12px 14px;gap:8px}
+  .turno-foot{padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px));gap:8px}
   .turno-nav button{padding:8px 14px;font-size:15px}
   .turno-nav span{font-size:13px}
   .turno-cal-head,.turno-cal{gap:3px}
@@ -379,7 +399,7 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
   .clase-toggle .ct-sub{font-size:10.5px}
   .sub-row{padding:8px 10px;gap:8px}
   .ibox,.wbox,.gbox{font-size:12.5px;padding:9px 10px}
-  input.date-inp,select.fsel,.dni-inp{font-size:14px}
+  input.date-inp,select.fsel,.dni-inp{font-size:16px}
 }
 </style>
 
@@ -387,6 +407,11 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
   <div id="msgs"></div>
   <div id="opts"></div>
 </div>
+
+<!-- Cerrar asistente (solo mobile full-screen): vuelve a la guía de licencias -->
+<button id="chat-close" class="chat-close" type="button" aria-label="Cerrar asistente y volver a la guía" onclick="window.location.href='/Tramites/licencia'">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+</button>
 
 <!-- Modal Turnero -->
 <div id="turno-overlay" role="dialog" aria-modal="true" aria-label="Reservar turno">
@@ -2162,7 +2187,7 @@ async function paso7_feedback_detalle(rating){
   const ta=document.createElement("textarea");
   ta.className="cmt-inp";
   ta.placeholder="Escribí tu comentario (opcional)";
-  ta.style.cssText="width:100%;min-height:80px;font-size:13px;padding:9px 10px;border:1px solid var(--brand-strong);border-radius:var(--border-radius-md);background:#FFF9F2;color:var(--color-text-primary);font-family:inherit;resize:vertical;margin-top:6px";
+  ta.style.cssText="width:100%;min-height:80px;font-size:16px;padding:9px 10px;border:1px solid var(--brand-strong);border-radius:var(--border-radius-md);background:#FFF9F2;color:var(--color-text-primary);font-family:inherit;resize:vertical;margin-top:6px";
   opts.appendChild(ta);
 
   const btn=makeConfirmBtn("Enviar comentario");

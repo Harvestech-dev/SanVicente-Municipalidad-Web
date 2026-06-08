@@ -2172,7 +2172,7 @@ async function paso7_feedback_detalle(rating){
     if(txt)addUser(txt);
     else addUser("(sin comentario)");
     void (async()=>{
-      await addBot("¡Gracias por tu feedback! Vamos a usarlo para mejorar.");
+      await addBot("¡Gracias por tu respuesta! Vamos a usarla para mejorar.");
       clearOpts();
       const b=document.createElement("button");b.className="opt-btn";
       b.innerHTML=`<span class="ic">${ic("refresh",14)}</span><div class="ol"><span class="lbl">Iniciar un trámite nuevo</span></div>`;

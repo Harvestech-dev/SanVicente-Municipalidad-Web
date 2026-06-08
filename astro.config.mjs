@@ -9,7 +9,11 @@ const vecinoUseLocalJson =
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  adapter: vercel(),
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
   integrations: [react()],
   vite: {
     define: {

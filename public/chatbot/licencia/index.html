@@ -71,7 +71,8 @@ body{background:transparent}
 #msgs{display:flex;flex-direction:column;gap:12px}
 .msg{display:flex;align-items:flex-start;gap:10px;scroll-margin-top:14px}
 .msg.user{flex-direction:row-reverse}
-.bubble{position:relative;max-width:90%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.65;color:var(--color-text-primary);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+/* max-width con calc: descuenta avatar (28px) + gap (10px) para que el globo nunca desborde el ancho */
+.bubble{position:relative;max-width:calc(100% - 44px);padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.65;color:var(--color-text-primary);box-shadow:0 1px 2px rgba(15,23,42,.04);overflow-wrap:break-word;word-break:break-word}
 .bot .bubble{background:#ffffff;border:1px solid #e2e8f0;border-radius:18px}
 .user .bubble{background:var(--brand-soft);border:1px solid var(--brand-border);color:var(--brand-darker);border-radius:18px}
 /* Tail / colita del globo */
@@ -349,7 +350,7 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 /* ── Tablet ── */
 @media (max-width:768px){
   #cw{padding:1.25rem 0 1.5rem}
-  .bubble{max-width:94%;font-size:13.5px}
+  .bubble{font-size:13.5px}
   .turno-modal{max-width:100%}
   .turno-horarios{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}
   .chat-close{
@@ -371,7 +372,7 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
 @media (max-width:480px){
   body{padding:0 8px}
   #cw{padding:.75rem 0 1.25rem}
-  .bubble{max-width:95%;font-size:13.5px;padding:9px 12px}
+  .bubble{font-size:13.5px;padding:9px 12px}
   .av{width:24px;height:24px;font-size:10px}
   .msg{gap:8px}
   .opt-btn{padding:10px 12px}

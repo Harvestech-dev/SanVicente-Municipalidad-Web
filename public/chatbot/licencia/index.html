@@ -629,6 +629,14 @@ function chatScroller(){
   return document.scrollingElement||document.documentElement;
 }
 
+/* Alto VISIBLE del área de scroll. En el documento usamos visualViewport cuando existe, así
+   el teclado virtual del celular (que achica el área útil sin tocar innerHeight) se tiene en
+   cuenta: el colchón y los anclajes se calculan contra lo que el usuario realmente ve. */
+function chatViewportH(sc,isRoot){
+  if(isRoot)return (window.visualViewport&&window.visualViewport.height)||window.innerHeight;
+  return sc.clientHeight;
+}
+
 /* Scrollea SOLO el contenedor del chat (no la página) para dejar `el` arriba ("start"),
    abajo ("end") o lo justo para verse ("nearest"). */
 function chatScrollIntoView(el,block){
@@ -641,7 +649,7 @@ function chatScrollIntoView(el,block){
   const scTop=isRoot?0:sc.getBoundingClientRect().top;
   const curTop=isRoot?window.pageYOffset:sc.scrollTop;
   const elTopAbs=curTop+(er.top-scTop);
-  const viewH=isRoot?window.innerHeight:sc.clientHeight;
+  const viewH=chatViewportH(sc,isRoot);
   let top=curTop;
   if(block==="start")top=elTopAbs-margin;
   else if(block==="end")top=elTopAbs+er.height-viewH+margin;
@@ -653,11 +661,68 @@ function chatScrollIntoView(el,block){
   (isRoot?window:sc).scrollTo({top,behavior:"smooth"});
 }
 
+/* Spacer al fondo del chat (estilo ChatGPT). Se crea una sola vez y se mantiene como último
+   hijo de #cw; su alto se recalcula en cada avance para garantizar altura scrolleable. */
+function chatSpacer(){
+  const cw=document.getElementById("cw");
+  let sp=document.getElementById("chat-spacer");
+  if(!sp){sp=document.createElement("div");sp.id="chat-spacer";sp.setAttribute("aria-hidden","true");cw.appendChild(sp);}
+  else if(sp!==cw.lastElementChild){cw.appendChild(sp);}
+  return sp;
+}
+
+/* Métricas del scroller activo (documento o host shadow), usando el alto VISIBLE
+   (visualViewport) para contemplar el teclado virtual en mobile. */
+function scrollMetrics(){
+  const sc=chatScroller();
+  const root=document.scrollingElement||document.documentElement;
+  const isRoot=(sc===root||sc===document.documentElement||sc===document.body);
+  return{sc,root,isRoot,viewH:chatViewportH(sc,isRoot),
+    scTop:isRoot?0:sc.getBoundingClientRect().top,
+    curTop:isRoot?window.pageYOffset:sc.scrollTop};
+}
+function absTop(el,m){return m.curTop+(el.getBoundingClientRect().top-m.scTop);}
+
+/* Re-ancla el último mensaje cuando el teclado virtual abre/cierra (cambia visualViewport)
+   mientras se está escribiendo: así la pregunta queda siempre arriba del área visible. */
+function installViewportReanchor(){
+  if(window._svVVbound||!window.visualViewport)return;
+  window._svVVbound=true;
+  let t;
+  window.visualViewport.addEventListener("resize",()=>{
+    const ae=document.activeElement;
+    if(!ae||(ae.tagName!=="INPUT"&&ae.tagName!=="TEXTAREA"))return;
+    clearTimeout(t);
+    t=setTimeout(advanceScroll,120);
+  });
+}
+
+/* Avanza el scroll de forma consistente en CADA respuesta, con dos casos:
+   1) Mucho contenido (el turno no entra en pantalla): ancla la PREGUNTA actual arriba.
+   2) Poco contenido (entra completo): ancla la RESPUESTA previa del usuario arriba, así se
+      ven respuesta + pregunta + opciones y el sobrante queda como espacio libre abajo.
+   En ambos casos el spacer garantiza que el elemento elegido pueda quedar realmente arriba. */
 function advanceScroll(){
+  installViewportReanchor();
   const botMsgs=msgs.querySelectorAll(".msg.bot");
   const last=botMsgs[botMsgs.length-1];
-  if(last)chatScrollIntoView(last,"start");
-  else chatScrollIntoView(opts,"end");
+  const sp=chatSpacer();
+  sp.style.height="0px";
+  if(!last){chatScrollIntoView(opts,"end");return;}
+  const m=scrollMetrics();
+  const margin=14;
+  const optsBottomAbs=absTop(opts,m)+opts.getBoundingClientRect().height;
+  let anchor=last;
+  const userMsgs=msgs.querySelectorAll(".msg.user");
+  const prevUser=userMsgs[userMsgs.length-1];
+  if(prevUser){
+    const fromPrev=optsBottomAbs-absTop(prevUser,m);   // alto del turno desde la respuesta previa
+    if(fromPrev<=m.viewH-margin)anchor=prevUser;       // entra completo → caso 2
+  }
+  const fullH=m.isRoot?m.root.scrollHeight:m.sc.scrollHeight; // con spacer en 0
+  const below=fullH-absTop(anchor,m);
+  sp.style.height=Math.max(0,Math.ceil(m.viewH-below))+"px";
+  chatScrollIntoView(anchor,"start");
 }
 
 /* ── Confirm button helper ── */

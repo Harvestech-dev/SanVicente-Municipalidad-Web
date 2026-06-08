@@ -183,9 +183,11 @@ scriptCode = scriptCode
   }
   .asistente-host {
     display: block;
+    box-sizing: border-box; /* el sitio no tiene reset global; sin esto width:100%+padding desborda */
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
+    overflow-x: hidden;
     overscroll-behavior: contain;
     scroll-padding-bottom: 32px;
     scrollbar-gutter: stable both-edges;

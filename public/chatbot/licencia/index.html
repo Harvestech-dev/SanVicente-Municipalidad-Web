@@ -315,7 +315,7 @@ input.date-inp:focus,select.fsel:focus,.dni-inp:focus,textarea.cmt-inp:focus{bor
   border-radius:var(--border-radius-md);padding:6px 12px;font-size:14px;cursor:pointer;
 }
 .turno-nav button:disabled{opacity:.4;cursor:not-allowed}
-.turno-nav span{font-size:14px;font-weight:500;color:var(--color-text-primary);text-transform:capitalize}
+.turno-nav span{font-size:14px;font-weight:500;color:var(--color-text-primary)}
 .turno-cal-head,.turno-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .turno-cal-head{font-size:11px;color:var(--color-text-secondary);text-align:center;font-weight:500;margin-bottom:2px}
 .turno-cal .td{
@@ -453,6 +453,8 @@ const CONTACTO_WHATSAPP_SV=(SV_DATOS&&SV_DATOS.whatsapp)||"5493492301207";
 /* PDF local de la Ley provincial 13.133 (Santa Fe) — usado cada vez que se la cita en el flujo. */
 const LEY_13133_URL="/chatbot/licencia/documentacion/L1313325112010.pdf";
 function leyLink(texto){return `<a href="${LEY_13133_URL}" target="_blank" rel="noopener">${texto||"Ley 13.133"}</a>`;}
+/* PDF de la Declaración Jurada de Salud — formulario para descargar y completar antes de ir al municipio. */
+const DECLARACION_JURADA_URL="/chatbot/licencia/documentacion/Licencia_de_Conducir_Completo.pdf";
 
 const LOCS={
   "San Vicente":{propio:true,wsp:CONTACTO_WHATSAPP_SV,mail:null},
@@ -1799,16 +1801,30 @@ function _tRenderResumen(){
   document.addEventListener("keydown",e=>{
     if(e.key==="Escape"&&ov.classList.contains("open"))closeTurnoModal();
   });
-  document.getElementById("turno-prev").onclick=async()=>{
-    const m=new Date(_tModal.mes);m.setMonth(m.getMonth()-1);
+  async function _tCambiarMes(delta){
+    if(delta<0&&document.getElementById("turno-prev").disabled)return;
+    const m=new Date(_tModal.mes);m.setMonth(m.getMonth()+delta);
     _tModal.mes=m;_tModal.dia=null;_tModal.hora=null;_tModal.horas=[];
     await _tCargarMes();_tRender();
-  };
-  document.getElementById("turno-next").onclick=async()=>{
-    const m=new Date(_tModal.mes);m.setMonth(m.getMonth()+1);
-    _tModal.mes=m;_tModal.dia=null;_tModal.hora=null;_tModal.horas=[];
-    await _tCargarMes();_tRender();
-  };
+  }
+  document.getElementById("turno-prev").onclick=()=>_tCambiarMes(-1);
+  document.getElementById("turno-next").onclick=()=>_tCambiarMes(1);
+  // swipe horizontal en el calendario para cambiar de mes
+  (function(){
+    const cal=document.getElementById("turno-cal");
+    if(!cal)return;
+    let x0=null,y0=null;
+    cal.addEventListener("touchstart",e=>{
+      const t=e.changedTouches[0];x0=t.clientX;y0=t.clientY;
+    },{passive:true});
+    cal.addEventListener("touchend",e=>{
+      if(x0===null)return;
+      const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;
+      x0=null;y0=null;
+      if(Math.abs(dx)<50||Math.abs(dx)<=Math.abs(dy))return;
+      _tCambiarMes(dx<0?1:-1);
+    },{passive:true});
+  })();
   document.getElementById("btn-confirmar-turno").onclick=async()=>{
     const btn=document.getElementById("btn-confirmar-turno");
     if(!_tModal.dia||!_tModal.hora||!btn.classList.contains("on"))return;
@@ -1986,7 +2002,7 @@ async function paso5_requisitos(){
       {
         title:"Declaración Jurada de Salud",
         desc:"<strong>Descargá</strong> y <strong>completá</strong> con <strong>atención</strong> antes de ir al municipio.",
-        action:{label:"Descargar Declaración Jurada (PDF)",cls:"cs",href:"#",blank:false}
+        action:{label:"Descargar Declaración Jurada (PDF)",cls:"cs",icon:"download",href:DECLARACION_JURADA_URL,blank:true,download:true}
       }
     ];
     const reqLibre={
@@ -2044,6 +2060,7 @@ async function paso5_requisitos(){
       if(req.action){
         const a=document.createElement("a");a.href=req.action.href;
         if(req.action.blank){a.target="_blank";a.rel="noopener";}
+        if(req.action.download)a.setAttribute("download","");
         a.className=`cta-btn ${req.action.cls}`;
         if(req.action.icon==="whatsapp"){a.innerHTML=`${icWa(16)}<span>${req.action.label}</span>`;}
         else if(req.action.icon){a.innerHTML=`${ic(req.action.icon,16)}<span>${req.action.label}</span>`;}
@@ -2221,7 +2238,7 @@ async function paso7_feedback_detalle(rating){
    y el resumen muestra el ítem como "Próximamente disponible" en lugar de un link roto. */
 const RES_URLS={
   cenat:"https://www.santafe.gov.ar/cenat/",
-  declaracionJurada:"",   // pendiente: PDF de Declaración Jurada de Salud (cargar cuando esté disponible)
+  declaracionJurada:DECLARACION_JURADA_URL,
   manualConductor:"/chatbot/licencia/documentacion/Manual%20Conductor.pdf",
   simuladorExamen:"https://www.santafe.gob.ar/examenlicencia/examenETLC/listarCuestionarios.php",
   ley13133:LEY_13133_URL,

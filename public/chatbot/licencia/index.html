@@ -1653,6 +1653,18 @@ function appendResumenBtn(parent,onUsed){
    - getHorarios(fechaIso)    → Promise<string[]> (HH:MM disponibles)
    - confirmar(fechaIso,hora,datos) → Promise<{ok:boolean,id?:string,error?:string}>
 */
+/* Código de turno legible: 8 caracteres en formato XXXX-XXXX.
+   Alfabeto sin ambiguos (sin 0/O, 1/I/L) porque la persona lo lee/tipea en el municipio.
+   Es solo para el mock: el backend real debe generar el id (persistido y único, sin colisiones). */
+function genTurnoId(){
+  const A="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  const rnd=(typeof crypto!=="undefined"&&crypto.getRandomValues)
+    ?Array.from(crypto.getRandomValues(new Uint8Array(8)),b=>A[b%A.length])
+    :Array.from({length:8},()=>A[Math.floor(Math.random()*A.length)]);
+  const s=rnd.join("");
+  return s.slice(0,4)+"-"+s.slice(4);
+}
+
 const turneroApi={
   _slots:["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","14:00","14:30","15:00","15:30","16:00","16:30"],
   async getDias(fromIso,toIso){
@@ -1677,7 +1689,7 @@ const turneroApi={
   },
   async confirmar(fechaIso,hora,datos){
     await new Promise(r=>setTimeout(r,260));
-    return{ok:true,id:"TRN-"+Date.now().toString(36).toUpperCase().slice(-6)};
+    return{ok:true,id:genTurnoId()};
   }
 };
 
@@ -1846,6 +1858,24 @@ function _turnoTipoExamen(){
   return S.tipo==="renovacion_simple" ? "Examen psicofísico" : "Examen teórico-práctico";
 }
 
+/* Link a Google Calendar (action=TEMPLATE). Sin backend: arma el evento desde S.turno.
+   Hora local Argentina (UTC-3, sin DST) → se construye con offset -03:00 y se serializa a UTC (Z),
+   así el evento no se corre de horario. Duración fija 30 min. Sin recordatorio (queda al default del usuario). */
+const TURNO_MAPS_URL="https://maps.app.goo.gl/yEAQo7rgT8oQikh46";
+function _gcalUrl(turno,tipoExamen){
+  const start=new Date(`${turno.fecha}T${turno.hora}:00-03:00`);
+  const end=new Date(start.getTime()+30*60000);
+  const fmt=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+  const params=new URLSearchParams({
+    action:"TEMPLATE",
+    text:`Turno licencia de conducir — ${tipoExamen}`,
+    dates:`${fmt(start)}/${fmt(end)}`,
+    details:`Turno en la Municipalidad de San Vicente.\nCódigo: ${turno.id}\nLlevá la documentación requerida.`,
+    location:`Municipalidad de San Vicente — ${TURNO_MAPS_URL}`
+  });
+  return `https://calendar.google.com/calendar/render?${params}`;
+}
+
 function _renderTurnoBlock(){
   const tipoExamen=_turnoTipoExamen();
   if(S.turno){
@@ -1859,6 +1889,11 @@ function _renderTurnoBlock(){
       paso5b_preTurno({silent:true});
     }});
     opts.appendChild(bCambiar);
+    const bCal=document.createElement("a");
+    bCal.href=_gcalUrl(S.turno,tipoExamen);bCal.target="_blank";bCal.rel="noopener noreferrer";
+    bCal.className="cbtn-resumen";bCal.style.textDecoration="none";
+    bCal.innerHTML=`<span class="ic">${ic("calendar",15)}</span><span>Agregar a Google Calendar</span>`;
+    opts.appendChild(bCal);
     const bFin=document.createElement("button");bFin.type="button";bFin.className="cbtn-confirm";bFin.textContent="Finalizar";bFin.disabled=true;bFin.setAttribute("aria-disabled","true");
     bFin.onclick=()=>{addUser("Finalizar trámite");paso7_feedback();};
     const finHint=document.createElement("p");finHint.style.cssText="color:var(--color-text-secondary);font-size:12px;margin-top:8px;text-align:center;";

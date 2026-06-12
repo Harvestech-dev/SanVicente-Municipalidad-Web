@@ -45,10 +45,41 @@ function formatDate(iso: string | null | undefined): string {
   }
 }
 
+function formatDateTime(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  try {
+    const d = new Date(iso);
+    const date = d.toLocaleDateString("es-AR", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+    const time = d.toLocaleTimeString("es-AR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${date} · ${time} hs`;
+  } catch {
+    return String(iso);
+  }
+}
+
 function formatBudget(amount: number | undefined, currency?: string): string {
   if (amount == null) return "—";
   const sym = currency === "ARS" ? "$" : (currency ?? "$");
   return `${sym} ${amount.toLocaleString("es-AR")}`;
+}
+
+function renderConsultationContact(raw: string) {
+  const value = raw.trim();
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    return <a href={`mailto:${value}`}>{value}</a>;
+  }
+  if (/^[+\d][\d\s().-]{5,}$/.test(value)) {
+    const tel = value.replace(/[^\d+]/g, "");
+    return <a href={`tel:${tel}`}>{value}</a>;
+  }
+  return value;
 }
 
 function hasAttachmentUrl(a: BiddingAttachment): boolean {
@@ -300,19 +331,13 @@ export default function LicitacionDetailClient({ id }: Props) {
                 </dd>
               </div>
               <div className="data-item">
-                <dt className="label">Inicio recepción ofertas</dt>
-                <dd className="value">
-                  {formatDate(bidding.dates?.bidding_start_date)}
-                </dd>
-              </div>
-              <div className="data-item">
                 <dt className="label">Cierre recepción ofertas</dt>
                 <dd className="value">
-                  {formatDate(bidding.dates?.bidding_end_date)}
+                  {formatDateTime(bidding.dates?.bidding_end_date)}
                 </dd>
               </div>
               <div className="data-item">
-                <dt className="label">Fecha de apertura</dt>
+                <dt className="label">Apertura de sobres</dt>
                 <dd className="value">
                   {formatDate(bidding.dates?.opening_date)}
                 </dd>
@@ -345,16 +370,7 @@ export default function LicitacionDetailClient({ id }: Props) {
                 <div className="data-item data-item-full">
                   <dt className="label">Consultas</dt>
                   <dd className="value">
-                    {bidding.consultation_contact.includes("@") ||
-                    bidding.consultation_contact.includes(".") ? (
-                      <a
-                        href={`mailto:${bidding.consultation_contact.trim()}`}
-                      >
-                        {bidding.consultation_contact}
-                      </a>
-                    ) : (
-                      bidding.consultation_contact
-                    )}
+                    {renderConsultationContact(bidding.consultation_contact)}
                   </dd>
                 </div>
               )}

@@ -507,7 +507,7 @@ function getIncluidas(selSet){
   return r;
 }
 
-let S={dni:"",localidad:"",tramiteLocal:true,nac:null,edad:0,tipo:"",licActuales:[],subclases:[],selUsuario:[],esProf:false,modoPostLic:null,skipReselectSubs:false,turno:null};
+let S={nombre:"",apellido:"",dni:"",telefono:"",localidad:"",tramiteLocal:true,nac:null,edad:0,tipo:"",licActuales:[],subclases:[],selUsuario:[],esProf:false,modoPostLic:null,skipReselectSubs:false,turno:null};
 const msgs=document.getElementById("msgs"),opts=document.getElementById("opts");
 
 function setProg(n){/* stepper removido en Fase 1 — no-op */}
@@ -905,13 +905,65 @@ function showDni(backFn){
   btn.onclick=()=>{
     const n=norm(inp.value);
     if(n.length<7||n.length>9){err.textContent="Ingresá un DNI válido (7 a 9 dígitos).";err.style.display="block";return;}
-    S.dni=n;addUser(`DNI: ${n}`);paso1_loc();
+    S.dni=n;addUser(`DNI: ${n}`);pasoTelefono();
   };
   bindEnterSubmitInput(inp,btn);
   opts.appendChild(hint);opts.appendChild(inp);opts.appendChild(err);opts.appendChild(btn);
   inp.focus({preventScroll:true});
   advanceScroll();
 }
+
+/* ── Teléfono (10 dígitos) ── */
+function showTelefono(backFn){
+  clearOpts();if(backFn)addBack(backFn);
+  const hint=document.createElement("p");hint.className="sub-desc";hint.style.marginBottom="8px";hint.style.color="var(--color-text-secondary)";
+  hint.textContent="10 números, sin 0 ni 15. Ej.: 2224123456.";
+  const inp=document.createElement("input");inp.type="text";inp.className="dni-inp";inp.inputMode="numeric";inp.autocomplete="tel";inp.maxLength=10;inp.placeholder="Ej.: 2224123456";
+  if(S.telefono)inp.value=S.telefono;
+  const err=document.createElement("p");err.className="err";
+  const btn=makeConfirmBtn("Confirmar");
+  const norm=v=>v.replace(/\D/g,"").slice(0,10);
+  function syncBtn(){ if(norm(inp.value).length===10){activateBtn(btn,"Confirmar");err.style.display="none";} else deactivateBtn(btn); }
+  inp.addEventListener("input",()=>{inp.value=norm(inp.value);syncBtn();});
+  if(S.telefono)syncBtn();
+  btn.onclick=()=>{
+    const n=norm(inp.value);
+    if(n.length!==10){err.textContent="Ingresá un teléfono de 10 dígitos.";err.style.display="block";return;}
+    S.telefono=n;addUser(`Teléfono: ${n}`);paso1_loc();
+  };
+  bindEnterSubmitInput(inp,btn);
+  opts.appendChild(hint);opts.appendChild(inp);opts.appendChild(err);opts.appendChild(btn);
+  inp.focus({preventScroll:true});
+  advanceScroll();
+}
+
+/* ── Texto simple (nombre / apellido) ── */
+function showTextoSimple({placeholder,initialVal,hintText,okLabel,onOk,backFn}){
+  clearOpts();if(backFn)addBack(backFn);
+  const hint=document.createElement("p");hint.className="sub-desc";hint.style.marginBottom="8px";hint.style.color="var(--color-text-secondary)";
+  hint.textContent=hintText||"";
+  const inp=document.createElement("input");inp.type="text";inp.className="dni-inp";inp.autocomplete="off";inp.maxLength=40;inp.placeholder=placeholder||"";inp.style.letterSpacing="normal";
+  if(initialVal)inp.value=initialVal;
+  const err=document.createElement("p");err.className="err";
+  const btn=makeConfirmBtn(okLabel||"Confirmar");
+  const clean=v=>v.replace(/\s{2,}/g," ").replace(/^\s+/,"");
+  const valid=v=>{const t=v.trim();return t.length>=2 && /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/.test(t);};
+  function syncBtn(){ if(valid(inp.value)){activateBtn(btn,okLabel||"Confirmar");err.style.display="none";} else deactivateBtn(btn); }
+  inp.addEventListener("input",()=>{inp.value=clean(inp.value);syncBtn();});
+  if(inp.value)syncBtn();
+  btn.onclick=()=>{
+    const t=inp.value.trim();
+    if(!valid(t)){err.textContent="Ingresá un valor válido (al menos 2 letras).";err.style.display="block";return;}
+    onOk(t);
+  };
+  bindEnterSubmitInput(inp,btn);
+  if(hintText)opts.appendChild(hint);
+  opts.appendChild(inp);opts.appendChild(err);opts.appendChild(btn);
+  inp.focus({preventScroll:true});
+  advanceScroll();
+}
+function showNombre(backFn){showTextoSimple({placeholder:"Ej.: María",initialVal:S.nombre,hintText:"Tu nombre, como figura en el DNI.",backFn,onOk:t=>{S.nombre=t;addUser(`Nombre: ${t}`);pasoApellido();}});}
+function showApellido(backFn){showTextoSimple({placeholder:"Ej.: Gómez",initialVal:S.apellido,hintText:"Tu apellido, como figura en el DNI.",backFn,onOk:t=>{S.apellido=t;addUser(`Apellido: ${t}`);pasoDni();}});}
 
 /* ── Select — confirma al elegir opción (sin segundo botón) ── */
 function showSelect(optsList,placeholder,backFn,onConfirm,savedVal){
@@ -1196,8 +1248,23 @@ function showSubclasSelector(edad,presel,onConfirm,backFn,cfg){
 
 async function paso0(){
   setProg(0);
-  await addBot(`<span class="badge bi">Bienvenida/o</span><br>Hola, soy el asistente y te voy a guiar paso por paso para la obtención de tu <strong>Licencia de Conducir</strong>. Comencemos.<br><br>Ingresá tu número de DNI.`);
-  showDni(null);
+  await addBot(`<span class="badge bi">Bienvenida/o</span><br>Hola, soy el asistente y te voy a guiar paso por paso para la obtención de tu <strong>Licencia de Conducir</strong>. Comencemos.<br><br>¿Cuál es tu nombre?`);
+  showNombre(null);
+}
+
+async function pasoApellido(){
+  await addBot(`Gracias, ${S.nombre}. ¿Cuál es tu apellido?`);
+  showApellido(()=>showNombre(null));
+}
+
+async function pasoDni(){
+  await addBot(`Ingresá tu número de DNI.<br><span style="font-size:12px;color:var(--color-text-secondary)">Sin puntos, solo números.</span>`);
+  showDni(()=>showApellido(()=>showNombre(null)));
+}
+
+async function pasoTelefono(){
+  await addBot(`¿Cuál es tu teléfono de contacto?<br><span style="font-size:12px;color:var(--color-text-secondary)">10 números, sin 0 ni 15.</span>`);
+  showTelefono(()=>pasoDni());
 }
 
 function backToDni(){
@@ -1646,9 +1713,13 @@ function appendResumenBtn(parent,onUsed){
   return bDown;
 }
 
-/* ════════════════════ TURNERO: API mock + Modal ════════════════════
-   Sustituir turneroApi por integración real cuando esté disponible.
-   Contrato esperado:
+/* ════════════════════ TURNERO: API + Modal ════════════════════
+   getDias/getHorarios leen turnos reales del backend vía el proxy
+   /api/chatbot/turns (server-side, oculta la API key y evita mixed-content).
+   Respuesta del backend: [{id, datetime:"YYYY-MM-DDTHH:MM:SSZ", is_available, ...}]
+   Ojo: datetime viene con sufijo "Z" pero representa hora local (horario de
+   atención municipal), así que tomamos HH:MM literal del string sin convertir TZ.
+   Contrato interno:
    - getDias(fromIso, toIso) → Promise<string[]>  (ISO YYYY-MM-DD con cupo)
    - getHorarios(fechaIso)    → Promise<string[]> (HH:MM disponibles)
    - confirmar(fechaIso,hora,datos) → Promise<{ok:boolean,id?:string,error?:string}>
@@ -1666,30 +1737,60 @@ function genTurnoId(){
 }
 
 const turneroApi={
-  _slots:["08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","14:00","14:30","15:00","15:30","16:00","16:30"],
-  async getDias(fromIso,toIso){
-    await new Promise(r=>setTimeout(r,180));
-    const out=[];const ini=new Date(fromIso+"T00:00"),fin=new Date(toIso+"T00:00");
-    for(let d=new Date(ini);d<=fin;d.setDate(d.getDate()+1)){
-      const dow=d.getDay();
-      if(dow===0||dow===6)continue;
-      if((d.getDate()*7+d.getMonth())%5===0)continue;
-      const yyyy=d.getFullYear();
-      const mm=String(d.getMonth()+1).padStart(2,"0");
-      const dd=String(d.getDate()).padStart(2,"0");
-      out.push(`${yyyy}-${mm}-${dd}`);
+  _procedureId:2,
+  _cache:null,          // {at:number, byDate:Map<iso,[{hora,slotId}]>}
+  _ttl:60000,           // 1 min: el proxy ya cachea 60s; evita refetch en cada swipe
+  async _load(){
+    if(this._cache && Date.now()-this._cache.at < this._ttl) return this._cache;
+    const r=await fetch(`/api/chatbot/turns?procedure_id=${this._procedureId}`,{headers:{Accept:"application/json"}});
+    if(!r.ok) throw new Error("turns "+r.status);
+    const arr=await r.json();
+    if(!Array.isArray(arr)) throw new Error("turns: respuesta inesperada");
+    const byDate=new Map();
+    for(const s of arr){
+      if(!s||!s.datetime||s.is_available===false) continue;
+      const iso=String(s.datetime).slice(0,10);   // YYYY-MM-DD
+      const hora=String(s.datetime).slice(11,16);  // HH:MM (literal, sin convertir TZ)
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)||!/^\d{2}:\d{2}$/.test(hora)) continue;
+      if(!byDate.has(iso)) byDate.set(iso,[]);
+      byDate.get(iso).push({hora,slotId:s.id});
     }
-    return out;
+    for(const list of byDate.values()) list.sort((a,b)=>a.hora.localeCompare(b.hora));
+    this._cache={at:Date.now(),byDate};
+    return this._cache;
+  },
+  async getDias(fromIso,toIso){
+    const {byDate}=await this._load();
+    return [...byDate.keys()].filter(d=>d>=fromIso && d<=toIso); // ISO ordena cronológicamente
   },
   async getHorarios(fechaIso){
-    await new Promise(r=>setTimeout(r,140));
-    const d=new Date(fechaIso+"T00:00");
-    const seed=(d.getDate()+d.getMonth())%this._slots.length;
-    return this._slots.filter((_,i)=>(i+seed)%3!==0);
+    const {byDate}=await this._load();
+    return (byDate.get(fechaIso)||[]).map(x=>x.hora);
+  },
+  slotId(fechaIso,hora){
+    const c=this._cache; if(!c) return null;
+    const hit=(c.byDate.get(fechaIso)||[]).find(x=>x.hora===hora);
+    return hit?hit.slotId:null;
   },
   async confirmar(fechaIso,hora,datos){
-    await new Promise(r=>setTimeout(r,260));
-    return{ok:true,id:genTurnoId()};
+    const turnId=this.slotId(fechaIso,hora);
+    if(turnId==null) return {ok:false,error:"Ese turno ya no está disponible. Elegí otro."};
+    let r,data=null;
+    try{
+      r=await fetch("/api/chatbot/appointments",{
+        method:"POST",
+        headers:{"Content-Type":"application/json",Accept:"application/json"},
+        body:JSON.stringify({Dni:datos.dni,Firstname:datos.firstname,Lastname:datos.lastname,phone_number:datos.phone,turn_id:turnId})
+      });
+      try{data=await r.json();}catch(e){}
+    }catch(e){
+      return {ok:false,error:"No se pudo conectar con el turnero. Reintentá."};
+    }
+    if(!r.ok){
+      return {ok:false,error:(data&&(data.detail||data.title))||("No se pudo confirmar (error "+r.status+")." )};
+    }
+    this._cache=null; // el cupo dejó de estar disponible: forzar refetch la próxima vez
+    return {ok:true,id:(data&&(data.appointment_code||data.appointment_id))||genTurnoId(),appointmentId:data&&data.appointment_id};
   }
 };
 
@@ -1701,8 +1802,11 @@ function _tFmtMes(d){
 }
 
 async function openTurnoModal({tipoExamen,onConfirm}){
+  // procedure_id: teórico-práctico=2, psicofísico=3. Si cambia, invalidar cache.
+  const pid=(S.tipo==="renovacion_simple")?3:2;
+  if(turneroApi._procedureId!==pid){turneroApi._procedureId=pid;turneroApi._cache=null;}
   const m=new Date();m.setDate(1);m.setHours(0,0,0,0);
-  _tModal={mes:m,disp:new Set(),dia:null,hora:null,horas:[],tipo:tipoExamen||"Turno",onConfirm};
+  _tModal={mes:m,disp:new Set(),dia:null,hora:null,horas:[],tipo:tipoExamen||"Turno",onConfirm,err:null};
   document.getElementById("turno-title").textContent=`Reservar turno — ${_tModal.tipo}`;
   document.getElementById("turno-overlay").classList.add("open");
   document.body.style.overflow="hidden";
@@ -1724,8 +1828,14 @@ async function _tCargarMes(){
   const fin=new Date(m.getFullYear(),m.getMonth()+1,0);
   const desde=ini<today?today:ini;
   const isoF=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  const dias=await turneroApi.getDias(isoF(desde),isoF(fin));
-  _tModal.disp=new Set(dias);
+  try{
+    const dias=await turneroApi.getDias(isoF(desde),isoF(fin));
+    _tModal.disp=new Set(dias);
+    _tModal.err=null;
+  }catch(e){
+    _tModal.disp=new Set();
+    _tModal.err="No se pudieron cargar los turnos. Reintentá en unos minutos.";
+  }
 }
 
 function _tRender(){
@@ -1764,7 +1874,9 @@ async function _tPickDia(iso){
   _tModal.dia=iso;_tModal.hora=null;_tModal.horas=[];
   _tRender();
   document.getElementById("turno-horarios-titulo").textContent="Cargando horarios...";
-  const horas=await turneroApi.getHorarios(iso);
+  let horas=[];
+  try{ horas=await turneroApi.getHorarios(iso); }
+  catch(e){ if(_tModal.dia===iso){_tModal.err="No se pudieron cargar los horarios. Reintentá.";_tRenderHorarios();} return; }
   if(_tModal.dia!==iso)return;
   _tModal.horas=horas;
   _tRenderHorarios();
@@ -1773,6 +1885,8 @@ async function _tPickDia(iso){
 function _tRenderHorarios(){
   const cont=document.getElementById("turno-horarios");
   const tit=document.getElementById("turno-horarios-titulo");
+  if(_tModal.err){tit.textContent=_tModal.err;tit.style.color="var(--danger)";cont.innerHTML="";return;}
+  tit.style.color="";
   if(!_tModal.dia){tit.textContent="Elegí un día disponible";cont.innerHTML="";return;}
   const [y,mo,d]=_tModal.dia.split("-");
   tit.textContent=`Horarios ${d}/${mo}/${y}`;
@@ -1816,7 +1930,7 @@ function _tRenderResumen(){
   async function _tCambiarMes(delta){
     if(delta<0&&document.getElementById("turno-prev").disabled)return;
     const m=new Date(_tModal.mes);m.setMonth(m.getMonth()+delta);
-    _tModal.mes=m;_tModal.dia=null;_tModal.hora=null;_tModal.horas=[];
+    _tModal.mes=m;_tModal.dia=null;_tModal.hora=null;_tModal.horas=[];_tModal.err=null;
     await _tCargarMes();_tRender();
   }
   document.getElementById("turno-prev").onclick=()=>_tCambiarMes(-1);
@@ -1840,8 +1954,22 @@ function _tRenderResumen(){
   document.getElementById("btn-confirmar-turno").onclick=async()=>{
     const btn=document.getElementById("btn-confirmar-turno");
     if(!_tModal.dia||!_tModal.hora||!btn.classList.contains("on"))return;
+    // Diálogo de confirmación con los datos del turno elegido.
+    // Aceptar → confirma en la API. Cancelar → volver a elegir (refetch de turnos).
+    const [cy,cmo,cd]=_tModal.dia.split("-");
+    const persona=[S.nombre,S.apellido].filter(Boolean).join(" ");
+    const resumen=`¿Confirmás este turno?\n\n${persona?persona+"\n":""}${_tModal.tipo}\n${cd}/${cmo}/${cy} · ${_tModal.hora} hs\n\nAceptar: confirmar el turno.\nCancelar: elegir otro turno.`;
+    if(!window.confirm(resumen)){
+      // Cambiar turno sin confirmar: refrescar disponibilidad y reiniciar selección.
+      turneroApi._cache=null;
+      _tModal.dia=null;_tModal.hora=null;_tModal.horas=[];_tModal.err=null;
+      deactivateBtn(btn);
+      await _tCargarMes();
+      _tRender();
+      return;
+    }
     deactivateBtn(btn);btn.textContent="Confirmando...";
-    const res=await turneroApi.confirmar(_tModal.dia,_tModal.hora,{dni:S.dni,tipo:S.tipo,subclases:S.subclases});
+    const res=await turneroApi.confirmar(_tModal.dia,_tModal.hora,{dni:S.dni,firstname:S.nombre,lastname:S.apellido,phone:S.telefono});
     btn.textContent="Confirmar turno";activateBtn(btn);
     if(res.ok){
       S.turno={fecha:_tModal.dia,hora:_tModal.hora,id:res.id,examen:_tModal.tipo};
@@ -1882,13 +2010,6 @@ function _renderTurnoBlock(){
     const box=document.createElement("div");box.className="gbox";
     box.innerHTML=`<strong>✅ Turno reservado</strong><br>${tipoExamen}<br>${fmtFechaDMY(S.turno.fecha)} · ${S.turno.hora} hs<br><small style="opacity:.8">Código: ${S.turno.id}</small>`;
     opts.appendChild(box);
-    const bCambiar=document.createElement("button");bCambiar.type="button";bCambiar.className="opt-btn";bCambiar.style.marginTop="8px";
-    bCambiar.innerHTML=`<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span><div class="ol"><span class="lbl">Cambiar turno</span></div>`;
-    bCambiar.onclick=()=>openTurnoModal({tipoExamen,onConfirm:()=>{
-      addUser(`Turno: ${fmtFechaDMY(S.turno.fecha)} ${S.turno.hora}`);
-      paso5b_preTurno({silent:true});
-    }});
-    opts.appendChild(bCambiar);
     const bCal=document.createElement("a");
     bCal.href=_gcalUrl(S.turno,tipoExamen);bCal.target="_blank";bCal.rel="noopener noreferrer";
     bCal.className="cbtn-resumen";bCal.style.textDecoration="none";
@@ -2128,7 +2249,9 @@ async function paso5_requisitos(){
     const filaVigencia=`<div class="sr"><span>Vigencia estimada</span><span>${vigTxt}</span></div>`;
     const filaCosto=`<div class="sr"><span>Costo estimado</span><span>${costoTxt}${vc.costo!=null?" *":""}</span></div>`;
     sc.innerHTML=`
+      <div class="sr"><span>Nombre y apellido</span><span>${[S.nombre,S.apellido].filter(Boolean).join(" ")||"—"}</span></div>
       <div class="sr"><span>DNI</span><span>${S.dni||"—"}</span></div>
+      <div class="sr"><span>Teléfono</span><span>${S.telefono||"—"}</span></div>
       <div class="sr"><span>Localidad</span><span>${S.localidad||"—"}</span></div>
       <div class="sr"><span>Fecha de nacimiento</span><span>${nacFmt} (${S.edad} años)</span></div>
       <div class="sr"><span>Tipo de trámite</span><span>${tipoLabel}</span></div>
@@ -2442,7 +2565,9 @@ function buildResumenDocDefinition(){
 
   content.push({text:"Datos personales",style:"h2"});
   content.push(_resumenTablaSimple([
+    ["Nombre y apellido",[S.nombre,S.apellido].filter(Boolean).join(" ")||"—"],
     ["DNI",S.dni||"—"],
+    ["Teléfono",S.telefono||"—"],
     ["Localidad de domicilio",S.localidad||"—"],
     ["Fecha de nacimiento",nacFmt],
     ["Edad",S.edad?`${S.edad} años`:"—"]
@@ -2612,7 +2737,7 @@ function reiniciar(){
     window._svEnterCleanup=null;
   }
   msgs.innerHTML="";opts.innerHTML="";
-  S={dni:"",localidad:"",tramiteLocal:true,nac:null,edad:0,tipo:"",licActuales:[],subclases:[],selUsuario:[],esProf:false,modoPostLic:null,skipReselectSubs:false,turno:null};
+  S={nombre:"",apellido:"",dni:"",telefono:"",localidad:"",tramiteLocal:true,nac:null,edad:0,tipo:"",licActuales:[],subclases:[],selUsuario:[],esProf:false,modoPostLic:null,skipReselectSubs:false,turno:null};
   paso0();
 }
 

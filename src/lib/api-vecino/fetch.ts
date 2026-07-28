@@ -81,7 +81,7 @@ export async function fetchVecinoNews(): Promise<VecinoNewsItem[]> {
     console.log("[API Vecino] news response:", data);
     if (!Array.isArray(data)) return [];
 
-    return data.filter((n: VecinoNewsItem) => !n.deleted_at);
+    return data;
   } catch (err) {
     console.error("[API Vecino] news error:", err);
     return [];
@@ -125,7 +125,7 @@ export async function fetchVecinoEvents(): Promise<VecinoEventItem[]> {
     console.log("[API Vecino] events response:", data);
     if (!Array.isArray(data)) return [];
 
-    return data.filter((e: VecinoEventItem) => !e.deleted_at);
+    return data;
   } catch (err) {
     console.error("[API Vecino] events error:", err);
     return [];

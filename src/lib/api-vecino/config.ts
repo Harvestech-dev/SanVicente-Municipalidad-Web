@@ -23,10 +23,10 @@ export const API_VECINO_CONFIG = {
   },
 
   ENDPOINTS: {
-    NEWS: "/citizen/news",
-    NEWS_DETAIL: (id: number) => `/citizen/news/${id}`,
-    EVENTS: "/citizen/events",
-    EVENT_DETAIL: (id: number) => `/citizen/events/${id}`,
-    NEIGHBORHOODS: "/citizen/neighborhoods",
+    NEWS: "/public/news",
+    NEWS_DETAIL: (id: number) => `/public/news/${id}`,
+    EVENTS: "/public/events",
+    EVENT_DETAIL: (id: number) => `/public/events/${id}`,
+    NEIGHBORHOODS: "/citizen/neighborhoods", // pendiente confirmación endpoint nuevo
   },
 } as const;

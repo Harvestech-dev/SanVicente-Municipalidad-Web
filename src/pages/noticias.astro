@@ -200,7 +200,7 @@ const VECINO_DEV_LOCAL =
     }
     if (items.length === 0 && apiBase) {
       try {
-        const res = await fetch(`${apiBase}/public/news`);
+        const res = await fetch(`${apiBase}/news`);
         if (!res.ok) throw new Error("Respuesta no OK");
         const data = await res.json();
         items = Array.isArray(data) ? data.filter((n) => !n.deleted_at) : [];

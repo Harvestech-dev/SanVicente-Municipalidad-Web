@@ -191,7 +191,7 @@ const VECINO_DEV_LOCAL =
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data)) {
-            items = data.filter((n) => !n.deleted_at);
+            items = data;
           }
         }
       } catch {
@@ -200,7 +200,7 @@ const VECINO_DEV_LOCAL =
     }
     if (items.length === 0 && apiBase) {
       try {
-        const res = await fetch(`${apiBase}/citizen/news`);
+        const res = await fetch(`${apiBase}/news`);
         if (!res.ok) throw new Error("Respuesta no OK");
         const data = await res.json();
         items = Array.isArray(data) ? data.filter((n) => !n.deleted_at) : [];
@@ -272,7 +272,7 @@ const VECINO_DEV_LOCAL =
         featuredContainer.innerHTML = `
           <a href="/Noticias/detalle/${destSlug}" class="featured-card">
             <div class="featured-image">
-              <img src="${destImg}" alt="${escAttr(destacada.txt_titulo ?? "")}">
+              <img src="${destImg}" alt="${escAttr(destacada.txt_titulo ?? "")}" onerror="this.style.display='none'">
               <span class="badge-destacada">Destacada</span>
             </div>
             <div class="featured-info">
@@ -301,7 +301,7 @@ const VECINO_DEV_LOCAL =
         const cardImg = escAttr(noticia.img_principal ?? "");
         a.innerHTML = `
           <div class="card-image">
-            <img src="${cardImg}" alt="${escAttr(noticia.txt_titulo ?? "")}">
+            <img src="${cardImg}" alt="${escAttr(noticia.txt_titulo ?? "")}" onerror="this.style.display='none'">
             <span class="card-category">${noticia.txt_categoria}</span>
           </div>
           <div class="card-content">

@@ -72,14 +72,18 @@ export async function fetchVecinoNews(): Promise<VecinoNewsItem[]> {
   const url = `${base}${API_VECINO_CONFIG.ENDPOINTS.NEWS}`;
 
   try {
+    console.log("[API Vecino] GET", url);
     const res = await fetchWithTimeout(url);
+    console.log("[API Vecino] news status:", res.status);
     if (!res.ok) return [];
 
     const data = await res.json();
+    console.log("[API Vecino] news response:", data);
     if (!Array.isArray(data)) return [];
 
-    return data.filter((n: VecinoNewsItem) => !n.deleted_at);
-  } catch {
+    return data;
+  } catch (err) {
+    console.error("[API Vecino] news error:", err);
     return [];
   }
 }
@@ -112,14 +116,18 @@ export async function fetchVecinoEvents(): Promise<VecinoEventItem[]> {
   const url = `${base}${API_VECINO_CONFIG.ENDPOINTS.EVENTS}`;
 
   try {
+    console.log("[API Vecino] GET", url);
     const res = await fetchWithTimeout(url);
+    console.log("[API Vecino] events status:", res.status);
     if (!res.ok) return [];
 
     const data = await res.json();
+    console.log("[API Vecino] events response:", data);
     if (!Array.isArray(data)) return [];
 
-    return data.filter((e: VecinoEventItem) => !e.deleted_at);
-  } catch {
+    return data;
+  } catch (err) {
+    console.error("[API Vecino] events error:", err);
     return [];
   }
 }
@@ -139,12 +147,16 @@ export async function fetchVecinoNewsById(id: number): Promise<VecinoNewsItem | 
 
   const url = `${base}${API_VECINO_CONFIG.ENDPOINTS.NEWS_DETAIL(id)}`;
   try {
+    console.log("[API Vecino] GET", url);
     const res = await fetchWithTimeout(url);
-    if (!res.ok) return null;
+    console.log("[API Vecino] news detail status:", res.status);
     const data = await res.json();
+    console.log("[API Vecino] news detail response:", data);
+    if (!res.ok) return null;
     if (!data || typeof data !== "object" || !("id" in data)) return null;
     return data as VecinoNewsItem;
-  } catch {
+  } catch (err) {
+    console.error("[API Vecino] news detail error:", err);
     return null;
   }
 }
@@ -276,17 +288,21 @@ export async function fetchVecinoNeighborhoods(): Promise<VecinoNeighborhood[]> 
   const url = `${base}${API_VECINO_CONFIG.ENDPOINTS.NEIGHBORHOODS}`;
 
   try {
+    console.log("[API Vecino] GET", url);
     const res = await fetchWithTimeout(url);
+    console.log("[API Vecino] neighborhoods status:", res.status);
     if (!res.ok) return [];
 
     const data = await res.json();
+    console.log("[API Vecino] neighborhoods response:", data);
     if (!Array.isArray(data)) return [];
 
     return data.map((n: VecinoNeighborhood) => ({
       ...n,
       wastes: Array.isArray(n.wastes) ? n.wastes : [],
     }));
-  } catch {
+  } catch (err) {
+    console.error("[API Vecino] neighborhoods error:", err);
     return [];
   }
 }

@@ -1,6 +1,6 @@
 /**
  * Módulo API Vecino Digital.
- * Endpoints: /citizen/news, /citizen/events
+ * Endpoints: /public/news, /public/events
  */
 
 export type { VecinoNewsItem, VecinoEventItem, VecinoNeighborhood, VecinoWaste, VecinoCategory, VecinoImage } from "./types";

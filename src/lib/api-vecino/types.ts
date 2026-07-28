@@ -1,29 +1,18 @@
 /**
  * Tipos para la API Vecino Digital.
- * Endpoints: /citizen/news, /citizen/events
+ * Endpoints: /public/news, /public/events
  */
 
 export interface VecinoCategory {
   id: number;
   name: string;
-  category_id: number | null;
-  external_id: string | null;
-  created_at: string;
-  updated_at: string;
-  pivot?: { categorizable_id: number; category_id: number; categorizable_type: string };
 }
 
 export interface VecinoImage {
   id: number;
   name: string;
   url: string;
-  path: string;
-  type: string;
   order: number;
-  mediable_type: string;
-  mediable_id: number;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface VecinoNewsItem {
@@ -33,20 +22,16 @@ export interface VecinoNewsItem {
   body: string;
   more_info: string | null;
   landmark_id: number | null;
+  landmark_name: string | null;
   event_id: number | null;
+  event_name: string | null;
   published_from: string;
-  published_to: string;
+  published_to: string | null;
   is_important: boolean;
   created_at: string;
   updated_at: string;
-  deleted_at: string | null;
-  categories: VecinoCategory[];
-  landmark: unknown;
   images: VecinoImage[];
-  links: unknown[];
-  sounds: unknown[];
-  videos: unknown[];
-  event: unknown;
+  categories: VecinoCategory[];
 }
 
 export interface VecinoEventItem {
@@ -54,20 +39,18 @@ export interface VecinoEventItem {
   name: string;
   body: string;
   landmark_id: number | null;
+  landmark_name: string | null;
+  inscription_event_id: number | null;
+  inscription_event_name: string | null;
   published_from: string;
-  published_to: string;
+  published_to: string | null;
   active_from: string;
   active_to: string;
   is_important: boolean;
   created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-  categories: VecinoCategory[];
-  landmark: unknown;
+  updated_at: string | null;
   images: VecinoImage[];
-  links: unknown[];
-  sounds: unknown[];
-  videos: unknown[];
+  categories: VecinoCategory[];
 }
 
 export interface VecinoWaste {

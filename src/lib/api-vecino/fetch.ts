@@ -282,7 +282,10 @@ export async function fetchVecinoNeighborhoods(): Promise<VecinoNeighborhood[]> 
     const data = await res.json();
     if (!Array.isArray(data)) return [];
 
-    return data;
+    return data.map((n: VecinoNeighborhood) => ({
+      ...n,
+      wastes: Array.isArray(n.wastes) ? n.wastes : [],
+    }));
   } catch {
     return [];
   }

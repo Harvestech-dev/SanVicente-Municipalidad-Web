@@ -74,11 +74,11 @@ const mapSectores = barrios.map((b, i) => {
             {barrios.map((sector) => (
               <article class="sector-card">
                 <h2 class="sector-title">{sector.name}</h2>
-                {sector.wastes.length === 0 ? (
+                {(sector.wastes ?? []).length === 0 ? (
                   <p class="sin-recoleccion">Sin horarios cargados para este sector.</p>
                 ) : (
                   <ul class="recolecciones-list">
-                    {sector.wastes.map((w) => {
+                    {(sector.wastes ?? []).map((w) => {
                       const tipo = TIPOS_RECOLECCION[w.type] ?? { label: w.type, color: "#64748b" };
                       return (
                         <li class="recoleccion-item">

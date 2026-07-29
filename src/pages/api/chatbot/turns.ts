@@ -1,14 +1,15 @@
 import type { APIRoute } from "astro";
 
 // Proxy servidor→servidor del turnero. Necesario porque el chatbot es HTML
-// estático servido por HTTPS y el backend de turnos está en HTTP + IP (mixed
-// content) y requiere una API key que no puede exponerse en el cliente.
+// estático servido por HTTPS y la API key no puede exponerse en el cliente.
 export const prerender = false;
 
-const UPSTREAM =
-  import.meta.env.TURNS_API_URL ||
-  process.env.TURNS_API_URL ||
-  "http://72.60.156.83/api/appointments/chatbot/turns";
+const BASE =
+  (import.meta.env.PUBLIC_API_VECINO_URL || process.env.PUBLIC_API_VECINO_URL || "").replace(/\/$/, "");
+
+const UPSTREAM = BASE
+  ? `${BASE}/appointments/chatbot/turns`
+  : "http://72.60.156.83/api/appointments/chatbot/turns";
 
 const KEY = import.meta.env.TURNS_API_KEY || process.env.TURNS_API_KEY;
 
@@ -21,11 +22,14 @@ const json = (data: unknown, status = 200) =>
 export const GET: APIRoute = async ({ url }) => {
   if (!KEY) return json({ error: "Turnero no configurado (falta TURNS_API_KEY)." }, 500);
 
-  const procedureId = url.searchParams.get("procedure_id") || "2";
-  const upstream = `${UPSTREAM}?procedure_id=${encodeURIComponent(procedureId)}`;
+  const upstream = new URL(UPSTREAM);
+  // Forwardear todos los query params que mande el cliente
+  url.searchParams.forEach((value, key) => {
+    upstream.searchParams.set(key, value);
+  });
 
   try {
-    const r = await fetch(upstream, {
+    const r = await fetch(upstream.toString(), {
       headers: { "X-Api-Key": KEY, Accept: "application/json" },
     });
     const body = await r.text();
@@ -33,7 +37,6 @@ export const GET: APIRoute = async ({ url }) => {
       status: r.status,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        // cache corto: los cupos cambian, pero evita golpear el upstream en cada swipe de mes
         "Cache-Control": "public, max-age=60, s-maxage=60",
       },
     });

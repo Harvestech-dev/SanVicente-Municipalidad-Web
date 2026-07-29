@@ -29,6 +29,8 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: "Cuerpo inválido." }, 400);
   }
 
+  console.log("[chatbot/appointments] POST", BOOK_URL, "body:", JSON.stringify(body));
+
   try {
     const r = await fetch(BOOK_URL, {
       method: "POST",
@@ -40,11 +42,13 @@ export const POST: APIRoute = async ({ request }) => {
       body: JSON.stringify(body),
     });
     const text = await r.text();
+    console.log("[chatbot/appointments] status:", r.status, "response:", text);
     return new Response(text, {
       status: r.status,
       headers: { "Content-Type": "application/json; charset=utf-8" },
     });
-  } catch {
+  } catch (err) {
+    console.error("[chatbot/appointments] error:", err);
     return json({ error: "No se pudo conectar con el turnero." }, 502);
   }
 };

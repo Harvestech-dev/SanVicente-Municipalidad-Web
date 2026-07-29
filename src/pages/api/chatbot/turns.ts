@@ -28,11 +28,15 @@ export const GET: APIRoute = async ({ url }) => {
     upstream.searchParams.set(key, value);
   });
 
+  const upstreamUrl = upstream.toString();
+  console.log("[chatbot/turns] GET", upstreamUrl);
+
   try {
-    const r = await fetch(upstream.toString(), {
+    const r = await fetch(upstreamUrl, {
       headers: { "X-Api-Key": KEY, Accept: "application/json" },
     });
     const body = await r.text();
+    console.log("[chatbot/turns] status:", r.status, "response:", body);
     return new Response(body, {
       status: r.status,
       headers: {
@@ -40,7 +44,8 @@ export const GET: APIRoute = async ({ url }) => {
         "Cache-Control": "public, max-age=60, s-maxage=60",
       },
     });
-  } catch {
+  } catch (err) {
+    console.error("[chatbot/turns] error:", err);
     return json({ error: "No se pudo conectar con el turnero." }, 502);
   }
 };

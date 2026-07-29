@@ -1802,8 +1802,8 @@ function _tFmtMes(d){
 }
 
 async function openTurnoModal({tipoExamen,onConfirm}){
-  // procedure_id: teórico-práctico=2, psicofísico=3. Si cambia, invalidar cache.
-  const pid=(S.tipo==="renovacion_simple")?3:2;
+  // procedure_id: teórico-práctico=1, psicofísico=2.
+  const pid=(S.tipo==="renovacion_simple")?2:1;
   if(turneroApi._procedureId!==pid){turneroApi._procedureId=pid;turneroApi._cache=null;}
   const m=new Date();m.setDate(1);m.setHours(0,0,0,0);
   _tModal={mes:m,disp:new Set(),dia:null,hora:null,horas:[],tipo:tipoExamen||"Turno",onConfirm,err:null};

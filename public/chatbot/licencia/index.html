@@ -1738,11 +1738,14 @@ function genTurnoId(){
 
 const turneroApi={
   _procedureId:2,
-  _cache:null,          // {at:number, byDate:Map<iso,[{hora,slotId}]>}
-  _ttl:60000,           // 1 min: el proxy ya cachea 60s; evita refetch en cada swipe
-  async _load(){
-    if(this._cache && Date.now()-this._cache.at < this._ttl) return this._cache;
-    const r=await fetch(`/api/chatbot/turns?procedure_id=${this._procedureId}`,{headers:{Accept:"application/json"}});
+  _cacheByMonth:{},     // keyed by "procedureId-YYYY-M" → {at, byDate}
+  _ttl:60000,
+  _monthKey(year,month){return `${this._procedureId}-${year}-${month}`;},
+  async _load(year,month){
+    const k=this._monthKey(year,month);
+    const c=this._cacheByMonth[k];
+    if(c && Date.now()-c.at < this._ttl) return c;
+    const r=await fetch(`/api/chatbot/turns?procedure_id=${this._procedureId}&year=${year}&month=${month}`,{headers:{Accept:"application/json"}});
     if(!r.ok) throw new Error("turns "+r.status);
     const arr=await r.json();
     if(!Array.isArray(arr)) throw new Error("turns: respuesta inesperada");
@@ -1756,40 +1759,44 @@ const turneroApi={
       byDate.get(iso).push({hora,slotId:s.id});
     }
     for(const list of byDate.values()) list.sort((a,b)=>a.hora.localeCompare(b.hora));
-    this._cache={at:Date.now(),byDate};
-    return this._cache;
+    this._cacheByMonth[k]={at:Date.now(),byDate};
+    return this._cacheByMonth[k];
   },
-  async getDias(fromIso,toIso){
-    const {byDate}=await this._load();
-    return [...byDate.keys()].filter(d=>d>=fromIso && d<=toIso); // ISO ordena cronológicamente
+  async getDias(fromIso,toIso,year,month){
+    const {byDate}=await this._load(year,month);
+    return [...byDate.keys()].filter(d=>d>=fromIso && d<=toIso);
   },
-  async getHorarios(fechaIso){
-    const {byDate}=await this._load();
+  async getHorarios(fechaIso,year,month){
+    const {byDate}=await this._load(year,month);
     return (byDate.get(fechaIso)||[]).map(x=>x.hora);
   },
-  slotId(fechaIso,hora){
-    const c=this._cache; if(!c) return null;
+  slotId(fechaIso,hora,year,month){
+    const k=this._monthKey(year,month);
+    const c=this._cacheByMonth[k]; if(!c) return null;
     const hit=(c.byDate.get(fechaIso)||[]).find(x=>x.hora===hora);
     return hit?hit.slotId:null;
   },
+  clearMonth(year,month){delete this._cacheByMonth[this._monthKey(year,month)];},
+  clearAll(){this._cacheByMonth={};},
   async confirmar(fechaIso,hora,datos){
-    const turnId=this.slotId(fechaIso,hora);
+    const d=new Date(fechaIso);
+    const turnId=this.slotId(fechaIso,hora,d.getFullYear(),d.getMonth()+1);
     if(turnId==null) return {ok:false,error:"Ese turno ya no está disponible. Elegí otro."};
     let r,data=null;
     try{
       r=await fetch("/api/chatbot/appointments",{
         method:"POST",
         headers:{"Content-Type":"application/json",Accept:"application/json"},
-        body:JSON.stringify({Dni:datos.dni,Firstname:datos.firstname,Lastname:datos.lastname,phone_number:datos.phone,turn_id:turnId})
+        body:JSON.stringify({turn_id:turnId,firstname:datos.firstname,lastname:datos.lastname,dni:datos.dni,date_of_birth:datos.nac||undefined,phone_number:datos.phone||undefined})
       });
       try{data=await r.json();}catch(e){}
     }catch(e){
       return {ok:false,error:"No se pudo conectar con el turnero. Reintentá."};
     }
     if(!r.ok){
-      return {ok:false,error:(data&&(data.detail||data.title))||("No se pudo confirmar (error "+r.status+")." )};
+      return {ok:false,error:(data&&(data.detail||data.title))||("No se pudo confirmar (error "+r.status+").")};
     }
-    this._cache=null; // el cupo dejó de estar disponible: forzar refetch la próxima vez
+    this.clearMonth(d.getFullYear(),d.getMonth()+1);
     return {ok:true,id:(data&&(data.appointment_code||data.appointment_id))||genTurnoId(),appointmentId:data&&data.appointment_id};
   }
 };
@@ -1804,7 +1811,7 @@ function _tFmtMes(d){
 async function openTurnoModal({tipoExamen,onConfirm}){
   // procedure_id: teórico-práctico=1, psicofísico=2.
   const pid=(S.tipo==="renovacion_simple")?2:1;
-  if(turneroApi._procedureId!==pid){turneroApi._procedureId=pid;turneroApi._cache=null;}
+  if(turneroApi._procedureId!==pid){turneroApi._procedureId=pid;turneroApi.clearAll();}
   const m=new Date();m.setDate(1);m.setHours(0,0,0,0);
   _tModal={mes:m,disp:new Set(),dia:null,hora:null,horas:[],tipo:tipoExamen||"Turno",onConfirm,err:null};
   document.getElementById("turno-title").textContent=`Reservar turno — ${_tModal.tipo}`;
@@ -1823,13 +1830,15 @@ function closeTurnoModal(){
 
 async function _tCargarMes(){
   const m=_tModal.mes;
+  const year=m.getFullYear();
+  const month=m.getMonth()+1;
   const today=new Date();today.setHours(0,0,0,0);
-  const ini=new Date(m.getFullYear(),m.getMonth(),1);
-  const fin=new Date(m.getFullYear(),m.getMonth()+1,0);
+  const ini=new Date(year,m.getMonth(),1);
+  const fin=new Date(year,m.getMonth()+1,0);
   const desde=ini<today?today:ini;
   const isoF=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
   try{
-    const dias=await turneroApi.getDias(isoF(desde),isoF(fin));
+    const dias=await turneroApi.getDias(isoF(desde),isoF(fin),year,month);
     _tModal.disp=new Set(dias);
     _tModal.err=null;
   }catch(e){
@@ -1875,7 +1884,7 @@ async function _tPickDia(iso){
   _tRender();
   document.getElementById("turno-horarios-titulo").textContent="Cargando horarios...";
   let horas=[];
-  try{ horas=await turneroApi.getHorarios(iso); }
+  try{ horas=await turneroApi.getHorarios(iso,_tModal.mes.getFullYear(),_tModal.mes.getMonth()+1); }
   catch(e){ if(_tModal.dia===iso){_tModal.err="No se pudieron cargar los horarios. Reintentá.";_tRenderHorarios();} return; }
   if(_tModal.dia!==iso)return;
   _tModal.horas=horas;
@@ -1961,7 +1970,7 @@ function _tRenderResumen(){
     const resumen=`¿Confirmás este turno?\n\n${persona?persona+"\n":""}${_tModal.tipo}\n${cd}/${cmo}/${cy} · ${_tModal.hora} hs\n\nAceptar: confirmar el turno.\nCancelar: elegir otro turno.`;
     if(!window.confirm(resumen)){
       // Cambiar turno sin confirmar: refrescar disponibilidad y reiniciar selección.
-      turneroApi._cache=null;
+      turneroApi.clearMonth(_tModal.mes.getFullYear(),_tModal.mes.getMonth()+1);
       _tModal.dia=null;_tModal.hora=null;_tModal.horas=[];_tModal.err=null;
       deactivateBtn(btn);
       await _tCargarMes();
@@ -1969,7 +1978,7 @@ function _tRenderResumen(){
       return;
     }
     deactivateBtn(btn);btn.textContent="Confirmando...";
-    const res=await turneroApi.confirmar(_tModal.dia,_tModal.hora,{dni:S.dni,firstname:S.nombre,lastname:S.apellido,phone:S.telefono});
+    const res=await turneroApi.confirmar(_tModal.dia,_tModal.hora,{dni:S.dni,firstname:S.nombre,lastname:S.apellido,phone:S.telefono,nac:S.nac});
     btn.textContent="Confirmar turno";activateBtn(btn);
     if(res.ok){
       S.turno={fecha:_tModal.dia,hora:_tModal.hora,id:res.id,examen:_tModal.tipo};

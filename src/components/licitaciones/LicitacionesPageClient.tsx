@@ -59,6 +59,11 @@ function formatBudget(amount: number | undefined, currency?: string): string {
   return `${sym} ${amount.toLocaleString("es-AR")}`;
 }
 
+function normalizeText(text: string | null | undefined): string {
+  if (!text) return "";
+  return text.replace(/ /g, " ").replace(/\s+/g, " ").trim();
+}
+
 function searchableText(lic: BiddingItem): string {
   const parts = [
     lic.title,
@@ -256,7 +261,7 @@ export default function LicitacionesPageClient() {
                           )}
                           {lic.object_of_contract && (
                             <p className="card-desc">
-                              {lic.object_of_contract}
+                              {normalizeText(lic.object_of_contract)}
                             </p>
                           )}
                           <div className="data-grid">

@@ -71,6 +71,11 @@ function formatBudget(amount: number | undefined, currency?: string): string {
   return `${sym} ${amount.toLocaleString("es-AR")}`;
 }
 
+function normalizeText(text: string | null | undefined): string {
+  if (!text) return "";
+  return text.replace(/ /g, " ").replace(/\s+/g, " ").trim();
+}
+
 function renderConsultationContact(raw: string) {
   const value = raw.trim();
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
@@ -283,7 +288,7 @@ export default function LicitacionDetailClient({ id }: Props) {
               data-section="objeto"
             >
               <h2>Objeto del contrato</h2>
-              <p className="object-text">{bidding.object_of_contract}</p>
+              <p className="object-text">{normalizeText(bidding.object_of_contract)}</p>
             </section>
           )}
 

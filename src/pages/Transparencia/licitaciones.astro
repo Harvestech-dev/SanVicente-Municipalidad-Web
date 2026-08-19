@@ -120,9 +120,6 @@ import LicitacionesPageClient from "../../components/licitaciones/LicitacionesPa
     border-radius: 12px;
     border: 1px solid #e2e8f0;
     padding: 2rem;
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
     transition: transform 0.2s;
   }
   .licitaciones-container .licitacion-card:hover {
@@ -304,7 +301,7 @@ import LicitacionesPageClient from "../../components/licitaciones/LicitacionesPa
       padding: 2.25rem 0;
     }
     .licitaciones-container .licitacion-card {
-      flex-direction: column;
+      grid-template-columns: 1fr !important;
       padding: 1.5rem;
     }
     .licitaciones-container .card-side-info {

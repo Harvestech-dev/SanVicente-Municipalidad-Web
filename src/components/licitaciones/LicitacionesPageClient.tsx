@@ -9,6 +9,7 @@ import {
   type FetchBiddingsParams,
 } from "../../lib/api-licitaciones/fetch-browser";
 import type { BiddingItem, EffectiveStatus } from "../../lib/api-licitaciones/types";
+import "./licitaciones-page.css";
 
 const TITULO = "Licitaciones y Concursos";
 const DESCRIPCION =

@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { FaShareAlt } from "react-icons/fa";
+import "./licitaciones-detail.css";
 import { fetchBiddingByIdInBrowser } from "../../lib/api-licitaciones/fetch-browser";
 import type { BiddingItem, BiddingAttachment } from "../../lib/api-licitaciones/types";
 import { SocialIcon } from "../SocialIcon";

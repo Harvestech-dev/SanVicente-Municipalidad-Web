@@ -1,0 +1,4 @@
+.licitaciones-container .card-main-info {
+  flex: 1;
+  min-width: 0;
+}

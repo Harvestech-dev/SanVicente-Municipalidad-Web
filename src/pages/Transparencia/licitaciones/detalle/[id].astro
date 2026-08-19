@@ -12,6 +12,9 @@ const id = Astro.params.id ?? "";
 </Layout>
 
 <style is:global>
+  .licitaciones-detail {
+    overflow-x: clip;
+  }
   .licitaciones-detail .licitaciones-container {
     min-height: 100vh;
     background-color: var(--color-fondo-claro);
@@ -151,8 +154,6 @@ const id = Astro.params.id ?? "";
     border: 1px solid #e2e8f0;
     padding: 2rem;
     margin-bottom: 0.9rem;
-    min-width: 0;
-    overflow: hidden;
   }
   .licitaciones-detail .detail-block h2 {
     font-size: 1.25rem;

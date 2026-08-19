@@ -241,7 +241,7 @@ export default function LicitacionesPageClient() {
                         className="licitacion-card"
                         data-status={lic.effective_status ?? ""}
                       >
-                        <div className="card-main-info">
+                        <div className="card-main-info" style={{ flex: 1, minWidth: 0 }}>
                           <h3>
                             <a
                               href={`/Transparencia/licitaciones/detalle/${encodeURIComponent(lic.id)}`}

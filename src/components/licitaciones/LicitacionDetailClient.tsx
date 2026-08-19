@@ -276,7 +276,7 @@ export default function LicitacionDetailClient({ id }: Props) {
       </section>
 
       <section className="detail-section">
-        <div className="content-wrapper detail-layout">
+        <div className="content-wrapper detail-layout" style={{ minWidth: 0 }}>
           {bidding.object_of_contract && (
             <section
               className="detail-block block-objeto"

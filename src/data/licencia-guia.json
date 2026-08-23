@@ -1,6 +1,7 @@
 {
   "nav": [
     { "id": "subclases", "label": "Clases y subclases" },
+    { "id": "interjurisdiccional", "label": "Jurisd. / Interjurisd." },
     { "id": "requisitos", "label": "Requisitos por trámite" },
     { "id": "costos", "label": "Costos y vigencia" },
     { "id": "documentacion", "label": "Documentación y enlaces" }
@@ -38,7 +39,7 @@
         "icono": "🚌",
         "filas": [
           { "cod": "D.1", "nombre": "Hasta 8 pasajeros (remis, taxi, transporte privado)", "desc": "Incluye B.1", "edad": "Desde 21", "tipo": "prof" },
-          { "cod": "D.2", "nombre": "Más de 8 pasajeros", "desc": "Incluye D.1 y B.1", "edad": "Desde 21", "tipo": "prof" },
+          { "cod": "D.2", "nombre": "Más de 8 pasajeros", "desc": "Incluye D.1, B.1, B.2, C y E.1", "edad": "Desde 21", "tipo": "prof" },
           { "cod": "D.3", "nombre": "Urgencia, emergencia o similares", "desc": "Debe acompañarse de clase B.1 o D.1", "edad": "Desde 21", "tipo": "prof" }
         ]
       },
@@ -46,7 +47,7 @@
         "titulo": "Clase E — Articulados y maquinaria no agrícola",
         "icono": "maquinaria",
         "filas": [
-          { "cod": "E.1", "nombre": "Camiones articulados y/o con acoplado", "desc": "Incluye B.1", "edad": "Desde 21", "tipo": "prof" },
+          { "cod": "E.1", "nombre": "Camiones articulados y/o con acoplado", "desc": "Incluye C, B.1 y B.2", "edad": "Desde 21", "tipo": "prof" },
           { "cod": "E.2", "nombre": "Maquinaria especial no agrícola", "desc": "—", "edad": "Desde 21", "tipo": "prof" }
         ]
       },
@@ -65,6 +66,38 @@
           { "cod": "G.2", "nombre": "Maquinaria especial agrícola", "desc": "Mayor de 18 años", "edad": "Desde 18", "tipo": "comun" }
         ]
       }
+    ]
+  },
+  "interjurisdiccional": {
+    "lead": "Las licencias de clases profesionales pasaron a ser INTERJURISDICCIONALES, esto implica una gestión mixta entre la Municipalidad y Prestadores privados y una modificación en los costos.",
+    "nota_opcion": "Si conducís profesionalmente solo dentro de la provincia de Santa Fe con clase C, D1, D2, E2 podrás optar por una licencia JURISDICCIONAL O INTERJURISDICCIONAL (manteniendo la gestión y costos habituales). La clase E1 es únicamente INTERJURISDICCIONAL.",
+    "nota_turno": "Antes de reservar tu turno es importante que tengas en cuenta la siguiente información:",
+    "tabla_clases": "C, D1, D2, D3, E2",
+    "tipos": [
+      {
+        "tipo": "Jurisdiccional",
+        "items": [
+          "El profesional estará habilitado a conducir solo dentro del territorio de Santa Fe.",
+          "Se gestiona íntegramente en la Municipalidad.",
+          "Se abona solo los costos correspondientes a los sellados Municipales."
+        ]
+      },
+      {
+        "tipo": "Interjurisdiccional",
+        "items": [
+          "El profesional estará habilitado a conducir dentro y fuera del territorio de Santa Fe.",
+          "El trámite inicia en la Municipalidad, continúa en los Prestadores privados completando los exámenes psicofísico, teórico y práctico y finaliza en la Municipalidad con la emisión de la licencia.",
+          "Si tu licencia profesional además incluye alguna otra clase particular de tipo A o G: deberás completar adicionalmente el examen psicofísico (y para algunos casos teórico y práctico) en la Municipalidad.",
+          "Se abonan los sellados municipales y además los costos correspondientes a los servicios de los Prestadores privados."
+        ]
+      }
+    ],
+    "nota_e1": "La clase E1 es únicamente Interjurisdiccional y se gestiona de manera mixta entre Municipalidad y Prestadores privados.",
+    "requisitos": [
+      "CUIL o CUIT.",
+      "No tener multas en Rosario ni en la Provincia de Santa Fe.",
+      "Para clases D1 y D2: Certificado de Antecedentes Penales. Si no lo tenés el día del examen no podrás ser atendido. Si el Certificado posee antecedentes de conducta, debés presentarte previamente en la Oficina Legal de Tránsito (Moreno 2510) de lunes a viernes de 8 a 12.",
+      "Tener domicilio en Rosario, excepto si gestionás una licencia que incluya la clase D2 Jurisdiccional, en ese caso se aceptará tener domicilio en cualquier localidad de la Provincia."
     ]
   },
   "requisitos": {

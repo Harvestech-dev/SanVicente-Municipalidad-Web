@@ -3,7 +3,7 @@ import guia from "../../data/licencia-guia.json";
 import IconMaquinaria from "./IconMaquinaria.astro";
 import "./licencia-guia.css";
 
-const { nav, subclases, requisitos, costos, documentacion } = guia;
+const { nav, subclases, interjurisdiccional, requisitos, costos, documentacion } = guia;
 
 ---
 
@@ -65,6 +65,45 @@ const { nav, subclases, requisitos, costos, documentacion } = guia;
             </details>
           ))
         }
+      </article>
+
+      <article class="guia-block" id="interjurisdiccional">
+        <h3>Licencias profesionales: jurisdiccional e interjurisdiccional</h3>
+        <p class="guia-lead">{interjurisdiccional.lead}</p>
+
+        <div class="interjurisd-info">
+          {interjurisdiccional.nota_opcion}
+        </div>
+
+        <p class="guia-lead" style="margin-bottom: 0.65rem">{interjurisdiccional.nota_turno}</p>
+
+        <details class="subclase-grupo">
+          <summary class="subclase-head">
+            <span class="subclase-head-label">
+              Diferencias en la gestión — Licencia ({interjurisdiccional.tabla_clases})
+            </span>
+          </summary>
+          <div class="subclase-body interjurisd-body">
+            {
+              interjurisdiccional.tipos.map((t) => (
+                <div class={`req-guia interjurisd-tipo${t.tipo === "Interjurisdiccional" ? " interjurisd-tipo--inter" : ""}`}>
+                  <div class="req-guia-titulo">{t.tipo}</div>
+                  <ul>
+                    {t.items.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              ))
+            }
+            <p class="guia-lead interjurisd-nota-e1">{interjurisdiccional.nota_e1}</p>
+          </div>
+        </details>
+
+        <h4>Requisitos</h4>
+        <div class="req-guia" style="margin-bottom: 0">
+          <ul>
+            {interjurisdiccional.requisitos.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
       </article>
 
       <article class="guia-block" id="requisitos">

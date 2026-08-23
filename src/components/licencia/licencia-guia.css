@@ -277,6 +277,42 @@ html:has(.guia-section) {
   border: 1px solid #fac775;
 }
 
+/* Interjurisdiccional */
+.interjurisd-info {
+  background: var(--color-primario-suave, #fdf2e9);
+  border: 1px solid #f5c99b;
+  border-left: 3px solid var(--color-primario);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--color-texto);
+  margin-bottom: 1.25rem;
+}
+
+.interjurisd-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--color-fondo-claro);
+}
+
+.interjurisd-tipo {
+  margin-bottom: 0;
+}
+
+.interjurisd-tipo--inter {
+  background: white;
+  border-color: var(--color-primario-suave, #fdf2e9);
+  border-left: 3px solid var(--color-primario);
+}
+
+.interjurisd-nota-e1 {
+  margin: 0;
+  font-style: italic;
+}
+
 /* Requisitos guía */
 .req-guia {
   background: var(--color-fondo-claro);

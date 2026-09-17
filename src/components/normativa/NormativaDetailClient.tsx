@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { FaShareAlt } from "react-icons/fa";
 import { fetchLegislationBySlugInBrowser } from "../../lib/api-legislaciones/fetch-browser";
 import type {
+  BoletinAttachment,
+  BoletinAttachmentCategory,
   LegislationDetail,
   LegislationStatus,
   LegislationType,
@@ -38,6 +40,29 @@ const RELATION_LABELS: Record<string, string> = {
   complementa: "Complementa a",
   referencia: "Hace referencia a",
 };
+
+const ATTACHMENT_CATEGORY_LABELS: Record<BoletinAttachmentCategory, string> = {
+  decreto: "Decretos",
+  ordenanza: "Ordenanzas",
+  licitacion: "Licitaciones",
+  balance: "Balances",
+};
+
+function groupAttachments(
+  attachments: BoletinAttachment[]
+): [BoletinAttachmentCategory, BoletinAttachment[]][] {
+  const map = new Map<BoletinAttachmentCategory, BoletinAttachment[]>();
+  for (const a of attachments) {
+    const arr = map.get(a.category) ?? [];
+    arr.push(a);
+    map.set(a.category, arr);
+  }
+  return Array.from(map.entries());
+}
+
+function getAttachmentUrl(a: BoletinAttachment): string | undefined {
+  return a.source === "file" ? a.file_url : a.url;
+}
 
 function formatDate(iso: string | null | undefined): string {
   if (!iso) return "—";
@@ -251,6 +276,46 @@ export default function NormativaDetailClient({ slug }: Props) {
             >
               <h2>Texto completo</h2>
               <div className="body-text">{item.body}</div>
+            </section>
+          )}
+
+          {item.attachments && item.attachments.length > 0 && (
+            <section className="detail-block block-adjuntos" data-section="adjuntos">
+              <h2>Documentos adjuntos</h2>
+              {groupAttachments(item.attachments).map(([cat, items]) => (
+                <div key={cat} className="adjuntos-group">
+                  <h3 className="adjuntos-group-title">
+                    {ATTACHMENT_CATEGORY_LABELS[cat]}
+                  </h3>
+                  <ul className="adjuntos-list">
+                    {items.map((a, i) => {
+                      const href = getAttachmentUrl(a);
+                      return (
+                        <li key={i} className="adjunto-item">
+                          {href ? (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="adjunto-link"
+                            >
+                              {a.label || "Ver documento"}
+                            </a>
+                          ) : (
+                            <span className="adjunto-label">{a.label}</span>
+                          )}
+                          {a.category === "licitacion" && a.decreto_adjudicacion && (
+                            <small className="adjunto-decreto">
+                              {" — "}Decreto adjudicación N°{" "}
+                              {a.decreto_adjudicacion}
+                            </small>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
             </section>
           )}
 

@@ -4,6 +4,21 @@
  */
 
 export type LegislationType = "ordinance" | "decree" | "boletin";
+
+export type BoletinAttachmentCategory =
+  | "decreto"
+  | "ordenanza"
+  | "licitacion"
+  | "balance";
+
+export interface BoletinAttachment {
+  category: BoletinAttachmentCategory;
+  label: string;
+  source: "url" | "file";
+  url?: string;
+  file_url?: string;
+  decreto_adjudicacion?: string;
+}
 export type LegislationStatus =
   | "vigente"
   | "modificada"
@@ -38,6 +53,7 @@ export interface LegislationListItem {
   signedAt?: string;
   publishedAt?: string;
   file: LegislationFile;
+  attachments?: BoletinAttachment[];
   createdAt: string;
   updatedAt: string;
 }

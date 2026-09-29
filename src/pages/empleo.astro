@@ -1,0 +1,310 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="Bolsa de Empleo — Municipalidad de San Vicente"
+  description="Inscribite gratis a la Bolsa de Empleo Municipal de San Vicente. Tu perfil es considerado ante búsquedas de personal de empresas e instituciones de la localidad."
+>
+  <main class="empleo-page">
+    <section class="hero">
+      <div class="container">
+        <div class="hero-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+        </div>
+        <h1>Bolsa de Empleo Municipal</h1>
+        <p class="hero-sub">Servicio gratuito del Área de Empleo · Municipalidad de San Vicente</p>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="container">
+        <div class="card-layout">
+          <div class="info-block">
+            <h2>¿De qué se trata?</h2>
+            <p>
+              Al inscribirte, tus datos pasan a formar parte del registro municipal de personas en búsqueda de empleo.
+              El <strong>Área de Empleo de la Municipalidad</strong> consulta este registro cuando empresas, instituciones
+              y establecimientos de San Vicente y la región solicitan personal.
+            </p>
+            <p>
+              Por eso es importante completar la información de forma clara y precisa, y mantener actualizados
+              tus datos de contacto, formación y experiencia laboral.
+            </p>
+
+            <ul class="features">
+              <li>
+                <span class="feature-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </span>
+                Inscripción 100% gratuita
+              </li>
+              <li>
+                <span class="feature-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </span>
+                Tu perfil queda disponible para búsquedas locales y regionales
+              </li>
+              <li>
+                <span class="feature-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </span>
+                Podés actualizar tus datos cuando lo necesites
+              </li>
+            </ul>
+
+            <a
+              href="https://forms.gle/dMZYE1S3MrLKFgE17"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-cta"
+            >
+              Completar el formulario
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </a>
+            <p class="note">El formulario se abre en una nueva pestaña (Google Forms).</p>
+          </div>
+
+          <div class="aside-block">
+            <div class="aside-card">
+              <h3>¿A quién está dirigido?</h3>
+              <p>A vecinas y vecinos de San Vicente y la región que se encuentran en búsqueda de oportunidades laborales.</p>
+            </div>
+            <div class="aside-card">
+              <h3>¿Qué información necesito?</h3>
+              <ul class="aside-list">
+                <li>Datos personales y de contacto</li>
+                <li>Nivel educativo y formación</li>
+                <li>Experiencia laboral</li>
+                <li>Disponibilidad horaria</li>
+              </ul>
+            </div>
+            <div class="aside-card aside-card--highlight">
+              <h3>Área de Empleo</h3>
+              <p>Municipalidad de San Vicente, Santa Fe.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .empleo-page {
+    min-height: 60vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--color-primario, #c26d0e);
+    color: #fff;
+    padding: 4rem 1rem 3.5rem;
+    text-align: center;
+  }
+
+  .hero-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 900;
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-sub {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 4rem 1rem;
+    background: var(--color-fondo-claro, #f8fafc);
+  }
+
+  .card-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .card-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* INFO BLOCK */
+  .info-block {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .info-block h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 1.25rem;
+  }
+
+  .info-block p {
+    color: #475569;
+    line-height: 1.7;
+    margin: 0 0 1rem;
+  }
+
+  .features {
+    list-style: none;
+    padding: 0;
+    margin: 1.75rem 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .features li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(194, 109, 14, 0.1);
+    color: var(--color-primario, #c26d0e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--color-primario, #c26d0e);
+    color: #fff;
+    padding: 0.9rem 2rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+  }
+
+  .btn-cta:hover {
+    background: var(--color-primario-hover, #a05a0b);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(194, 109, 14, 0.3);
+  }
+
+  .note {
+    margin: 0.75rem 0 0 !important;
+    font-size: 0.82rem !important;
+    color: #94a3b8 !important;
+  }
+
+  /* ASIDE */
+  .aside-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .aside-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+  }
+
+  .aside-card h3 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .aside-card p {
+    color: #475569;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .aside-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .aside-list li {
+    color: #475569;
+    font-size: 0.9rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .aside-list li::before {
+    content: "·";
+    position: absolute;
+    left: 0;
+    color: var(--color-primario, #c26d0e);
+    font-weight: 900;
+  }
+
+  .aside-card--highlight {
+    background: var(--color-secundario, #1e293b);
+    border-color: transparent;
+  }
+
+  .aside-card--highlight h3 {
+    color: #e8923a;
+  }
+
+  .aside-card--highlight p {
+    color: #94a3b8;
+  }
+</style>
